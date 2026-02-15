@@ -22,40 +22,58 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // Camera setup
+    // Camera setup with better perspective
     const camera = new THREE.PerspectiveCamera(
-      45,
+      50,
       container.clientWidth / container.clientHeight,
       0.1,
       1000
     );
-    camera.position.z = 5;
+    camera.position.z = 4;
+    camera.position.y = 0;
 
-    // Renderer setup
+    // Renderer setup with better quality
     const renderer = new THREE.WebGLRenderer({ 
       alpha: true, 
-      antialias: true 
+      antialias: true,
+      powerPreference: 'high-performance'
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor(0x000000, 0);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+    // Enhanced Lighting for 3D effect
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
 
-    const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight1.position.set(5, 5, 5);
-    scene.add(directionalLight1);
+    // Key light (main light from top)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    keyLight.position.set(5, 8, 5);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
 
-    const directionalLight2 = new THREE.DirectionalLight(0xD4AF37, 0.6);
-    directionalLight2.position.set(-5, -5, -5);
-    scene.add(directionalLight2);
+    // Fill light (softer light from side)
+    const fillLight = new THREE.DirectionalLight(0xD4AF37, 1.0);
+    fillLight.position.set(-5, 3, -5);
+    scene.add(fillLight);
 
-    const pointLight = new THREE.PointLight(0xffd700, 1.0);
-    pointLight.position.set(0, 3, 3);
-    scene.add(pointLight);
+    // Rim light (back light for depth)
+    const rimLight = new THREE.DirectionalLight(0xffd700, 0.8);
+    rimLight.position.set(0, -3, -5);
+    scene.add(rimLight);
+
+    // Point lights for sparkle
+    const pointLight1 = new THREE.PointLight(0xffd700, 1.5, 10);
+    pointLight1.position.set(3, 3, 3);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0xD4AF37, 1.2, 10);
+    pointLight2.position.set(-3, -3, 3);
+    scene.add(pointLight2);
 
     // Load 3D Model
     const loader = new OBJLoader();
@@ -68,34 +86,38 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
         const size = box.getSize(new THREE.Vector3());
         
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 2.5 / maxDim;
+        const scale = 3.0 / maxDim; // Larger scale
         
         object.scale.multiplyScalar(scale);
         object.position.sub(center.multiplyScalar(scale));
         
-        // Apply gold material
+        // Apply premium gold material with better 3D effect
         object.traverse((child) => {
           if (child instanceof THREE.Mesh) {
             child.material = new THREE.MeshStandardMaterial({
-              color: 0xD4AF37,
-              metalness: 0.8,
-              roughness: 0.2,
+              color: 0xFFD700,
+              metalness: 0.9,
+              roughness: 0.15,
               emissive: 0xD4AF37,
-              emissiveIntensity: 0.2,
+              emissiveIntensity: 0.3,
+              envMapIntensity: 1.5,
             });
+            child.castShadow = true;
+            child.receiveShadow = true;
           }
         });
 
         scene.add(object);
         modelRef.current = object;
 
-        // Initial rotation based on position
-        object.rotation.y = position === 'top' ? 0.5 : -0.5;
+        // Initial rotation for better 3D view
+        object.rotation.y = position === 'top' ? 0.4 : -0.4;
+        object.rotation.x = 0.1;
 
         // Scroll-based rotation animation synchronized
         gsap.to(object.rotation, {
-          y: position === 'top' ? Math.PI * 2.5 : -Math.PI * 2.5,
-          x: position === 'top' ? 0.3 : -0.3,
+          y: position === 'top' ? Math.PI * 3 : -Math.PI * 3,
+          x: position === 'top' ? 0.5 : -0.5,
           scrollTrigger: {
             trigger: container.parentElement.parentElement,
             start: 'top top',
@@ -112,13 +134,14 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
       }
     );
 
-    // Animation loop
+    // Animation loop with auto-rotation
     const animate = () => {
       animationFrameRef.current = requestAnimationFrame(animate);
       
-      // Add subtle continuous rotation
+      // Add subtle continuous rotation for 3D effect
       if (modelRef.current) {
-        modelRef.current.rotation.z += 0.001;
+        modelRef.current.rotation.y += 0.003;
+        modelRef.current.rotation.z = Math.sin(Date.now() * 0.0005) * 0.05;
       }
       
       renderer.render(scene, camera);
