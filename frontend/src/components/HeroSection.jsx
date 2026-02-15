@@ -177,6 +177,29 @@ const HeroSection = () => {
         </div>
       </div>
 
+      {/* Split Buttons - For Him & For Her Style */}
+      <div className="absolute inset-0 flex items-center justify-center z-25 gap-12">
+        {/* Left Button - "Take Code 7777" */}
+        <button className="split-button left-button group">
+          <div className="text-center">
+            <p className="text-3xl lg:text-4xl font-bold mb-3">لك</p>
+            <p className="text-sm lg:text-base opacity-80 group-hover:opacity-100 transition-opacity">
+              خذ الكود 7777
+            </p>
+          </div>
+        </button>
+
+        {/* Right Button - "Enter Your Code" */}
+        <button className="split-button right-button group">
+          <div className="text-center">
+            <p className="text-3xl lg:text-4xl font-bold mb-3">لي</p>
+            <p className="text-sm lg:text-base opacity-80 group-hover:opacity-100 transition-opacity">
+              أدخل الكود الخاص بك
+            </p>
+          </div>
+        </button>
+      </div>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 z-10">
         <div className="absolute top-20 right-20 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
