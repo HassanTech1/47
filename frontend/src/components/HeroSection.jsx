@@ -17,25 +17,25 @@ const HeroSection = () => {
     const bottomModel = bottomModelRef.current;
     const promoText = promoTextRef.current;
 
-    // Floating animation for top model (jacket - top right)
+    // Gentle floating animation for top model (jacket - top right)
     gsap.to(topModel, {
-      y: -30,
+      y: -20,
       duration: 3,
       ease: 'power1.inOut',
       repeat: -1,
       yoyo: true,
     });
 
-    // Floating animation for bottom model (hoodie - bottom left)
+    // Gentle floating animation for bottom model (hoodie - bottom left)
     gsap.to(bottomModel, {
-      y: 30,
+      y: 20,
       duration: 3.5,
       ease: 'power1.inOut',
       repeat: -1,
       yoyo: true,
     });
 
-    // Synchronized scroll animation
+    // Simple scroll animation - just fade and scale, NO rotation
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: hero,
@@ -46,19 +46,15 @@ const HeroSection = () => {
       }
     });
 
-    // Top model (jacket) - rotate and fade away
+    // Top model (jacket) - simple fade and scale down
     tl.to(topModel, {
-      rotationY: 360,
-      rotationX: 180,
-      scale: 0.3,
+      scale: 0.4,
       opacity: 0,
       duration: 1,
     }, 0)
-    // Bottom model (hoodie) - rotate opposite direction and fade away
+    // Bottom model (hoodie) - simple fade and scale down
     .to(bottomModel, {
-      rotationY: -360,
-      rotationX: -180,
-      scale: 0.3,
+      scale: 0.4,
       opacity: 0,
       duration: 1,
     }, 0)
