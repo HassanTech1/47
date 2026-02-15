@@ -538,7 +538,12 @@ async def create_checkout_session(
             "user_id": user["id"] if user else None,
             "session_id": session.session_id,
             "items": [item.model_dump() for item in checkout_req.items],
-            "total": total_amount,
+            "shipping_address": checkout_req.shipping_address.model_dump() if checkout_req.shipping_address else None,
+            "discount_code": checkout_req.discount_code,
+            "subtotal": total_amount,
+            "tax": total_amount * 0.15,  # 15% VAT
+            "shipping_cost": 0.0,  # Free shipping
+            "total": total_amount * 1.15,  # Including tax
             "currency": "SAR",
             "status": "pending",
             "payment_status": "initiated",
