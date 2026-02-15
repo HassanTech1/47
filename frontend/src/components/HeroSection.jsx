@@ -37,36 +37,19 @@ const HeroSection = () => {
       yoyo: true,
     });
 
-    // Scroll animation timeline - Extended for smoother, longer animation
+    // Simple fade on scroll - NO drag effect
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: hero,
         start: 'top top',
-        end: '+=150%', // Extended scroll distance (150% of viewport height)
-        scrub: 1.5, // Slightly smoother scrubbing
+        end: '+=100%',
+        scrub: 1,
         pin: false,
       }
     });
 
-    // Models fade and scale down
-    tl.to(topModel, {
-      scale: 0.4,
-      opacity: 0,
-      duration: 1,
-    }, 0)
-    .to(bottomModel, {
-      scale: 0.4,
-      opacity: 0,
-      duration: 1,
-    }, 0)
-    // Buttons drag apart to sides
-    .to(leftButton, {
-      x: '-40vw',
-      opacity: 0,
-      duration: 1,
-    }, 0)
-    .to(rightButton, {
-      x: '40vw',
+    // Just fade out, no movement
+    tl.to([topModel, bottomModel, leftButton, rightButton], {
       opacity: 0,
       duration: 1,
     }, 0);
@@ -80,7 +63,7 @@ const HeroSection = () => {
     <div 
       ref={heroRef}
       className="hero-section relative w-full overflow-hidden"
-      style={{ minHeight: '200vh' }}
+      style={{ height: '100vh' }}
     >
       {/* Split Background - Red Left, Black Right */}
       <div className="absolute inset-0 z-0">
@@ -90,8 +73,8 @@ const HeroSection = () => {
         <div className="absolute left-1/2 top-0 w-px h-full bg-white/30 transform -translate-x-1/2"></div>
       </div>
 
-      {/* Center Branding - Always Visible */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-15 text-center">
+      {/* Center Branding - Raised Higher */}
+      <div className="absolute top-[15%] left-1/2 transform -translate-x-1/2 z-15 text-center">
         <h1 className="text-9xl lg:text-[12rem] font-bold text-white hero-logo mb-6">
           ٧٧٧٧
         </h1>
@@ -137,8 +120,8 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Split Buttons - Initially Visible, Drag Apart on Scroll */}
-      <div className="absolute inset-0 flex items-center justify-center z-40 gap-12 pointer-events-auto">
+      {/* Split Buttons - Fixed Position, Bottom of Screen */}
+      <div className="absolute bottom-20 left-0 right-0 flex items-center justify-center z-40 gap-12 pointer-events-auto">
         {/* Left Button - "Take Code 7777" */}
         <button ref={leftButtonRef} className="split-button left-button group" style={{ opacity: 1 }}>
           <div className="text-center">
@@ -172,16 +155,6 @@ const HeroSection = () => {
         
         {/* Center glow */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl"></div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-white/70 text-sm tracking-widest">SCROLL</p>
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
-            <div className="w-1.5 h-3 bg-white/70 rounded-full"></div>
-          </div>
-        </div>
       </div>
 
       {/* Bottom Text */}
