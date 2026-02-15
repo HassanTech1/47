@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Search, User, ShoppingCart, Heart, Menu, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const { getCartCount, setIsCartOpen } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,11 +58,16 @@ const Header = () => {
                   </span>
                 )}
               </button>
-              <button className="header-icon relative" aria-label="Shopping Cart">
+              <button 
+                className="header-icon relative" 
+                aria-label="Shopping Cart"
+                onClick={() => setIsCartOpen(true)}
+                data-testid="header-cart-btn"
+              >
                 <ShoppingCart className="w-5 h-5" />
-                {cartCount > 0 && (
+                {getCartCount() > 0 && (
                   <span className="absolute -top-2 -right-2 bg-white text-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
-                    {cartCount}
+                    {getCartCount()}
                   </span>
                 )}
               </button>
@@ -106,12 +112,16 @@ const Header = () => {
 
               {/* Right - Cart + Arrows */}
               <div className="flex items-center gap-6">
-                <button className="icon-with-label relative">
+                <button 
+                  className="icon-with-label relative"
+                  onClick={() => setIsCartOpen(true)}
+                  data-testid="expanded-header-cart-btn"
+                >
                   <ShoppingCart className="w-4 h-4 mb-1" />
                   <span className="text-xs">السلة</span>
-                  {cartCount > 0 && (
+                  {getCartCount() > 0 && (
                     <span className="absolute -top-1 -right-1 bg-black text-white text-xs w-4 h-4 rounded-full flex items-center justify-center" style={{ fontSize: '0.65rem' }}>
-                      {cartCount}
+                      {getCartCount()}
                     </span>
                   )}
                 </button>
