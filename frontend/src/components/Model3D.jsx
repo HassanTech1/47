@@ -57,21 +57,21 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
     scene.add(keyLight);
 
     // Fill light (softer light from side)
-    const fillLight = new THREE.DirectionalLight(0xD4AF37, 1.0);
+    const fillLight = new THREE.DirectionalLight(0xFFFFFF, 1.0);
     fillLight.position.set(-5, 3, -5);
     scene.add(fillLight);
 
     // Rim light (back light for depth)
-    const rimLight = new THREE.DirectionalLight(0xffd700, 0.8);
+    const rimLight = new THREE.DirectionalLight(0xFFFFFF, 0.8);
     rimLight.position.set(0, -3, -5);
     scene.add(rimLight);
 
     // Point lights for sparkle
-    const pointLight1 = new THREE.PointLight(0xffd700, 1.5, 10);
+    const pointLight1 = new THREE.PointLight(0xFFFFFF, 1.5, 10);
     pointLight1.position.set(3, 3, 3);
     scene.add(pointLight1);
 
-    const pointLight2 = new THREE.PointLight(0xD4AF37, 1.2, 10);
+    const pointLight2 = new THREE.PointLight(0xFFFFFF, 1.2, 10);
     pointLight2.position.set(-3, -3, 3);
     scene.add(pointLight2);
 
@@ -91,15 +91,15 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
         object.scale.multiplyScalar(scale);
         object.position.sub(center.multiplyScalar(scale));
         
-        // Apply premium gold material with better 3D effect
+        // Apply premium white/silver material with better 3D effect
         object.traverse((child) => {
           if (child instanceof THREE.Mesh) {
             child.material = new THREE.MeshStandardMaterial({
-              color: 0xFFD700,
-              metalness: 0.9,
-              roughness: 0.15,
-              emissive: 0xD4AF37,
-              emissiveIntensity: 0.3,
+              color: 0xFFFFFF,
+              metalness: 0.95,
+              roughness: 0.1,
+              emissive: 0xCCCCCC,
+              emissiveIntensity: 0.2,
               envMapIntensity: 1.5,
             });
             child.castShadow = true;
