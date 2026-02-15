@@ -52,6 +52,41 @@ body {
     letter-spacing: 0.15em;
 }
 
+/* Stretched Menu Items */
+.menu-item-stretched {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: 0.3em;
+    text-decoration: none;
+    position: relative;
+    transform: scaleX(1);
+    transition: all 0.3s ease;
+    display: inline-block;
+    font-family: 'Arial Black', sans-serif;
+    text-transform: uppercase;
+}
+
+.menu-item-stretched:hover {
+    transform: scaleX(1.1);
+    color: #DC2626;
+}
+
+.menu-item-stretched::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #000;
+    transition: width 0.3s ease;
+}
+
+.menu-item-stretched:hover::after {
+    width: 100%;
+}
+
 /* Hero Section */
 .hero-section {
     background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
