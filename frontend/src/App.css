@@ -2,8 +2,8 @@
 
 /* Variables */
 :root {
-    --gold: #D4AF37;
-    --gold-light: #F4E5C3;
+    --gold: #FFFFFF;
+    --gold-light: #F3F4F6;
     --black: #000000;
     --white: #FFFFFF;
     --gray-50: #F9FAFB;
@@ -41,7 +41,7 @@ body {
 }
 
 .header-icon:hover {
-    color: var(--gold);
+    color: var(--white);
     transform: scale(1.1);
 }
 
@@ -70,29 +70,29 @@ body {
     font-family: 'Cairo', sans-serif;
     font-weight: 900;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8),
-                 0 8px 40px rgba(212, 175, 55, 0.3);
+                 0 8px 40px rgba(255, 255, 255, 0.3);
     letter-spacing: 0.05em;
 }
 
 .promo-title {
     font-family: 'Playfair Display', serif;
     letter-spacing: 0.3em;
-    text-shadow: 0 0 40px rgba(212, 175, 55, 0.8),
-                 0 0 80px rgba(212, 175, 55, 0.5),
-                 0 0 120px rgba(212, 175, 55, 0.3);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.8),
+                 0 0 80px rgba(255, 255, 255, 0.6),
+                 0 0 120px rgba(255, 255, 255, 0.4);
     animation: glow-pulse 3s ease-in-out infinite;
 }
 
 @keyframes glow-pulse {
     0%, 100% {
-        text-shadow: 0 0 40px rgba(212, 175, 55, 0.8),
-                     0 0 80px rgba(212, 175, 55, 0.5),
-                     0 0 120px rgba(212, 175, 55, 0.3);
+        text-shadow: 0 0 40px rgba(255, 255, 255, 0.8),
+                     0 0 80px rgba(255, 255, 255, 0.6),
+                     0 0 120px rgba(255, 255, 255, 0.4);
     }
     50% {
-        text-shadow: 0 0 50px rgba(212, 175, 55, 1),
-                     0 0 100px rgba(212, 175, 55, 0.7),
-                     0 0 150px rgba(212, 175, 55, 0.5);
+        text-shadow: 0 0 50px rgba(255, 255, 255, 1),
+                     0 0 100px rgba(255, 255, 255, 0.8),
+                     0 0 150px rgba(255, 255, 255, 0.6);
     }
 }
 
@@ -118,27 +118,27 @@ body {
 .promo-message-box {
     padding: 1rem 2rem;
     border-radius: 16px;
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
 }
 
 .promo-message-box:hover {
-    background: rgba(212, 175, 55, 0.15);
-    border-color: rgba(212, 175, 55, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
 }
 
 /* 3D Model Container */
 .model-3d-container {
-    filter: drop-shadow(0 20px 50px rgba(212, 175, 55, 0.5));
+    filter: drop-shadow(0 20px 50px rgba(255, 255, 255, 0.3));
     transition: filter 0.3s ease;
 }
 
 .model-3d-container:hover {
-    filter: drop-shadow(0 25px 60px rgba(212, 175, 55, 0.7));
+    filter: drop-shadow(0 25px 60px rgba(255, 255, 255, 0.5));
 }
 
 .model-3d-container canvas {
@@ -151,10 +151,10 @@ body {
 
 @keyframes float-shadow {
     0%, 100% {
-        filter: drop-shadow(0 30px 60px rgba(212, 175, 55, 0.4));
+        filter: drop-shadow(0 30px 60px rgba(255, 255, 255, 0.2));
     }
     50% {
-        filter: drop-shadow(0 40px 80px rgba(212, 175, 55, 0.6));
+        filter: drop-shadow(0 40px 80px rgba(255, 255, 255, 0.4));
     }
 }
 
@@ -174,7 +174,7 @@ body {
     right: 0;
     width: 60px;
     height: 3px;
-    background: var(--gold);
+    background: var(--white);
 }
 
 /* Category Cards */
@@ -229,7 +229,7 @@ body {
 
 /* CTA Button */
 .cta-button {
-    background: var(--gold);
+    background: var(--white);
     color: var(--black);
     padding: 16px 48px;
     border-radius: 50px;
@@ -238,13 +238,13 @@ body {
     border: none;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
 }
 
 .cta-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.5);
-    background: #E5C158;
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.5);
+    background: #F3F4F6;
 }
 
 .cta-button:active {
@@ -280,7 +280,7 @@ body {
 }
 
 .footer-link:hover {
-    color: var(--gold);
+    color: var(--white);
 }
 
 .social-icon {
@@ -296,7 +296,7 @@ body {
 }
 
 .social-icon:hover {
-    background: var(--gold);
+    background: var(--white);
     color: var(--black);
     transform: scale(1.1);
 }
@@ -312,7 +312,7 @@ body {
 }
 
 .newsletter-input:focus {
-    border-color: var(--gold);
+    border-color: var(--white);
 }
 
 .newsletter-input::placeholder {
@@ -320,7 +320,7 @@ body {
 }
 
 .newsletter-button {
-    background: var(--gold);
+    background: var(--white);
     color: var(--black);
     width: 48px;
     height: 48px;
@@ -334,7 +334,7 @@ body {
 }
 
 .newsletter-button:hover {
-    background: #E5C158;
+    background: #F3F4F6;
     transform: scale(1.05);
 }
 
@@ -373,10 +373,10 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--gold);
+    background: var(--white);
     border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #E5C158;
+    background: #F3F4F6;
 }
