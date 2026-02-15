@@ -85,8 +85,14 @@ const HeroSection = () => {
   return (
     <div 
       ref={heroRef}
-      className="hero-section relative h-screen w-full overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black"
+      className="hero-section relative h-screen w-full overflow-hidden"
     >
+      {/* Split Background - Red Left, Black Right */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute left-0 top-0 w-1/2 h-full bg-red-600"></div>
+        <div className="absolute right-0 top-0 w-1/2 h-full bg-black"></div>
+      </div>
+
       {/* 3D Model - Top Right (Jacket) */}
       <div 
         ref={topModelRef}
@@ -170,7 +176,7 @@ const HeroSection = () => {
       </div>
 
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-10">
         <div className="absolute top-20 right-20 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 left-20 w-48 h-48 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl"></div>
