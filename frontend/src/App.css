@@ -72,6 +72,20 @@ body {
     text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
+/* 3D Model Container */
+.model-3d-container {
+    filter: drop-shadow(0 10px 30px rgba(212, 175, 55, 0.3));
+    transition: filter 0.3s ease;
+}
+
+.model-3d-container:hover {
+    filter: drop-shadow(0 15px 40px rgba(212, 175, 55, 0.5));
+}
+
+.model-3d-container canvas {
+    display: block;
+}
+
 /* Section Titles */
 .section-title {
     font-family: 'Cairo', sans-serif;
@@ -264,6 +278,11 @@ body {
     
     .vision-text {
         font-size: 2.5rem;
+    }
+
+    .model-3d-container {
+        width: 40% !important;
+        height: 40% !important;
     }
 }
 
