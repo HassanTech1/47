@@ -1,86 +1,100 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { products } from '../data/mock';
 
 const ProductGrid = () => {
-  const [wishlist, setWishlist] = useState([]);
-  const [cart, setCart] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const toggleWishlist = (productId) => {
-    setWishlist(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
+  // Simplified products for clean display
+  const essentialProducts = products.slice(0, 8).map((p, i) => ({
+    ...p,
+    images: [p.image, p.image, p.image], // In real app, multiple images
+    badge: "Unisex",
+  }));
+
+  const handleProductClick = (product, index) => {
+    setSelectedProduct(product);
+    setCurrentImageIndex(0);
   };
 
-  const addToCart = (productId) => {
-    setCart(prev => [...prev, productId]);
-    // Show toast notification (simplified)
-    console.log('Product added to cart');
+  const nextImage = (e, product) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+  };
+
+  const prevImage = (e, product) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
   };
 
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-16 bg-white">
       <div className="container mx-auto px-4 lg:px-8">
+        {/* Title */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 section-title">
-            مجموعة الصيف
+          <h2 className="text-4xl lg:text-5xl font-bold tracking-wider uppercase">
+            ESSENTIALS
           </h2>
-          <p className="text-gray-600 text-lg">
-            اكتشف أحدث صيحات الموضة
-          </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
+        {/* Product Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          {essentialProducts.map((product, index) => (
             <div
               key={product.id}
-              className="product-card group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500"
+              className="product-card-clean group cursor-pointer"
+              onClick={() => handleProductClick(product, index)}
             >
-              <div className="relative h-80 overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                
-                {product.isNew && (
-                  <span className="absolute top-4 right-4 bg-gold text-black px-3 py-1 text-xs font-bold rounded-full">
-                    جديد
-                  </span>
-                )}
-
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
-                  <button
-                    onClick={() => toggleWishlist(product.id)}
-                    className={`icon-button ${
-                      wishlist.includes(product.id) ? 'bg-gold text-black' : 'bg-white text-black'
-                    }`}
-                    aria-label="Add to Wishlist"
-                  >
-                    <Heart className="w-5 h-5" fill={wishlist.includes(product.id) ? 'currentColor' : 'none'} />
-                  </button>
-                  <button
-                    onClick={() => addToCart(product.id)}
-                    className="icon-button bg-white text-black"
-                    aria-label="Add to Cart"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                  </button>
-                </div>
+              {/* Badge */}
+              <div className="text-center mb-4">
+                <span className="text-sm text-gray-500 tracking-wider">
+                  {product.badge}
+                </span>
               </div>
 
-              <div className="p-6 text-center">
-                <h3 className="text-lg font-bold mb-2">
-                  {product.name}
-                </h3>
-                <p className="text-gray-500 text-sm mb-3">
+              {/* Product Image with Carousel */}
+              <div className="relative h-96 bg-gray-50 mb-6 overflow-hidden">
+                <img
+                  src={product.images[selectedProduct?.id === product.id ? currentImageIndex : 0]}
+                  alt={product.nameEn}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                
+                {/* Carousel Navigation - Shows on hover */}
+                {selectedProduct?.id === product.id && product.images.length > 1 && (
+                  <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={(e) => prevImage(e, product)}
+                      className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={(e) => nextImage(e, product)}
+                      className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Product Info */}
+              <div className="text-center">
+                <h3 className="text-sm font-medium text-black mb-2 uppercase tracking-widest">
                   {product.nameEn}
-                </p>
-                <p className="text-xl font-bold text-gold">
-                  {product.price} ر.س
-                </p>
+                </h3>
+                <div className="flex items-center justify-center gap-2">
+                  <p className="text-base text-black font-semibold">
+                    {product.price}.00 SAR
+                  </p>
+                  {product.isNew && (
+                    <p className="text-sm text-gray-400 line-through">
+                      {(product.price * 1.2).toFixed(2)} SAR
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           ))}
