@@ -110,21 +110,9 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
         scene.add(object);
         modelRef.current = object;
 
-        // Initial rotation for better 3D view
-        object.rotation.y = position === 'top' ? 0.4 : -0.4;
+        // Static rotation for better 3D view - NO scroll animation
+        object.rotation.y = position === 'top' ? 0.3 : -0.3;
         object.rotation.x = 0.1;
-
-        // Scroll-based rotation animation synchronized
-        gsap.to(object.rotation, {
-          y: position === 'top' ? Math.PI * 3 : -Math.PI * 3,
-          x: position === 'top' ? 0.5 : -0.5,
-          scrollTrigger: {
-            trigger: container.parentElement.parentElement,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 1,
-          },
-        });
       },
       (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
@@ -134,14 +122,13 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
       }
     );
 
-    // Animation loop with auto-rotation
+    // Animation loop with minimal rotation
     const animate = () => {
       animationFrameRef.current = requestAnimationFrame(animate);
       
-      // Add subtle continuous rotation for 3D effect
+      // Very subtle continuous rotation for 3D effect only
       if (modelRef.current) {
-        modelRef.current.rotation.y += 0.003;
-        modelRef.current.rotation.z = Math.sin(Date.now() * 0.0005) * 0.05;
+        modelRef.current.rotation.y += 0.001;
       }
       
       renderer.render(scene, camera);
