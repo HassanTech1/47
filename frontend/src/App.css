@@ -72,6 +72,13 @@ body {
     text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
+.promo-title {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.6),
+                 0 0 60px rgba(212, 175, 55, 0.4);
+}
+
 /* 3D Model Container */
 .model-3d-container {
     filter: drop-shadow(0 10px 30px rgba(212, 175, 55, 0.3));
