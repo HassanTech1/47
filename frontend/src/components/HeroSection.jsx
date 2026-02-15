@@ -110,7 +110,7 @@ const HeroSection = () => {
       {/* 3D Model - Top Right (Jacket) - Dark Red on Black Background */}
       <div 
         ref={topModelRef}
-        className="absolute top-8 right-8 w-[600px] h-[600px] z-20 pointer-events-none floating-model"
+        className="absolute top-8 right-8 w-[600px] h-[600px] z-20 pointer-events-none"
         style={{ 
           opacity: 1,
           filter: 'drop-shadow(0 30px 60px rgba(139, 0, 0, 0.5))',
@@ -126,7 +126,7 @@ const HeroSection = () => {
       {/* 3D Model - Bottom Left (Hoodie) - White on Red Background */}
       <div 
         ref={bottomModelRef}
-        className="absolute bottom-12 left-8 w-[600px] h-[600px] z-20 pointer-events-none floating-model"
+        className="absolute bottom-12 left-8 w-[600px] h-[600px] z-20 pointer-events-none"
         style={{ 
           opacity: 1,
           filter: 'drop-shadow(0 30px 60px rgba(255, 255, 255, 0.5))',
@@ -140,22 +140,22 @@ const HeroSection = () => {
       </div>
 
       {/* Split Buttons - Initially Visible, Drag Apart on Scroll */}
-      <div className="absolute inset-0 flex items-center justify-center z-35 gap-12">
+      <div className="absolute inset-0 flex items-center justify-center z-40 gap-12 pointer-events-auto">
         {/* Left Button - "Take Code 7777" */}
-        <button ref={leftButtonRef} className="split-button left-button group">
+        <button ref={leftButtonRef} className="split-button left-button group" style={{ opacity: 1 }}>
           <div className="text-center">
             <p className="text-3xl lg:text-4xl font-bold mb-3">لك</p>
-            <p className="text-sm lg:text-base opacity-80 group-hover:opacity-100 transition-opacity">
+            <p className="text-sm lg:text-base opacity-90 group-hover:opacity-100 transition-opacity">
               خذ الكود 7777
             </p>
           </div>
         </button>
 
         {/* Right Button - "Enter Your Code" */}
-        <button ref={rightButtonRef} className="split-button right-button group">
+        <button ref={rightButtonRef} className="split-button right-button group" style={{ opacity: 1 }}>
           <div className="text-center">
             <p className="text-3xl lg:text-4xl font-bold mb-3">لي</p>
-            <p className="text-sm lg:text-base opacity-80 group-hover:opacity-100 transition-opacity">
+            <p className="text-sm lg:text-base opacity-90 group-hover:opacity-100 transition-opacity">
               أدخل الكود الخاص بك
             </p>
           </div>
