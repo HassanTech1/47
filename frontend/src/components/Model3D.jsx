@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
+const Model3D = ({ modelUrl, position = 'top', color = '#FFFFFF', className = '' }) => {
   const containerRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
@@ -91,14 +91,17 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
         object.scale.multiplyScalar(scale);
         object.position.sub(center.multiplyScalar(scale));
         
-        // Apply premium white/silver material with better 3D effect
+        // Apply custom color material with premium effect
+        const materialColor = new THREE.Color(color);
+        const emissiveColor = new THREE.Color(color).multiplyScalar(0.3);
+        
         object.traverse((child) => {
           if (child instanceof THREE.Mesh) {
             child.material = new THREE.MeshStandardMaterial({
-              color: 0xFFFFFF,
-              metalness: 0.95,
-              roughness: 0.1,
-              emissive: 0xCCCCCC,
+              color: materialColor,
+              metalness: 0.85,
+              roughness: 0.15,
+              emissive: emissiveColor,
               emissiveIntensity: 0.2,
               envMapIntensity: 1.5,
             });
@@ -184,7 +187,7 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
         }
       });
     };
-  }, [modelUrl, position]);
+  }, [modelUrl, position, color]);
 
   return (
     <div 
