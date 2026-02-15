@@ -17,6 +17,24 @@ const HeroSection = () => {
     const bottomModel = bottomModelRef.current;
     const promoText = promoTextRef.current;
 
+    // Floating animation for top model
+    gsap.to(topModel, {
+      y: -30,
+      duration: 3,
+      ease: 'power1.inOut',
+      repeat: -1,
+      yoyo: true,
+    });
+
+    // Floating animation for bottom model (opposite direction)
+    gsap.to(bottomModel, {
+      y: 30,
+      duration: 3.5,
+      ease: 'power1.inOut',
+      repeat: -1,
+      yoyo: true,
+    });
+
     // Synchronized scroll animation
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -32,7 +50,7 @@ const HeroSection = () => {
     tl.to(topModel, {
       rotationY: 360,
       rotationX: 180,
-      scale: 0.5,
+      scale: 0.3,
       opacity: 0,
       duration: 1,
     }, 0)
@@ -40,7 +58,7 @@ const HeroSection = () => {
     .to(bottomModel, {
       rotationY: -360,
       rotationX: -180,
-      scale: 0.5,
+      scale: 0.3,
       opacity: 0,
       duration: 1,
     }, 0)
@@ -73,11 +91,14 @@ const HeroSection = () => {
       ref={heroRef}
       className="hero-section relative h-screen w-full overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black"
     >
-      {/* 3D Model - Upper Section (Jacket) - Stays in place */}
+      {/* 3D Model - Upper Section (Jacket) - Larger and Floating */}
       <div 
         ref={topModelRef}
-        className="absolute top-16 left-1/2 transform -translate-x-1/2 w-[450px] h-[450px] z-20 pointer-events-none"
-        style={{ opacity: 1 }}
+        className="absolute top-8 left-1/2 transform -translate-x-1/2 w-[700px] h-[700px] z-20 pointer-events-none floating-model"
+        style={{ 
+          opacity: 1,
+          filter: 'drop-shadow(0 30px 60px rgba(212, 175, 55, 0.4))',
+        }}
       >
         <Model3D 
           modelUrl="/models/jacket.obj"
@@ -85,11 +106,14 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* 3D Model - Lower Section (Hoodie) - Stays in place */}
+      {/* 3D Model - Lower Section (Hoodie) - Larger and Floating */}
       <div 
         ref={bottomModelRef}
-        className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-[450px] h-[450px] z-20 pointer-events-none"
-        style={{ opacity: 1 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-[700px] h-[700px] z-20 pointer-events-none floating-model"
+        style={{ 
+          opacity: 1,
+          filter: 'drop-shadow(0 30px 60px rgba(212, 175, 55, 0.4))',
+        }}
       >
         <Model3D 
           modelUrl="/models/hoodie.obj"
