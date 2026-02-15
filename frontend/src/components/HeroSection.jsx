@@ -28,27 +28,40 @@ const HeroSection = () => {
       }
     });
 
-    // Move top model (jacket) to the left and scale down
+    // Top model (jacket) - rotate and fade away
     tl.to(topModel, {
-      x: '-50vw',
-      scale: 0.8,
-      rotation: -15,
+      rotationY: 360,
+      rotationX: 180,
+      scale: 0.5,
+      opacity: 0,
       duration: 1,
     }, 0)
-    // Move bottom model (hoodie) to the right and scale down
+    // Bottom model (hoodie) - rotate opposite direction and fade away
     .to(bottomModel, {
-      x: '50vw',
-      scale: 0.8,
-      rotation: 15,
+      rotationY: -360,
+      rotationX: -180,
+      scale: 0.5,
+      opacity: 0,
       duration: 1,
     }, 0)
-    // Reveal promotional text in center
-    .to(promoText, {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      duration: 0.8,
-    }, 0.3);
+    // Reveal promotional text beautifully
+    .fromTo(promoText, 
+      {
+        opacity: 0,
+        scale: 0.8,
+        y: 100,
+        filter: 'blur(10px)'
+      },
+      {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        duration: 1,
+        ease: 'power2.out'
+      }, 
+      0.3
+    );
 
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
@@ -60,10 +73,11 @@ const HeroSection = () => {
       ref={heroRef}
       className="hero-section relative h-screen w-full overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black"
     >
-      {/* 3D Model - Upper Section (Jacket) */}
+      {/* 3D Model - Upper Section (Jacket) - Stays in place */}
       <div 
         ref={topModelRef}
-        className="absolute top-20 left-1/2 transform -translate-x-1/2 w-[500px] h-[500px] z-20 pointer-events-none"
+        className="absolute top-16 left-1/2 transform -translate-x-1/2 w-[450px] h-[450px] z-20 pointer-events-none"
+        style={{ opacity: 1 }}
       >
         <Model3D 
           modelUrl="/models/jacket.obj"
@@ -71,10 +85,11 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* 3D Model - Lower Section (Hoodie) */}
+      {/* 3D Model - Lower Section (Hoodie) - Stays in place */}
       <div 
         ref={bottomModelRef}
-        className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-[500px] h-[500px] z-20 pointer-events-none"
+        className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-[450px] h-[450px] z-20 pointer-events-none"
+        style={{ opacity: 1 }}
       >
         <Model3D 
           modelUrl="/models/hoodie.obj"
@@ -82,45 +97,67 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Promotional Text (Opens in Center) */}
+      {/* Promotional Text (Appears Beautifully in Center) */}
       <div 
         ref={promoTextRef}
-        className="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-0 scale-90"
-        style={{ transform: 'translateY(50px)' }}
+        className="absolute inset-0 flex flex-col items-center justify-center z-30 opacity-0"
       >
-        <div className="text-center px-8 max-w-4xl">
-          <h1 className="text-6xl lg:text-8xl font-bold text-gold mb-8 promo-title animate-pulse">
-            ٧٧٧٧
-          </h1>
+        <div className="text-center px-8 max-w-5xl promo-content-wrapper">
+          {/* Main Logo */}
+          <div className="mb-8 promo-logo-container">
+            <h1 className="text-7xl lg:text-9xl font-bold text-gold promo-title">
+              ٧٧٧٧
+            </h1>
+            <div className="h-1 w-32 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-4"></div>
+          </div>
+
+          {/* Vision Text */}
           <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6 vision-text">
             أسلوب لا يُنسى
           </h2>
-          <p className="text-2xl lg:text-3xl text-white/90 mb-8 leading-relaxed">
+          
+          <p className="text-2xl lg:text-3xl text-white/90 mb-10 leading-relaxed font-light">
             حيث تلتقي الفخامة بالأناقة العصرية
           </p>
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-xl lg:text-2xl text-gold font-semibold">
-              حقيبتك علينا وملابسك علينا
-            </p>
-            <p className="text-lg lg:text-xl text-white/80">
-              صيفك يكتمل معنا
-            </p>
-            <button className="cta-button mt-6 px-12 py-4 text-xl">
-              اكتشف المجموعة
-            </button>
+
+          {/* Promotional Messages */}
+          <div className="flex flex-col items-center gap-6 mb-10">
+            <div className="promo-message-box">
+              <p className="text-2xl lg:text-3xl text-gold font-bold">
+                حقيبتك علينا وملابسك علينا
+              </p>
+            </div>
+            
+            <div className="promo-message-box">
+              <p className="text-xl lg:text-2xl text-white/90">
+                صيفك يكتمل معنا
+              </p>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <button className="cta-button px-16 py-5 text-xl shadow-2xl hover:shadow-gold/50 transition-all duration-300">
+            اكتشف المجموعة
+          </button>
+
+          {/* Decorative Elements */}
+          <div className="mt-10 flex justify-center gap-2">
+            <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-gold rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-2 h-2 bg-gold rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
           </div>
         </div>
       </div>
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gold/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gold/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-10 w-40 h-40 bg-gold/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-48 h-48 bg-gold/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-3xl"></div>
       </div>
 
       {/* Bottom Text */}
-      <div className="absolute bottom-10 left-0 right-0 z-30 flex justify-center">
+      <div className="absolute bottom-8 left-0 right-0 z-40 flex justify-center">
         <div className="text-center">
           <p className="text-lg lg:text-xl text-white/70 tracking-widest">
             مجموعة صيف ٢٠٢٥
