@@ -85,41 +85,59 @@ const Header = () => {
       >
         <div className="border-b border-gray-200">
           {/* Top Navigation */}
-          <div className="container mx-auto px-4 lg:px-8 py-6">
+          <div className="container mx-auto px-4 lg:px-8 py-4">
             <div className="flex items-center justify-between">
-              {/* Left Arrow */}
-              <button className="text-black hover:text-gray-600 transition-colors">
-                <ArrowLeft className="w-8 h-8" />
-              </button>
+              {/* Left - Icon Group with Labels */}
+              <div className="flex items-center gap-6">
+                <button className="icon-with-label">
+                  <Search className="w-4 h-4 mb-1" />
+                  <span className="text-xs">بحث</span>
+                </button>
+                <button className="icon-with-label">
+                  <User className="w-4 h-4 mb-1" />
+                  <span className="text-xs">الحساب</span>
+                </button>
+              </div>
 
               {/* Center Logo */}
-              <h1 className="text-5xl font-bold tracking-wider text-black" style={{ fontFamily: 'Playfair Display, serif' }}>
+              <h1 className="text-3xl font-bold tracking-wider text-black" style={{ fontFamily: 'Playfair Display, serif' }}>
                 ٧٧٧٧
               </h1>
 
-              {/* Right Arrows */}
-              <div className="flex items-center gap-4">
-                <button className="text-black hover:text-gray-600 transition-colors">
-                  <ArrowRight className="w-8 h-8" />
+              {/* Right - Cart + Arrows */}
+              <div className="flex items-center gap-6">
+                <button className="icon-with-label relative">
+                  <ShoppingCart className="w-4 h-4 mb-1" />
+                  <span className="text-xs">السلة</span>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-black text-white text-xs w-4 h-4 rounded-full flex items-center justify-center" style={{ fontSize: '0.65rem' }}>
+                      {cartCount}
+                    </span>
+                  )}
                 </button>
-                <button className="text-black hover:text-gray-600 transition-colors">
-                  <ArrowRight className="w-8 h-8" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button className="text-black hover:text-gray-600 transition-colors">
+                    <ArrowLeft className="w-5 h-5" />
+                  </button>
+                  <button className="text-black hover:text-gray-600 transition-colors">
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Menu Items with Stretched Text Style */}
-          <div className="bg-gray-50 py-8">
+          {/* Menu Items with Stretched Text Style - Smaller */}
+          <div className="bg-gray-50 py-4">
             <div className="container mx-auto px-4 lg:px-8">
-              <nav className="flex items-center justify-center gap-12 flex-wrap">
-                <a href="#" className="menu-item-stretched">WOMEN</a>
-                <a href="#" className="menu-item-stretched">MEN</a>
-                <a href="#" className="menu-item-stretched">KIDS</a>
-                <a href="#" className="menu-item-stretched">NEW</a>
-                <a href="#" className="menu-item-stretched">SALE</a>
-                <a href="#" className="menu-item-stretched">BRANDS</a>
-                <a href="#" className="menu-item-stretched">COLLECTIONS</a>
+              <nav className="flex items-center justify-center gap-8 flex-wrap">
+                <a href="#women" className="menu-item-stretched-small">WOMEN</a>
+                <a href="#men" className="menu-item-stretched-small">MEN</a>
+                <a href="#kids" className="menu-item-stretched-small">KIDS</a>
+                <a href="#new" className="menu-item-stretched-small">NEW</a>
+                <a href="#sale" className="menu-item-stretched-small">SALE</a>
+                <a href="#brands" className="menu-item-stretched-small">BRANDS</a>
+                <a href="#collections" className="menu-item-stretched-small">COLLECTIONS</a>
               </nav>
             </div>
           </div>
