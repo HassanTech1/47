@@ -93,33 +93,35 @@ const HeroSection = () => {
         <div className="absolute right-0 top-0 w-1/2 h-full bg-black"></div>
       </div>
 
-      {/* 3D Model - Top Right (Jacket) */}
+      {/* 3D Model - Top Right (Jacket) - Dark Red on Black Background */}
       <div 
         ref={topModelRef}
         className="absolute top-8 right-8 w-[600px] h-[600px] z-20 pointer-events-none floating-model"
         style={{ 
           opacity: 1,
-          filter: 'drop-shadow(0 30px 60px rgba(255, 255, 255, 0.3))',
+          filter: 'drop-shadow(0 30px 60px rgba(139, 0, 0, 0.5))',
         }}
       >
         <Model3D 
           modelUrl="/models/jacket.obj"
           position="top"
+          color="#8B0000"
         />
       </div>
 
-      {/* 3D Model - Bottom Left (Hoodie) */}
+      {/* 3D Model - Bottom Left (Hoodie) - White on Red Background */}
       <div 
         ref={bottomModelRef}
         className="absolute bottom-12 left-8 w-[600px] h-[600px] z-20 pointer-events-none floating-model"
         style={{ 
           opacity: 1,
-          filter: 'drop-shadow(0 30px 60px rgba(255, 255, 255, 0.3))',
+          filter: 'drop-shadow(0 30px 60px rgba(255, 255, 255, 0.5))',
         }}
       >
         <Model3D 
           modelUrl="/models/hoodie.obj"
           position="bottom"
+          color="#FFFFFF"
         />
       </div>
 
