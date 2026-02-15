@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Search, User, ShoppingCart, Heart, Menu, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
-const Header = () => {
+const Header = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
   const { getCartCount, setIsCartOpen } = useCart();
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
-      // Change style when scrolled past hero (100vh)
       setScrolled(window.scrollY > window.innerHeight * 0.8);
     };
 
@@ -18,8 +19,15 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Show expanded menu when scrolled or menu clicked
   const showExpandedMenu = scrolled || menuOpen;
+
+  const handleUserClick = () => {
+    if (isAuthenticated) {
+      onOpenAccount();
+    } else {
+      onOpenAuth();
+    }
+  };
 
   return (
     <>
@@ -33,10 +41,20 @@ const Header = () => {
           <div className="flex items-center justify-between h-20">
             {/* Right Side Icons (RTL - appears on left visually) */}
             <div className="flex items-center gap-6">
-              <button className="header-icon" aria-label="Search">
+              <button 
+                className="header-icon" 
+                aria-label="Search"
+                onClick={onOpenSearch}
+                data-testid="header-search-btn"
+              >
                 <Search className="w-5 h-5" />
               </button>
-              <button className="header-icon" aria-label="User Account">
+              <button 
+                className="header-icon" 
+                aria-label="User Account"
+                onClick={handleUserClick}
+                data-testid="header-user-btn"
+              >
                 <User className="w-5 h-5" />
               </button>
             </div>
@@ -95,13 +113,23 @@ const Header = () => {
             <div className="flex items-center justify-between">
               {/* Left - Icon Group with Labels */}
               <div className="flex items-center gap-6">
-                <button className="icon-with-label">
+                <button 
+                  className="icon-with-label"
+                  onClick={onOpenSearch}
+                  data-testid="expanded-search-btn"
+                >
                   <Search className="w-4 h-4 mb-1" />
                   <span className="text-xs">بحث</span>
                 </button>
-                <button className="icon-with-label">
+                <button 
+                  className="icon-with-label"
+                  onClick={handleUserClick}
+                  data-testid="expanded-user-btn"
+                >
                   <User className="w-4 h-4 mb-1" />
-                  <span className="text-xs">الحساب</span>
+                  <span className="text-xs">
+                    {isAuthenticated ? user?.name?.split(' ')[0] : 'الحساب'}
+                  </span>
                 </button>
               </div>
 
