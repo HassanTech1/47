@@ -97,7 +97,7 @@ const HeroSection = () => {
         className="absolute top-8 right-8 w-[600px] h-[600px] z-20 pointer-events-none floating-model"
         style={{ 
           opacity: 1,
-          filter: 'drop-shadow(0 30px 60px rgba(212, 175, 55, 0.4))',
+          filter: 'drop-shadow(0 30px 60px rgba(255, 255, 255, 0.3))',
         }}
       >
         <Model3D 
@@ -112,7 +112,7 @@ const HeroSection = () => {
         className="absolute bottom-12 left-8 w-[600px] h-[600px] z-20 pointer-events-none floating-model"
         style={{ 
           opacity: 1,
-          filter: 'drop-shadow(0 30px 60px rgba(212, 175, 55, 0.4))',
+          filter: 'drop-shadow(0 30px 60px rgba(255, 255, 255, 0.3))',
         }}
       >
         <Model3D 
@@ -129,10 +129,10 @@ const HeroSection = () => {
         <div className="text-center px-8 max-w-5xl promo-content-wrapper">
           {/* Main Logo */}
           <div className="mb-8 promo-logo-container">
-            <h1 className="text-7xl lg:text-9xl font-bold text-gold promo-title">
+            <h1 className="text-7xl lg:text-9xl font-bold text-white promo-title">
               ٧٧٧٧
             </h1>
-            <div className="h-1 w-32 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-4"></div>
+            <div className="h-1 w-32 bg-gradient-to-r from-transparent via-white to-transparent mx-auto mt-4"></div>
           </div>
 
           {/* Vision Text */}
@@ -147,7 +147,7 @@ const HeroSection = () => {
           {/* Promotional Messages */}
           <div className="flex flex-col items-center gap-6 mb-10">
             <div className="promo-message-box">
-              <p className="text-2xl lg:text-3xl text-gold font-bold">
+              <p className="text-2xl lg:text-3xl text-white font-bold">
                 حقيبتك علينا وملابسك علينا
               </p>
             </div>
@@ -160,24 +160,24 @@ const HeroSection = () => {
           </div>
 
           {/* CTA Button */}
-          <button className="cta-button px-16 py-5 text-xl shadow-2xl hover:shadow-gold/50 transition-all duration-300">
+          <button className="cta-button px-16 py-5 text-xl shadow-2xl hover:shadow-white/50 transition-all duration-300">
             اكتشف المجموعة
           </button>
 
           {/* Decorative Elements */}
           <div className="mt-10 flex justify-center gap-2">
-            <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
-            <div className="w-2 h-2 bg-gold rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-2 h-2 bg-gold rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
           </div>
         </div>
       </div>
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-20 right-20 w-40 h-40 bg-gold/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 left-20 w-48 h-48 bg-gold/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 right-20 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-48 h-48 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl"></div>
       </div>
 
       {/* Bottom Text */}
