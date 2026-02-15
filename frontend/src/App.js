@@ -1,44 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@/App.css";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
-import Header from "./components/Header";
-import HeroSection from "./components/HeroSection";
-import Categories from "./components/Categories";
-import PromoBanner from "./components/PromoBanner";
-import ProductGrid from "./components/ProductGrid";
-import LifestyleSection from "./components/LifestyleSection";
-import FloatingChat from "./components/FloatingChat";
-import Footer from "./components/Footer";
+import HomePage from "./pages/HomePage";
+import CheckoutPage from "./pages/CheckoutPage";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
 import ProductDetail from "./components/ProductDetail";
 import CartSidebar from "./components/CartSidebar";
-import CheckoutSuccess from "./pages/CheckoutSuccess";
 import AuthModal from "./components/AuthModal";
 import SearchModal from "./components/SearchModal";
 import AccountPage from "./components/AccountPage";
 
-const HomePage = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => (
-  <>
-    <Header 
-      onOpenAuth={onOpenAuth} 
-      onOpenSearch={onOpenSearch}
-      onOpenAccount={onOpenAccount}
-    />
-    <HeroSection />
-    <Categories />
-    <PromoBanner />
-    <ProductGrid />
-    <LifestyleSection />
-    <FloatingChat />
-    <Footer />
-  </>
-);
-
 function App() {
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [searchModalOpen, setSearchModalOpen] = useState(false);
-  const [accountPageOpen, setAccountPageOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = React.useState(false);
+  const [searchModalOpen, setSearchModalOpen] = React.useState(false);
+  const [accountPageOpen, setAccountPageOpen] = React.useState(false);
 
   return (
     <AuthProvider>
@@ -56,6 +33,7 @@ function App() {
                   />
                 } 
               />
+              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/checkout/cancel" element={
                 <HomePage 
