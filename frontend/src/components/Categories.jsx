@@ -2,39 +2,75 @@ import React from 'react';
 import { categories } from '../data/mock';
 
 const Categories = () => {
-  return (
-    <section className="py-24 bg-white">
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 section-title">
-            التصنيفات
-          </h2>
-          <p className="text-gray-600 text-lg">
-            اكتشف مجموعتنا الفاخرة
-          </p>
-        </div>
+  // Product items with prices
+  const products = [
+    {
+      id: 1,
+      name: "قميص قطني فاخر",
+      nameEn: "PREMIUM COTTON SHIRT",
+      price: "450.00",
+      image: categories[2].image, // Shirts image
+      badge: "New arrival",
+    },
+    {
+      id: 2,
+      name: "جينز كلاسيكي",
+      nameEn: "CLASSIC DENIM JEANS",
+      price: "580.00",
+      image: categories[3].image, // Pants/Jeans image
+      badge: "New arrival",
+    },
+    {
+      id: 3,
+      name: "هودي رياضي",
+      nameEn: "SPORT HOODIE",
+      price: "520.00",
+      image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500",
+      badge: "New arrival",
+    },
+    {
+      id: 4,
+      name: "قميص كاجوال",
+      nameEn: "CASUAL SHIRT",
+      price: "390.00",
+      image: categories[2].image,
+      badge: "New arrival",
+    },
+  ];
 
+  return (
+    <section className="py-16 bg-white">
+      <div className="container mx-auto px-4 lg:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((category) => (
+          {products.map((product) => (
             <div
-              key={category.id}
-              className="category-card group cursor-pointer"
+              key={product.id}
+              className="category-product-card group cursor-pointer bg-white"
             >
-              <div className="relative h-80 overflow-hidden rounded-2xl">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                  style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(${category.image})`,
-                  }}
+              {/* Product Image */}
+              <div className="relative h-96 overflow-hidden bg-gray-50 mb-4">
+                <img
+                  src={product.image}
+                  alt={product.nameEn}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 z-10">
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {category.name}
-                  </h3>
-                  <span className="text-gold text-sm uppercase tracking-wider">
-                    {category.nameEn}
+                
+                {/* Badge */}
+                <div className="absolute top-4 left-4">
+                  <span className="text-xs text-gray-600 tracking-wider">
+                    {product.badge}
                   </span>
                 </div>
+              </div>
+
+              {/* Product Info */}
+              <div className="text-center px-2">
+                <h3 className="text-sm font-medium text-black mb-1 uppercase tracking-widest">
+                  {product.nameEn}
+                </h3>
+                <p className="text-base text-black font-semibold">
+                  {product.price} SAR
+                </p>
               </div>
             </div>
           ))}
