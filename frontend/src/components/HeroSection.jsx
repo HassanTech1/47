@@ -10,12 +10,16 @@ const HeroSection = () => {
   const topModelRef = useRef(null);
   const bottomModelRef = useRef(null);
   const promoTextRef = useRef(null);
+  const leftButtonRef = useRef(null);
+  const rightButtonRef = useRef(null);
 
   useEffect(() => {
     const hero = heroRef.current;
     const topModel = topModelRef.current;
     const bottomModel = bottomModelRef.current;
     const promoText = promoTextRef.current;
+    const leftButton = leftButtonRef.current;
+    const rightButton = rightButtonRef.current;
 
     // Gentle floating animation for top model (jacket - top right)
     gsap.to(topModel, {
@@ -35,7 +39,7 @@ const HeroSection = () => {
       yoyo: true,
     });
 
-    // Simple scroll animation - just fade and scale, NO rotation
+    // Scroll animation timeline
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: hero,
@@ -46,19 +50,29 @@ const HeroSection = () => {
       }
     });
 
-    // Top model (jacket) - simple fade and scale down
+    // Models fade and scale down
     tl.to(topModel, {
       scale: 0.4,
       opacity: 0,
       duration: 1,
     }, 0)
-    // Bottom model (hoodie) - simple fade and scale down
     .to(bottomModel, {
       scale: 0.4,
       opacity: 0,
       duration: 1,
     }, 0)
-    // Reveal promotional text beautifully
+    // Buttons drag apart to sides
+    .to(leftButton, {
+      x: '-40vw',
+      opacity: 0,
+      duration: 1,
+    }, 0)
+    .to(rightButton, {
+      x: '40vw',
+      opacity: 0,
+      duration: 1,
+    }, 0)
+    // Reveal promotional text in center
     .fromTo(promoText, 
       {
         opacity: 0,
@@ -125,7 +139,30 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Promotional Text (Appears Beautifully in Center) */}
+      {/* Split Buttons - Initially Visible, Drag Apart on Scroll */}
+      <div className="absolute inset-0 flex items-center justify-center z-35 gap-12">
+        {/* Left Button - "Take Code 7777" */}
+        <button ref={leftButtonRef} className="split-button left-button group">
+          <div className="text-center">
+            <p className="text-3xl lg:text-4xl font-bold mb-3">لك</p>
+            <p className="text-sm lg:text-base opacity-80 group-hover:opacity-100 transition-opacity">
+              خذ الكود 7777
+            </p>
+          </div>
+        </button>
+
+        {/* Right Button - "Enter Your Code" */}
+        <button ref={rightButtonRef} className="split-button right-button group">
+          <div className="text-center">
+            <p className="text-3xl lg:text-4xl font-bold mb-3">لي</p>
+            <p className="text-sm lg:text-base opacity-80 group-hover:opacity-100 transition-opacity">
+              أدخل الكود الخاص بك
+            </p>
+          </div>
+        </button>
+      </div>
+
+      {/* Promotional Text (Hidden Initially, Appears When Buttons Separate) */}
       <div 
         ref={promoTextRef}
         className="absolute inset-0 flex flex-col items-center justify-center z-30 opacity-0"
@@ -175,29 +212,6 @@ const HeroSection = () => {
             <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
           </div>
         </div>
-      </div>
-
-      {/* Split Buttons - For Him & For Her Style */}
-      <div className="absolute inset-0 flex items-center justify-center z-25 gap-12">
-        {/* Left Button - "Take Code 7777" */}
-        <button className="split-button left-button group">
-          <div className="text-center">
-            <p className="text-3xl lg:text-4xl font-bold mb-3">لك</p>
-            <p className="text-sm lg:text-base opacity-80 group-hover:opacity-100 transition-opacity">
-              خذ الكود 7777
-            </p>
-          </div>
-        </button>
-
-        {/* Right Button - "Enter Your Code" */}
-        <button className="split-button right-button group">
-          <div className="text-center">
-            <p className="text-3xl lg:text-4xl font-bold mb-3">لي</p>
-            <p className="text-sm lg:text-base opacity-80 group-hover:opacity-100 transition-opacity">
-              أدخل الكود الخاص بك
-            </p>
-          </div>
-        </button>
       </div>
 
       {/* Animated Background Elements */}
