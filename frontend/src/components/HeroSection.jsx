@@ -22,8 +22,12 @@ const HeroSection = () => {
     const visionText = visionTextRef.current;
 
     // Initial diagonal split setup
-    gsap.set([leftSide, rightSide], { 
-      clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+    gsap.set(leftSide, { 
+      clipPath: 'polygon(0 0, 60% 0, 40% 100%, 0 100%)'
+    });
+    
+    gsap.set(rightSide, { 
+      clipPath: 'polygon(60% 0, 100% 0, 100% 100%, 40% 100%)'
     });
 
     // Parallax animation on scroll
@@ -48,11 +52,11 @@ const HeroSection = () => {
     }, 0)
     // Move images horizontally (parallax)
     .to(leftImage, {
-      x: -150,
+      x: -100,
       duration: 1,
     }, 0)
     .to(rightImage, {
-      x: 150,
+      x: 100,
       duration: 1,
     }, 0)
     // Reveal vision text
@@ -82,7 +86,7 @@ const HeroSection = () => {
             أسلوب لا يُنسى
           </h2>
           <p className="text-xl lg:text-2xl text-white/90 max-w-2xl mx-auto">
-            حيث يلتقي الفخامة بالأناقة العصرية
+            حيث تلتقي الفخامة بالأناقة العصرية
           </p>
         </div>
       </div>
@@ -90,7 +94,7 @@ const HeroSection = () => {
       {/* Left Side - Diagonal Split */}
       <div 
         ref={leftSideRef}
-        className="absolute inset-0 z-10 diagonal-split-left"
+        className="absolute inset-0 z-10"
       >
         <div 
           ref={leftImageRef}
@@ -104,7 +108,7 @@ const HeroSection = () => {
       {/* Right Side - Diagonal Split */}
       <div 
         ref={rightSideRef}
-        className="absolute inset-0 z-10 diagonal-split-right"
+        className="absolute inset-0 z-10"
       >
         <div 
           ref={rightImageRef}
@@ -118,7 +122,7 @@ const HeroSection = () => {
       {/* Overlay Text */}
       <div className="absolute inset-0 z-20 flex items-end justify-center pb-20">
         <div className="text-center">
-          <h3 className="text-2xl lg:text-3xl font-light text-white tracking-widest">
+          <h3 className="text-2xl lg:text-3xl font-light text-white tracking-widest animate-pulse">
             مجموعة صيف ٢٠٢٥
           </h3>
         </div>
