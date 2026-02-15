@@ -104,6 +104,7 @@ Build a premium fashion store for "7777" brand with:
 #### Frontend (React)
 - ✅ **Header Component**: Transparent header with blur on scroll, RTL layout, icons positioned correctly
 - ✅ **Hero Section**: Diagonal split with GSAP parallax scroll animation
+- ✅ **3D Models Integration**: Three.js-powered 3D clothing models (hoodie & jacket) in hero section with scroll-controlled rotation
 - ✅ **Categories Component**: 4-category grid with hover effects
 - ✅ **Promo Banner**: Cinematic banner with Arabic text
 - ✅ **Product Grid**: 12-product grid with wishlist/cart functionality
@@ -112,7 +113,7 @@ Build a premium fashion store for "7777" brand with:
 - ✅ **Footer**: Complete footer with newsletter, social links, and 4 columns
 - ✅ **Mock Data**: Complete mock product and category data
 - ✅ **Styling**: Custom CSS with gold accents, Cairo & Playfair Display fonts, RTL support
-- ✅ **Animations**: Hover effects, transitions, GSAP scroll animations
+- ✅ **Animations**: Hover effects, transitions, GSAP scroll animations, 3D model rotations
 
 #### Visual Assets
 - ✅ Hero couple images (4 variations)
