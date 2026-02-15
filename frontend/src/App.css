@@ -1,34 +1,291 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* 7777 Premium Fashion Store Styles */
+
+/* Variables */
+:root {
+    --gold: #D4AF37;
+    --gold-light: #F4E5C3;
+    --black: #000000;
+    --white: #FFFFFF;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-400: #9CA3AF;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+/* Typography - Arabic Support */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Playfair+Display:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
+.App {
+    overflow-x: hidden;
+}
+
+/* Custom Color Classes */
+.gold {
+    color: var(--gold);
+}
+
+.bg-gold {
+    background-color: var(--gold);
+}
+
+/* Header Styles */
+.header-icon {
+    color: white;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.header-icon:hover {
+    color: var(--gold);
+    transform: scale(1.1);
+}
+
+.logo-text {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.15em;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+}
+
+.diagonal-split-left,
+.diagonal-split-right {
+    transition: clip-path 0.8s ease;
+}
+
+.hero-image {
+    filter: brightness(0.9) contrast(1.1);
+}
+
+.vision-text {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 900;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Section Titles */
+.section-title {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    color: var(--black);
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+}
+
+/* Category Cards */
+.category-card {
+    position: relative;
+    transition: transform 0.5s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-8px);
+}
+
+/* Promo Banner */
+.promo-text {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Product Cards */
+.product-card {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-12px);
+}
+
+.icon-button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: calc(10px + 2vmin);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.icon-button:hover {
+    transform: scale(1.15);
+}
+
+/* Lifestyle Section */
+.lifestyle-image {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transition: transform 0.5s ease;
+}
+
+.lifestyle-image:hover {
+    transform: scale(1.02);
+}
+
+/* CTA Button */
+.cta-button {
+    background: var(--gold);
+    color: var(--black);
+    padding: 16px 48px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.125rem;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.5);
+    background: #E5C158;
+}
+
+.cta-button:active {
+    transform: translateY(0);
+}
+
+/* Floating Chat */
+.floating-chat-button {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #25D366;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+    cursor: pointer;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
 }
 
-.App-link {
-    color: #61dafb;
+.floating-chat-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.6);
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
+/* Footer */
+.footer-link {
+    color: var(--gray-400);
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: var(--gold);
+}
+
+.social-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gray-800);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icon:hover {
+    background: var(--gold);
+    color: var(--black);
+    transform: scale(1.1);
+}
+
+.newsletter-input {
+    background: var(--gray-800);
+    border: 1px solid var(--gray-700);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.newsletter-input:focus {
+    border-color: var(--gold);
+}
+
+.newsletter-input::placeholder {
+    color: var(--gray-400);
+}
+
+.newsletter-button {
+    background: var(--gold);
+    color: var(--black);
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.newsletter-button:hover {
+    background: #E5C158;
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 2rem;
     }
-    to {
-        transform: rotate(360deg);
+    
+    .promo-text {
+        font-size: 2rem;
     }
+    
+    .vision-text {
+        font-size: 2.5rem;
+    }
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #E5C158;
 }
