@@ -39,13 +39,13 @@ const HeroSection = () => {
       yoyo: true,
     });
 
-    // Scroll animation timeline
+    // Scroll animation timeline - Extended for smoother, longer animation
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: hero,
         start: 'top top',
-        end: 'bottom top',
-        scrub: 1,
+        end: '+=150%', // Extended scroll distance (150% of viewport height)
+        scrub: 1.5, // Slightly smoother scrubbing
         pin: false,
       }
     });
