@@ -80,7 +80,7 @@ const HeroSection = () => {
       {/* 3D Models - Upper Section */}
       <div className="absolute top-0 right-0 w-1/3 h-1/2 z-30 pointer-events-none">
         <Model3D 
-          modelUrl="https://customer-assets.emergentagent.com/job_arabic-couture-hub/artifacts/lwa5sbxg_%E6%B7%A1%E6%A3%95%E8%89%B2%E9%92%88%E7%BB%87%E8%BF%9E%E5%B8%BD%E7%9F%AD%E6%AC%BE%E5%8D%AB%E8%A1%A3%20_obj.obj"
+          modelUrl="/models/hoodie.obj"
           position="top"
         />
       </div>
@@ -88,7 +88,7 @@ const HeroSection = () => {
       {/* 3D Models - Lower Section */}
       <div className="absolute bottom-0 left-0 w-1/3 h-1/2 z-30 pointer-events-none">
         <Model3D 
-          modelUrl="https://customer-assets.emergentagent.com/job_arabic-couture-hub/artifacts/u28bgnv7_%E5%A5%B3%E5%A4%B9%E5%85%8B%20W-Jacket%2070_obj.obj"
+          modelUrl="/models/jacket.obj"
           position="bottom"
         />
       </div>
