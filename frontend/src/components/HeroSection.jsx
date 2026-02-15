@@ -9,7 +9,6 @@ const HeroSection = () => {
   const heroRef = useRef(null);
   const topModelRef = useRef(null);
   const bottomModelRef = useRef(null);
-  const promoTextRef = useRef(null);
   const leftButtonRef = useRef(null);
   const rightButtonRef = useRef(null);
 
@@ -17,7 +16,6 @@ const HeroSection = () => {
     const hero = heroRef.current;
     const topModel = topModelRef.current;
     const bottomModel = bottomModelRef.current;
-    const promoText = promoTextRef.current;
     const leftButton = leftButtonRef.current;
     const rightButton = rightButtonRef.current;
 
@@ -71,25 +69,7 @@ const HeroSection = () => {
       x: '40vw',
       opacity: 0,
       duration: 1,
-    }, 0)
-    // Reveal promotional text in center
-    .fromTo(promoText, 
-      {
-        opacity: 0,
-        scale: 0.8,
-        y: 100,
-        filter: 'blur(10px)'
-      },
-      {
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        filter: 'blur(0px)',
-        duration: 1,
-        ease: 'power2.out'
-      }, 
-      0.3
-    );
+    }, 0);
 
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
@@ -161,58 +141,6 @@ const HeroSection = () => {
             </p>
           </div>
         </button>
-      </div>
-
-      {/* Promotional Text (Hidden Initially, Appears When Buttons Separate) */}
-      <div 
-        ref={promoTextRef}
-        className="absolute inset-0 flex flex-col items-center justify-center z-30 opacity-0"
-      >
-        <div className="text-center px-8 max-w-5xl promo-content-wrapper">
-          {/* Main Logo */}
-          <div className="mb-8 promo-logo-container">
-            <h1 className="text-7xl lg:text-9xl font-bold text-white promo-title">
-              ٧٧٧٧
-            </h1>
-            <div className="h-1 w-32 bg-gradient-to-r from-transparent via-white to-transparent mx-auto mt-4"></div>
-          </div>
-
-          {/* Vision Text */}
-          <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6 vision-text">
-            أسلوب لا يُنسى
-          </h2>
-          
-          <p className="text-2xl lg:text-3xl text-white/90 mb-10 leading-relaxed font-light">
-            حيث تلتقي الفخامة بالأناقة العصرية
-          </p>
-
-          {/* Promotional Messages */}
-          <div className="flex flex-col items-center gap-6 mb-10">
-            <div className="promo-message-box">
-              <p className="text-2xl lg:text-3xl text-white font-bold">
-                حقيبتك علينا وملابسك علينا
-              </p>
-            </div>
-            
-            <div className="promo-message-box">
-              <p className="text-xl lg:text-2xl text-white/90">
-                صيفك يكتمل معنا
-              </p>
-            </div>
-          </div>
-
-          {/* CTA Button */}
-          <button className="cta-button px-16 py-5 text-xl shadow-2xl hover:shadow-white/50 transition-all duration-300">
-            اكتشف المجموعة
-          </button>
-
-          {/* Decorative Elements */}
-          <div className="mt-10 flex justify-center gap-2">
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-          </div>
-        </div>
       </div>
 
       {/* Animated Background Elements */}
