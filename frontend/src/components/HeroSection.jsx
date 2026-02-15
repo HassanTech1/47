@@ -86,6 +86,23 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-0">
         <div className="absolute left-0 top-0 w-1/2 h-full bg-red-600"></div>
         <div className="absolute right-0 top-0 w-1/2 h-full bg-black"></div>
+        {/* Vertical line in center */}
+        <div className="absolute left-1/2 top-0 w-px h-full bg-white/30 transform -translate-x-1/2"></div>
+      </div>
+
+      {/* Center Branding - Always Visible */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-15 text-center">
+        <h1 className="text-9xl lg:text-[12rem] font-bold text-white hero-logo mb-6">
+          ٧٧٧٧
+        </h1>
+        <p className="text-3xl lg:text-4xl text-white/90 font-light tracking-widest">
+          PREMIUM FASHION
+        </p>
+        <div className="mt-8 flex justify-center gap-3">
+          <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+          <div className="w-3 h-3 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+          <div className="w-3 h-3 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.6s' }}></div>
+        </div>
       </div>
 
       {/* 3D Model - Top Right (Jacket) - Dark Red on Black Background */}
@@ -145,9 +162,26 @@ const HeroSection = () => {
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 z-10">
-        <div className="absolute top-20 right-20 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 left-20 w-48 h-48 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl"></div>
+        {/* Left side (red) decorative elements */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/3 left-1/3 w-48 h-48 bg-black/20 rounded-full blur-2xl" style={{ animationDelay: '1s' }}></div>
+        
+        {/* Right side (black) decorative elements */}
+        <div className="absolute top-1/3 right-1/4 w-56 h-56 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute bottom-1/4 right-1/3 w-72 h-72 bg-red-600/10 rounded-full blur-3xl"></div>
+        
+        {/* Center glow */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-white/70 text-sm tracking-widest">SCROLL</p>
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
+            <div className="w-1.5 h-3 bg-white/70 rounded-full"></div>
+          </div>
+        </div>
       </div>
 
       {/* Bottom Text */}
