@@ -99,7 +99,8 @@ const HeroSection = () => {
   return (
     <div 
       ref={heroRef}
-      className="hero-section relative h-screen w-full overflow-hidden"
+      className="hero-section relative w-full overflow-hidden"
+      style={{ minHeight: '200vh' }}
     >
       {/* Split Background - Red Left, Black Right */}
       <div className="absolute inset-0 z-0">
