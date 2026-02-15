@@ -16,6 +16,8 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const container = containerRef.current;
+
     // Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
@@ -23,7 +25,7 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
       45,
-      containerRef.current.clientWidth / containerRef.current.clientHeight,
+      container.clientWidth / container.clientHeight,
       0.1,
       1000
     );
@@ -34,27 +36,24 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
       alpha: true, 
       antialias: true 
     });
-    renderer.setSize(
-      containerRef.current.clientWidth, 
-      containerRef.current.clientHeight
-    );
+    renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setClearColor(0x000000, 0);
-    containerRef.current.appendChild(renderer.domElement);
+    container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
     scene.add(ambientLight);
 
-    const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.6);
+    const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight1.position.set(5, 5, 5);
     scene.add(directionalLight1);
 
-    const directionalLight2 = new THREE.DirectionalLight(0xD4AF37, 0.3);
+    const directionalLight2 = new THREE.DirectionalLight(0xD4AF37, 0.6);
     directionalLight2.position.set(-5, -5, -5);
     scene.add(directionalLight2);
 
-    const pointLight = new THREE.PointLight(0xffffff, 0.5);
+    const pointLight = new THREE.PointLight(0xffd700, 1.0);
     pointLight.position.set(0, 3, 3);
     scene.add(pointLight);
 
@@ -79,8 +78,10 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
           if (child instanceof THREE.Mesh) {
             child.material = new THREE.MeshStandardMaterial({
               color: 0xD4AF37,
-              metalness: 0.7,
-              roughness: 0.3,
+              metalness: 0.8,
+              roughness: 0.2,
+              emissive: 0xD4AF37,
+              emissiveIntensity: 0.2,
             });
           }
         });
@@ -88,28 +89,18 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
         scene.add(object);
         modelRef.current = object;
 
-        // Initial rotation
-        object.rotation.y = position === 'top' ? 0.3 : -0.3;
+        // Initial rotation based on position
+        object.rotation.y = position === 'top' ? 0.5 : -0.5;
 
-        // Scroll-based rotation animation
+        // Scroll-based rotation animation synchronized
         gsap.to(object.rotation, {
-          y: position === 'top' ? Math.PI * 2 : -Math.PI * 2,
+          y: position === 'top' ? Math.PI * 2.5 : -Math.PI * 2.5,
+          x: position === 'top' ? 0.3 : -0.3,
           scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top bottom',
+            trigger: container.parentElement.parentElement,
+            start: 'top top',
             end: 'bottom top',
             scrub: 1,
-          },
-        });
-
-        // Also add vertical rotation based on scroll
-        gsap.to(object.rotation, {
-          x: position === 'top' ? 0.5 : -0.5,
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 2,
           },
         });
       },
@@ -125,9 +116,9 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
     const animate = () => {
       animationFrameRef.current = requestAnimationFrame(animate);
       
-      // Add subtle auto-rotation when not scrolling
+      // Add subtle continuous rotation
       if (modelRef.current) {
-        modelRef.current.rotation.z += 0.002;
+        modelRef.current.rotation.z += 0.001;
       }
       
       renderer.render(scene, camera);
@@ -136,10 +127,10 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
 
     // Handle window resize
     const handleResize = () => {
-      if (!containerRef.current) return;
+      if (!container) return;
       
-      const width = containerRef.current.clientWidth;
-      const height = containerRef.current.clientHeight;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
       
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -156,8 +147,8 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
         cancelAnimationFrame(animationFrameRef.current);
       }
       
-      if (containerRef.current && renderer.domElement) {
-        containerRef.current.removeChild(renderer.domElement);
+      if (container && renderer.domElement && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
       }
       
       renderer.dispose();
@@ -178,7 +169,7 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
       }
       
       ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.vars.trigger === containerRef.current) {
+        if (trigger.vars.trigger === container.parentElement?.parentElement) {
           trigger.kill();
         }
       });
@@ -192,7 +183,7 @@ const Model3D = ({ modelUrl, position = 'top', className = '' }) => {
       style={{
         width: '100%',
         height: '100%',
-        position: 'absolute',
+        position: 'relative',
       }}
     />
   );
