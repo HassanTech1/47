@@ -131,6 +131,49 @@ body {
     box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
 }
 
+/* Split Buttons - For Him/Her Style */
+.split-button {
+    padding: 2rem 3rem;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    border-radius: 60px;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    min-width: 280px;
+}
+
+.split-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 1);
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.3);
+}
+
+.split-button:active {
+    transform: translateY(-4px) scale(1.02);
+}
+
+.left-button {
+    border-color: rgba(255, 255, 255, 0.9);
+}
+
+.left-button:hover {
+    background: rgba(220, 38, 38, 0.2);
+    border-color: white;
+}
+
+.right-button {
+    border-color: rgba(255, 255, 255, 0.9);
+}
+
+.right-button:hover {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: white;
+}
+
 /* 3D Model Container */
 .model-3d-container {
     filter: drop-shadow(0 20px 50px rgba(255, 255, 255, 0.3));
