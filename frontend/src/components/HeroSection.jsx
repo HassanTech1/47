@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Model3D from './Model3D';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,16 +28,18 @@ const HeroSection = () => {
       }
     });
 
-    // Move top model (jacket) to the left and rotate
+    // Move top model (jacket) to the left and scale down
     tl.to(topModel, {
-      x: '-40vw',
-      rotation: -45,
+      x: '-50vw',
+      scale: 0.8,
+      rotation: -15,
       duration: 1,
     }, 0)
-    // Move bottom model (hoodie) to the right and rotate
+    // Move bottom model (hoodie) to the right and scale down
     .to(bottomModel, {
-      x: '40vw',
-      rotation: 45,
+      x: '50vw',
+      scale: 0.8,
+      rotation: 15,
       duration: 1,
     }, 0)
     // Reveal promotional text in center
@@ -60,39 +63,23 @@ const HeroSection = () => {
       {/* 3D Model - Upper Section (Jacket) */}
       <div 
         ref={topModelRef}
-        className="absolute top-10 left-1/2 transform -translate-x-1/2 w-96 h-96 z-20 pointer-events-none model-3d-jacket"
+        className="absolute top-20 left-1/2 transform -translate-x-1/2 w-[500px] h-[500px] z-20 pointer-events-none"
       >
-        <div className="w-full h-full relative">
-          <iframe
-            src="/models/jacket.obj"
-            className="w-full h-full"
-            style={{ border: 'none', background: 'transparent' }}
-            title="3D Jacket Model"
-          />
-          {/* Fallback golden jacket placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-48 h-64 bg-gradient-to-br from-gold via-yellow-600 to-gold rounded-3xl shadow-2xl transform rotate-12 opacity-90"></div>
-          </div>
-        </div>
+        <Model3D 
+          modelUrl="/models/jacket.obj"
+          position="top"
+        />
       </div>
 
       {/* 3D Model - Lower Section (Hoodie) */}
       <div 
         ref={bottomModelRef}
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-96 h-96 z-20 pointer-events-none model-3d-hoodie"
+        className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-[500px] h-[500px] z-20 pointer-events-none"
       >
-        <div className="w-full h-full relative">
-          <iframe
-            src="/models/hoodie.obj"
-            className="w-full h-full"
-            style={{ border: 'none', background: 'transparent' }}
-            title="3D Hoodie Model"
-          />
-          {/* Fallback golden hoodie placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-56 h-56 bg-gradient-to-br from-gold via-yellow-500 to-gold rounded-2xl shadow-2xl transform -rotate-12 opacity-90"></div>
-          </div>
-        </div>
+        <Model3D 
+          modelUrl="/models/hoodie.obj"
+          position="bottom"
+        />
       </div>
 
       {/* Promotional Text (Opens in Center) */}
@@ -102,7 +89,7 @@ const HeroSection = () => {
         style={{ transform: 'translateY(50px)' }}
       >
         <div className="text-center px-8 max-w-4xl">
-          <h1 className="text-6xl lg:text-8xl font-bold text-gold mb-8 promo-title">
+          <h1 className="text-6xl lg:text-8xl font-bold text-gold mb-8 promo-title animate-pulse">
             ٧٧٧٧
           </h1>
           <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6 vision-text">
@@ -127,8 +114,8 @@ const HeroSection = () => {
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gold/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gold/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gold/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gold/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
       </div>
 
