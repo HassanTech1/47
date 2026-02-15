@@ -21,39 +21,9 @@ const CartSidebar = () => {
 
   if (!isCartOpen) return null;
 
-  const handleCheckout = async () => {
-    try {
-      const API_URL = process.env.REACT_APP_BACKEND_URL;
-      const originUrl = window.location.origin;
-      
-      const response = await fetch(`${API_URL}/api/checkout/create-session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          origin_url: originUrl,
-          items: cartItems.map(item => ({
-            product_id: item.id,
-            name: item.nameEn,
-            price: item.price,
-            quantity: item.quantity,
-            size: item.size,
-          })),
-        }),
-      });
-
-      const data = await response.json();
-      
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert('Failed to create checkout session');
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Error initiating checkout');
-    }
+  const handleCheckout = () => {
+    setIsCartOpen(false);
+    window.location.href = '/checkout';
   };
 
   return (
