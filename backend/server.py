@@ -112,9 +112,23 @@ class CartItem(BaseModel):
     size: str
     image: Optional[str] = None
 
+class ShippingAddress(BaseModel):
+    email: str
+    first_name: str
+    last_name: str
+    address: str
+    apartment: Optional[str] = None
+    city: str
+    region: str
+    postal_code: Optional[str] = None
+    phone: str
+    country: str = "Saudi Arabia"
+
 class CheckoutRequest(BaseModel):
     origin_url: str
     items: List[CartItem]
+    shipping_address: Optional[ShippingAddress] = None
+    discount_code: Optional[str] = None
 
 class PaymentTransaction(BaseModel):
     model_config = ConfigDict(extra="ignore")
