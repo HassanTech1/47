@@ -1,31 +1,19 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
 import { products } from '../data/mock';
+import { useCart } from '../context/CartContext';
 
 const ProductGrid = () => {
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { openProductDetail } = useCart();
 
   // Simplified products for clean display
-  const essentialProducts = products.slice(0, 8).map((p, i) => ({
+  const essentialProducts = products.slice(0, 8).map((p) => ({
     ...p,
-    images: [p.image, p.image, p.image], // In real app, multiple images
+    images: [p.image, p.image, p.image],
     badge: "Unisex",
   }));
 
-  const handleProductClick = (product, index) => {
-    setSelectedProduct(product);
-    setCurrentImageIndex(0);
-  };
-
-  const nextImage = (e, product) => {
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
-  };
-
-  const prevImage = (e, product) => {
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+  const handleProductClick = (product) => {
+    openProductDetail(product);
   };
 
   return (
@@ -40,11 +28,12 @@ const ProductGrid = () => {
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {essentialProducts.map((product, index) => (
+          {essentialProducts.map((product) => (
             <div
               key={product.id}
               className="product-card-clean group cursor-pointer"
-              onClick={() => handleProductClick(product, index)}
+              onClick={() => handleProductClick(product)}
+              data-testid={`product-card-${product.id}`}
             >
               {/* Badge */}
               <div className="text-center mb-4">
@@ -53,31 +42,13 @@ const ProductGrid = () => {
                 </span>
               </div>
 
-              {/* Product Image with Carousel */}
+              {/* Product Image */}
               <div className="relative h-96 bg-gray-50 mb-6 overflow-hidden">
                 <img
-                  src={product.images[selectedProduct?.id === product.id ? currentImageIndex : 0]}
+                  src={product.images[0]}
                   alt={product.nameEn}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                
-                {/* Carousel Navigation - Shows on hover */}
-                {selectedProduct?.id === product.id && product.images.length > 1 && (
-                  <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={(e) => prevImage(e, product)}
-                      className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={(e) => nextImage(e, product)}
-                      className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </div>
-                )}
               </div>
 
               {/* Product Info */}
