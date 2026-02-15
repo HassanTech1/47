@@ -17,7 +17,7 @@ const HeroSection = () => {
     const bottomModel = bottomModelRef.current;
     const promoText = promoTextRef.current;
 
-    // Floating animation for top model
+    // Floating animation for top model (jacket - top right)
     gsap.to(topModel, {
       y: -30,
       duration: 3,
@@ -26,7 +26,7 @@ const HeroSection = () => {
       yoyo: true,
     });
 
-    // Floating animation for bottom model (opposite direction)
+    // Floating animation for bottom model (hoodie - bottom left)
     gsap.to(bottomModel, {
       y: 30,
       duration: 3.5,
@@ -91,10 +91,10 @@ const HeroSection = () => {
       ref={heroRef}
       className="hero-section relative h-screen w-full overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black"
     >
-      {/* 3D Model - Upper Section (Jacket) - Larger and Floating */}
+      {/* 3D Model - Top Right (Jacket) */}
       <div 
         ref={topModelRef}
-        className="absolute top-8 left-1/2 transform -translate-x-1/2 w-[700px] h-[700px] z-20 pointer-events-none floating-model"
+        className="absolute top-8 right-8 w-[600px] h-[600px] z-20 pointer-events-none floating-model"
         style={{ 
           opacity: 1,
           filter: 'drop-shadow(0 30px 60px rgba(212, 175, 55, 0.4))',
@@ -106,10 +106,10 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* 3D Model - Lower Section (Hoodie) - Larger and Floating */}
+      {/* 3D Model - Bottom Left (Hoodie) */}
       <div 
         ref={bottomModelRef}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-[700px] h-[700px] z-20 pointer-events-none floating-model"
+        className="absolute bottom-12 left-8 w-[600px] h-[600px] z-20 pointer-events-none floating-model"
         style={{ 
           opacity: 1,
           filter: 'drop-shadow(0 30px 60px rgba(212, 175, 55, 0.4))',
@@ -175,8 +175,8 @@ const HeroSection = () => {
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-20 left-10 w-40 h-40 bg-gold/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-48 h-48 bg-gold/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-20 right-20 w-40 h-40 bg-gold/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-48 h-48 bg-gold/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-3xl"></div>
       </div>
 
