@@ -1,9 +1,11 @@
 import React from 'react';
 import { X, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { products } from '../data/mock';
 
 const CartSidebar = () => {
+  const navigate = useNavigate();
   const {
     cartItems,
     isCartOpen,
@@ -23,7 +25,7 @@ const CartSidebar = () => {
 
   const handleCheckout = () => {
     setIsCartOpen(false);
-    window.location.href = '/checkout';
+    navigate('/checkout');
   };
 
   return (
