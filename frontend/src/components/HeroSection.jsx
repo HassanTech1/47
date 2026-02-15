@@ -1,37 +1,22 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { heroImages } from '../data/mock';
-import Model3D from './Model3D';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const HeroSection = () => {
   const heroRef = useRef(null);
-  const leftSideRef = useRef(null);
-  const rightSideRef = useRef(null);
-  const leftImageRef = useRef(null);
-  const rightImageRef = useRef(null);
-  const visionTextRef = useRef(null);
+  const topModelRef = useRef(null);
+  const bottomModelRef = useRef(null);
+  const promoTextRef = useRef(null);
 
   useEffect(() => {
     const hero = heroRef.current;
-    const leftSide = leftSideRef.current;
-    const rightSide = rightSideRef.current;
-    const leftImage = leftImageRef.current;
-    const rightImage = rightImageRef.current;
-    const visionText = visionTextRef.current;
+    const topModel = topModelRef.current;
+    const bottomModel = bottomModelRef.current;
+    const promoText = promoTextRef.current;
 
-    // Initial diagonal split setup
-    gsap.set(leftSide, { 
-      clipPath: 'polygon(0 0, 60% 0, 40% 100%, 0 100%)'
-    });
-    
-    gsap.set(rightSide, { 
-      clipPath: 'polygon(60% 0, 100% 0, 100% 100%, 40% 100%)'
-    });
-
-    // Parallax animation on scroll
+    // Synchronized scroll animation
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: hero,
@@ -42,28 +27,23 @@ const HeroSection = () => {
       }
     });
 
-    // Transform diagonal to vertical split
-    tl.to(leftSide, {
-      clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)',
+    // Move top model (jacket) to the left and rotate
+    tl.to(topModel, {
+      x: '-40vw',
+      rotation: -45,
       duration: 1,
     }, 0)
-    .to(rightSide, {
-      clipPath: 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%)',
+    // Move bottom model (hoodie) to the right and rotate
+    .to(bottomModel, {
+      x: '40vw',
+      rotation: 45,
       duration: 1,
     }, 0)
-    // Move images horizontally (parallax)
-    .to(leftImage, {
-      x: -100,
-      duration: 1,
-    }, 0)
-    .to(rightImage, {
-      x: 100,
-      duration: 1,
-    }, 0)
-    // Reveal vision text
-    .to(visionText, {
+    // Reveal promotional text in center
+    .to(promoText, {
       opacity: 1,
       scale: 1,
+      y: 0,
       duration: 0.8,
     }, 0.3);
 
@@ -75,73 +55,89 @@ const HeroSection = () => {
   return (
     <div 
       ref={heroRef}
-      className="hero-section relative h-screen w-full overflow-hidden"
+      className="hero-section relative h-screen w-full overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black"
     >
-      {/* 3D Models - Upper Section */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/2 z-30 pointer-events-none">
-        <Model3D 
-          modelUrl="/models/hoodie.obj"
-          position="top"
-        />
-      </div>
-
-      {/* 3D Models - Lower Section */}
-      <div className="absolute bottom-0 left-0 w-1/3 h-1/2 z-30 pointer-events-none">
-        <Model3D 
-          modelUrl="/models/jacket.obj"
-          position="bottom"
-        />
-      </div>
-
-      {/* Vision Text (revealed behind images) */}
+      {/* 3D Model - Upper Section (Jacket) */}
       <div 
-        ref={visionTextRef}
-        className="absolute inset-0 flex items-center justify-center z-0 opacity-0 scale-95"
+        ref={topModelRef}
+        className="absolute top-10 left-1/2 transform -translate-x-1/2 w-96 h-96 z-20 pointer-events-none model-3d-jacket"
       >
-        <div className="text-center px-8">
-          <h2 className="text-5xl lg:text-7xl font-bold text-white mb-6 vision-text">
-            أسلوب لا يُنسى
-          </h2>
-          <p className="text-xl lg:text-2xl text-white/90 max-w-2xl mx-auto">
-            حيث تلتقي الفخامة بالأناقة العصرية
-          </p>
+        <div className="w-full h-full relative">
+          <iframe
+            src="/models/jacket.obj"
+            className="w-full h-full"
+            style={{ border: 'none', background: 'transparent' }}
+            title="3D Jacket Model"
+          />
+          {/* Fallback golden jacket placeholder */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-48 h-64 bg-gradient-to-br from-gold via-yellow-600 to-gold rounded-3xl shadow-2xl transform rotate-12 opacity-90"></div>
+          </div>
         </div>
       </div>
 
-      {/* Left Side - Diagonal Split */}
+      {/* 3D Model - Lower Section (Hoodie) */}
       <div 
-        ref={leftSideRef}
-        className="absolute inset-0 z-10"
+        ref={bottomModelRef}
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-96 h-96 z-20 pointer-events-none model-3d-hoodie"
       >
-        <div 
-          ref={leftImageRef}
-          className="w-full h-full bg-cover bg-center hero-image"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${heroImages.left})`,
-          }}
-        />
+        <div className="w-full h-full relative">
+          <iframe
+            src="/models/hoodie.obj"
+            className="w-full h-full"
+            style={{ border: 'none', background: 'transparent' }}
+            title="3D Hoodie Model"
+          />
+          {/* Fallback golden hoodie placeholder */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-56 h-56 bg-gradient-to-br from-gold via-yellow-500 to-gold rounded-2xl shadow-2xl transform -rotate-12 opacity-90"></div>
+          </div>
+        </div>
       </div>
 
-      {/* Right Side - Diagonal Split */}
+      {/* Promotional Text (Opens in Center) */}
       <div 
-        ref={rightSideRef}
-        className="absolute inset-0 z-10"
+        ref={promoTextRef}
+        className="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-0 scale-90"
+        style={{ transform: 'translateY(50px)' }}
       >
-        <div 
-          ref={rightImageRef}
-          className="w-full h-full bg-cover bg-center hero-image"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${heroImages.right})`,
-          }}
-        />
+        <div className="text-center px-8 max-w-4xl">
+          <h1 className="text-6xl lg:text-8xl font-bold text-gold mb-8 promo-title">
+            ٧٧٧٧
+          </h1>
+          <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6 vision-text">
+            أسلوب لا يُنسى
+          </h2>
+          <p className="text-2xl lg:text-3xl text-white/90 mb-8 leading-relaxed">
+            حيث تلتقي الفخامة بالأناقة العصرية
+          </p>
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-xl lg:text-2xl text-gold font-semibold">
+              حقيبتك علينا وملابسك علينا
+            </p>
+            <p className="text-lg lg:text-xl text-white/80">
+              صيفك يكتمل معنا
+            </p>
+            <button className="cta-button mt-6 px-12 py-4 text-xl">
+              اكتشف المجموعة
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Overlay Text */}
-      <div className="absolute inset-0 z-20 flex items-end justify-center pb-20">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gold/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gold/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Bottom Text */}
+      <div className="absolute bottom-10 left-0 right-0 z-30 flex justify-center">
         <div className="text-center">
-          <h3 className="text-2xl lg:text-3xl font-light text-white tracking-widest animate-pulse">
+          <p className="text-lg lg:text-xl text-white/70 tracking-widest">
             مجموعة صيف ٢٠٢٥
-          </h3>
+          </p>
         </div>
       </div>
     </div>
