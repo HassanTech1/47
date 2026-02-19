@@ -1,0 +1,28 @@
+{%- comment -%}
+  Renders a price range for a product.
+  Accepts:
+  - product {Object} - Product Liquid object
+  Usage:
+    {%- render 'price', product: product -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign compare_at_price = product.compare_at_price
+  assign price            = product.price | default: 1999
+  assign available        = product.available | default: true
+-%}
+
+<div class="price{% if compare_at_price > price %} price--on-sale{% endif %}">
+  {%- if compare_at_price > price -%}
+    <span class="price__compare">
+      <s>{{ compare_at_price | money }}</s>
+    </span>
+    <span class="price__sale">{{ price | money }}</span>
+  {%- else -%}
+    <span class="price__regular">{{ price | money }}</span>
+  {%- endif -%}
+
+  {%- unless available -%}
+    <span class="price__badge price__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+  {%- endunless -%}
+</div>

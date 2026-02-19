@@ -1,0 +1,169 @@
+<section
+  id="LifestyleSection-{{ section.id }}"
+  class="lifestyle-section page-width"
+  aria-labelledby="LifestyleSectionTitle-{{ section.id }}"
+>
+  <div class="lifestyle-section__inner">
+    <!-- Text Content -->
+    <div class="lifestyle-section__text">
+      {%- if section.settings.heading != blank -%}
+        <h2
+          id="LifestyleSectionTitle-{{ section.id }}"
+          class="lifestyle-section__heading {{ section.settings.heading_size }}"
+        >
+          {{ section.settings.heading | escape }}
+        </h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="lifestyle-section__body rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.text2 != blank -%}
+        <div class="lifestyle-section__body rte">{{ section.settings.text2 }}</div>
+      {%- endif -%}
+
+      <!-- Feature blocks -->
+      {%- if section.blocks.size > 0 -%}
+        <div class="lifestyle-section__features">
+          {%- for block in section.blocks -%}
+            <div class="lifestyle-section__feature" {{ block.shopify_attributes }}>
+              {%- if block.settings.icon != blank -%}
+                <div class="lifestyle-section__feature-icon">
+                  {{ block.settings.icon | image_url: width: 48 | image_tag: alt: block.settings.title }}
+                </div>
+              {%- endif -%}
+              {%- if block.settings.title != blank -%}
+                <h3 class="lifestyle-section__feature-title">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.description != blank -%}
+                <p class="lifestyle-section__feature-desc">{{ block.settings.description | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link }}" class="button">
+          {{ section.settings.button_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    <!-- Image -->
+    <div class="lifestyle-section__media">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 900
+          | image_tag:
+            class: 'lifestyle-section__image',
+            widths: '375, 550, 750, 900',
+            loading: 'lazy',
+            alt: section.settings.heading | escape
+        }}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg lifestyle-section__image' }}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About / Lifestyle",
+  "tag": "section",
+  "class": "section-lifestyle",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "About 4seven's",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>We are a store specializing in offering the finest selection of modern and elegant hoodies. We believe that fashion should be both comfortable and practical at the same time.</p>",
+      "label": "First paragraph"
+    },
+    {
+      "type": "richtext",
+      "id": "text2",
+      "default": "<p>All our products are made from the highest quality premium cotton fabrics, with attention to the finest details to ensure your comfort and complete satisfaction.</p>",
+      "label": "Second paragraph"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "High Quality",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "default": "Premium fabrics",
+          "label": "Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About / Lifestyle",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "High Quality",
+            "description": "Premium fabrics"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Fast Shipping",
+            "description": "Free delivery"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

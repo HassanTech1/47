@@ -1,0 +1,129 @@
+<section
+  id="MainProduct-{{ section.id }}"
+  class="product-template page-width"
+  data-section="{{ section.id }}"
+>
+  <div class="product__columns">
+    <!-- Media Gallery -->
+    <div class="product__media-gallery">
+      {%- if product.featured_media -%}
+        {{
+          product.featured_media
+          | image_url: width: 900
+          | image_tag:
+            class: 'product__media-image',
+            widths: '375, 550, 750, 900',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: product.featured_media.alt | escape
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product__media-image' }}
+      {%- endif -%}
+
+      {%- if product.media.size > 1 -%}
+        <div class="product__thumbnail-list">
+          {%- for media in product.media -%}
+            {{
+              media
+              | image_url: width: 150
+              | image_tag:
+                class: 'product__thumbnail',
+                alt: media.alt | escape,
+                loading: 'lazy'
+            }}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Product Info -->
+    <div class="product__info-wrapper">
+      {%- if section.settings.show_vendor and product.vendor != blank -%}
+        <span class="product__vendor">{{ product.vendor }}</span>
+      {%- endif -%}
+
+      <h1 class="product__title">{{ product.title | escape }}</h1>
+
+      {%- render 'price', product: product -%}
+
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          <div class="product-form__option">
+            <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+              {{ option.name }}
+            </label>
+            <select
+              id="Option-{{ section.id }}-{{ forloop.index0 }}"
+              class="select__select"
+              name="options[{{ option.name | escape }}]"
+            >
+              {%- for value in option.values -%}
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}selected="selected"{% endif %}
+                >
+                  {{ value | escape }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endfor -%}
+      {%- endunless -%}
+
+      {%- form 'product', product, id: 'product-form-{{ section.id }}', class: 'product-form' -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+        <div class="product-form__buttons">
+          <button
+            type="submit"
+            name="add"
+            class="product-form__submit button button--full-width button--primary"
+            {%- if product.selected_or_first_available_variant.available == false -%}
+              disabled
+            {%- endif -%}
+          >
+            {%- if product.selected_or_first_available_variant.available -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- else -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- endif -%}
+          </button>
+        </div>
+      {%- endform -%}
+
+      {%- if section.settings.show_description and product.description != blank -%}
+        <div class="product__description rte">
+          {{ product.description }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-product.name",
+  "tag": "section",
+  "class": "section-product-template",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": true,
+      "label": "t:sections.main-product.settings.show_vendor.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "default": true,
+      "label": "Show description"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.main-product.presets.name"
+    }
+  ]
+}
+{% endschema %}

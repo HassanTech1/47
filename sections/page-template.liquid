@@ -1,0 +1,27 @@
+<article
+  id="MainPage-{{ section.id }}"
+  class="page-template page-width"
+  aria-labelledby="PageTitle-{{ section.id }}"
+>
+  <header class="page-template__header">
+    <h1 id="PageTitle-{{ section.id }}" class="page-template__title">{{ page.title | escape }}</h1>
+  </header>
+
+  <div class="page-template__content rte">
+    {{ page.content }}
+  </div>
+</article>
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "section-page-template",
+  "settings": [],
+  "presets": [
+    {
+      "name": "t:sections.main-page.presets.name"
+    }
+  ]
+}
+{% endschema %}

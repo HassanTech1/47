@@ -1,0 +1,101 @@
+{
+  "sections": {
+    "hero-slideshow": {
+      "type": "hero-slideshow",
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "heading": "Creativity",
+            "subheading": "With 4seven's products",
+            "button_label": "Shop Now",
+            "button_link": "/collections/all",
+            "text_alignment": "center"
+          }
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {
+            "heading": "Elegance",
+            "subheading": "Shine with our collection",
+            "button_label": "Shop Now",
+            "button_link": "/collections/all",
+            "text_alignment": "center"
+          }
+        },
+        "slide-3": {
+          "type": "slide",
+          "settings": {
+            "heading": "Fashion",
+            "subheading": "Luxurious design from the other side",
+            "button_label": "Shop Now",
+            "button_link": "/collections/all",
+            "text_alignment": "center"
+          }
+        }
+      },
+      "block_order": ["slide-1", "slide-2", "slide-3"],
+      "settings": {
+        "heading_size": "h1",
+        "autoplay": true,
+        "autoplay_speed": 6,
+        "transition_speed": 2500
+      }
+    },
+    "promo-banner": {
+      "type": "promo-banner",
+      "settings": {
+        "overlay_opacity": 50,
+        "heading": "Elevate Your Style\nWith Premium Essentials",
+        "heading_size": "h1",
+        "subheading": "Complete your style ensemble with our latest collection",
+        "button_label": "Discover Collection",
+        "button_link": "/collections/all"
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "4Seven's Essential Collection",
+        "heading_size": "h2",
+        "products_to_show": 6,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "show_view_all": true,
+        "show_vendor": false
+      }
+    },
+    "lifestyle": {
+      "type": "lifestyle",
+      "blocks": {
+        "feature-1": {
+          "type": "feature",
+          "settings": {
+            "title": "High Quality",
+            "description": "Premium fabrics"
+          }
+        },
+        "feature-2": {
+          "type": "feature",
+          "settings": {
+            "title": "Fast Shipping",
+            "description": "Free delivery"
+          }
+        }
+      },
+      "block_order": ["feature-1", "feature-2"],
+      "settings": {
+        "heading": "About 4seven's",
+        "heading_size": "h1",
+        "text": "<p>We are a store specializing in offering the finest selection of modern and elegant hoodies. We believe that fashion should be both comfortable and practical at the same time.</p>",
+        "text2": "<p>All our products are made from the highest quality premium cotton fabrics, with attention to the finest details to ensure your comfort and complete satisfaction.</p>"
+      }
+    }
+  },
+  "order": [
+    "hero-slideshow",
+    "promo-banner",
+    "featured-collection",
+    "lifestyle"
+  ]
+}

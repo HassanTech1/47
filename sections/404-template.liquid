@@ -1,0 +1,24 @@
+<section
+  id="MainNotFound-{{ section.id }}"
+  class="not-found-template page-width"
+>
+  <div class="not-found-template__content">
+    <h1 class="not-found-template__title">{{ 'sections.404.title' | t }}</h1>
+    <p class="not-found-template__body">{{ 'sections.404.subtext' | t }}</p>
+    <a href="{{ routes.root_url }}" class="button">{{ 'sections.404.link' | t }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-404.name",
+  "tag": "section",
+  "class": "section-404-template",
+  "settings": [],
+  "presets": [
+    {
+      "name": "t:sections.main-404.presets.name"
+    }
+  ]
+}
+{% endschema %}
