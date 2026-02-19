@@ -65,6 +65,31 @@ const webpackConfig = {
       if (config.enableHealthCheck && healthPluginInstance) {
         webpackConfig.plugins.push(healthPluginInstance);
       }
+
+      // Shopify build: output a single main-app.js and main-app.css into assets/
+      if (process.env.SHOPIFY_BUILD === 'true') {
+        webpackConfig.output = {
+          ...webpackConfig.output,
+          path: path.resolve(__dirname, 'assets'),
+          filename: 'main-app.js',
+          chunkFilename: '[id].chunk.js',
+        };
+
+        webpackConfig.optimization = {
+          ...webpackConfig.optimization,
+          splitChunks: false,
+          runtimeChunk: false,
+        };
+
+        const miniCssPlugin = webpackConfig.plugins.find(
+          (plugin) => plugin.constructor.name === 'MiniCssExtractPlugin'
+        );
+        if (miniCssPlugin) {
+          miniCssPlugin.options.filename = 'main-app.css';
+          miniCssPlugin.options.chunkFilename = '[id].chunk.css';
+        }
+      }
+
       return webpackConfig;
     },
   },

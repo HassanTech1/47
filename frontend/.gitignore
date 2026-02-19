@@ -11,6 +11,9 @@
 # production
 /build
 
+# shopify build output
+/assets
+
 # misc
 .DS_Store
 .env.local
