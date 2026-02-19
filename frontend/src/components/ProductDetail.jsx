@@ -22,7 +22,7 @@ const ProductDetail = () => {
   const [hadPan, setHadPan] = useState(false);
   const [showLightbox, setShowLightbox] = useState(false);
 
-  const sizes = ['S/10', 'M/15', 'L/5', 'XL / 5'];
+  const sizes = ['S', 'M', 'L', 'XL'];
   const colors = [
     { name: 'Black', hex: '#000000', border: 'border-gray-200' },
     { name: 'White', hex: '#ffffff', border: 'border-gray-300' },
