@@ -1,0 +1,626 @@
+{
+  "store": {
+    "name": "7777 Store",
+    "description": "متجر أزياء فاخرة يقدم حقائب، جاكيتات، قمصان وبناطيل عالية الجودة | A luxury fashion store offering premium bags, jackets, shirts, and pants.",
+    "currency": "SAR",
+    "country": "Saudi Arabia",
+    "language": "ar",
+    "secondary_language": "en",
+    "timezone": "Asia/Riyadh",
+    "unit_system": "metric",
+    "weight_unit": "kg",
+    "setup_instructions": {
+      "step_1": "Log in to your Shopify admin panel at https://admin.shopify.com",
+      "step_2": "Go to Settings > General and fill in store details from this file",
+      "step_3": "Configure Payment providers under Settings > Payments",
+      "step_4": "Set up Shipping zones under Settings > Shipping and delivery",
+      "step_5": "Configure Email notifications under Settings > Notifications",
+      "step_6": "Enable Customer accounts under Settings > Customer accounts",
+      "step_7": "Add Products via Products > Add product in the admin panel"
+    }
+  },
+
+  "payment_gateway": {
+    "primary_provider": "Shopify Payments",
+    "alternative_provider": "Stripe",
+    "stripe_integration": {
+      "description": "Connect your existing Stripe account to Shopify via Settings > Payments > Third-party providers > Stripe",
+      "publishable_key_env": "STRIPE_PUBLISHABLE_KEY",
+      "secret_key_env": "STRIPE_API_KEY",
+      "webhook_endpoint": "/api/webhook/stripe",
+      "webhook_events": [
+        "checkout.session.completed",
+        "payment_intent.succeeded",
+        "payment_intent.payment_failed"
+      ]
+    },
+    "shopify_payments_setup": {
+      "description": "Enable Shopify Payments under Settings > Payments for the simplest integration",
+      "supported_payment_methods": [
+        "Credit/Debit Card (Visa, Mastercard, Amex)",
+        "Apple Pay",
+        "Google Pay",
+        "Shop Pay"
+      ],
+      "currency": "SAR",
+      "payout_currency": "SAR"
+    },
+    "tax_settings": {
+      "vat_rate": 15,
+      "vat_description": "VAT (ضريبة القيمة المضافة)",
+      "include_tax_in_price": false,
+      "charge_tax_on_shipping": false
+    }
+  },
+
+  "shipping": {
+    "origin_address": {
+      "country": "Saudi Arabia",
+      "city": "Riyadh",
+      "note": "Update with your actual warehouse/origin address in Shopify admin under Settings > Shipping and delivery > Shipping from"
+    },
+    "zones": [
+      {
+        "name": "المملكة العربية السعودية (Saudi Arabia - Domestic)",
+        "countries": ["Saudi Arabia"],
+        "rates": [
+          {
+            "name": "الشحن المجاني (Free Shipping)",
+            "condition": "order_subtotal_greater_than",
+            "condition_value": 500,
+            "price": 0
+          },
+          {
+            "name": "الشحن العادي (Standard Shipping)",
+            "condition": "none",
+            "price": 30,
+            "estimated_days": "3-5 أيام عمل (business days)"
+          },
+          {
+            "name": "الشحن السريع (Express Shipping)",
+            "condition": "none",
+            "price": 60,
+            "estimated_days": "1-2 أيام عمل (business days)"
+          }
+        ]
+      },
+      {
+        "name": "دول الخليج العربي (GCC Countries)",
+        "countries": ["United Arab Emirates", "Kuwait", "Qatar", "Bahrain", "Oman"],
+        "rates": [
+          {
+            "name": "الشحن الدولي (International Shipping)",
+            "condition": "none",
+            "price": 80,
+            "estimated_days": "5-7 أيام عمل (business days)"
+          },
+          {
+            "name": "الشحن السريع الدولي (Express International)",
+            "condition": "none",
+            "price": 150,
+            "estimated_days": "2-3 أيام عمل (business days)"
+          }
+        ]
+      },
+      {
+        "name": "الدول العربية (Arab World)",
+        "countries": ["Egypt", "Jordan", "Lebanon", "Iraq", "Morocco", "Tunisia", "Algeria"],
+        "rates": [
+          {
+            "name": "الشحن الدولي (International Shipping)",
+            "condition": "none",
+            "price": 120,
+            "estimated_days": "7-10 أيام عمل (business days)"
+          }
+        ]
+      },
+      {
+        "name": "باقي العالم (Rest of World)",
+        "countries": ["Rest of World"],
+        "rates": [
+          {
+            "name": "الشحن الدولي (International Shipping)",
+            "condition": "none",
+            "price": 200,
+            "estimated_days": "10-14 أيام عمل (business days)"
+          }
+        ]
+      }
+    ],
+    "setup_in_shopify": "Go to Settings > Shipping and delivery > Manage rates, then add each zone and its rates listed above"
+  },
+
+  "email_notifications": {
+    "sender_name": "7777 Store",
+    "sender_email": "noreply@7777store.com",
+    "reply_to_email": "support@7777store.com",
+    "notifications": {
+      "order_confirmation": {
+        "enabled": true,
+        "subject_ar": "تأكيد طلبك #{{order.order_number}} | 7777 Store",
+        "subject_en": "Order Confirmation #{{order.order_number}} | 7777 Store",
+        "description": "Sent automatically when a customer places an order. Enable under Settings > Notifications > Order confirmation."
+      },
+      "order_shipped": {
+        "enabled": true,
+        "subject_ar": "تم شحن طلبك #{{order.order_number}} | 7777 Store",
+        "subject_en": "Your order #{{order.order_number}} has been shipped | 7777 Store",
+        "description": "Sent when you fulfill an order and add a tracking number. Enable under Settings > Notifications > Shipping confirmation."
+      },
+      "order_cancelled": {
+        "enabled": true,
+        "subject_ar": "تم إلغاء طلبك #{{order.order_number}} | 7777 Store",
+        "subject_en": "Your order #{{order.order_number}} has been cancelled | 7777 Store",
+        "description": "Sent when an order is cancelled. Enable under Settings > Notifications > Order cancelled."
+      },
+      "payment_receipt": {
+        "enabled": true,
+        "subject_ar": "إيصال الدفع لطلب #{{order.order_number}} | 7777 Store",
+        "subject_en": "Payment receipt for order #{{order.order_number}} | 7777 Store",
+        "description": "Payment confirmation email. Enable under Settings > Notifications > Order invoice."
+      },
+      "abandoned_cart": {
+        "enabled": true,
+        "subject_ar": "نسيت شيئاً في سلتك! | 7777 Store",
+        "subject_en": "You left something behind! | 7777 Store",
+        "description": "Sent to customers who add items to cart but don't complete checkout. Enable under Marketing > Automations > Abandoned checkout."
+      },
+      "account_welcome": {
+        "enabled": true,
+        "subject_ar": "مرحباً بك في 7777 Store",
+        "subject_en": "Welcome to 7777 Store",
+        "description": "Sent when a new customer account is created. Enable under Settings > Notifications > Customer account welcome."
+      },
+      "password_reset": {
+        "enabled": true,
+        "subject_ar": "إعادة تعيين كلمة المرور | 7777 Store",
+        "subject_en": "Password reset | 7777 Store",
+        "description": "Sent when a customer requests a password reset. Enable under Settings > Notifications > Customer account password reset."
+      }
+    },
+    "setup_in_shopify": "Go to Settings > Notifications to enable and customize each email template listed above"
+  },
+
+  "customer_accounts": {
+    "mode": "optional",
+    "description": "Customers can optionally create accounts for order tracking, wishlists, and saved addresses",
+    "features": {
+      "order_history": true,
+      "saved_addresses": true,
+      "wishlist": true,
+      "profile_management": true,
+      "account_required_for_checkout": false
+    },
+    "setup_in_shopify": "Go to Settings > Customer accounts and set to 'Optional' to match current store behavior. Customers can check out as guests or log in.",
+    "fields_to_collect": [
+      "First name",
+      "Last name",
+      "Email",
+      "Phone number",
+      "Shipping address (street, city, region, postal code)"
+    ]
+  },
+
+  "products": [
+    {
+      "id": 1,
+      "title": "حقيبة جلدية فاخرة",
+      "title_en": "Luxury Leather Bag",
+      "vendor": "7777 Store",
+      "product_type": "Bags",
+      "tags": ["bags", "leather", "luxury", "new"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["S", "M", "L"],
+          "price": 1299.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 50,
+          "requires_shipping": true,
+          "weight": 0.8,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1589363358751-ab05797e5629", "alt": "Luxury Leather Bag" }
+      ],
+      "description_ar": "حقيبة جلدية فاخرة مصنوعة من أجود أنواع الجلد الطبيعي",
+      "description_en": "A luxurious leather bag crafted from the finest natural leather"
+    },
+    {
+      "id": 2,
+      "title": "حقيبة يد كلاسيكية",
+      "title_en": "Classic Handbag",
+      "vendor": "7777 Store",
+      "product_type": "Bags",
+      "tags": ["bags", "classic", "handbag"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["S", "M", "L"],
+          "price": 899.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 40,
+          "requires_shipping": true,
+          "weight": 0.6,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1587467512961-120760940315", "alt": "Classic Handbag" }
+      ],
+      "description_ar": "حقيبة يد كلاسيكية بتصميم أنيق ومتعدد الاستخدامات",
+      "description_en": "A classic handbag with an elegant and versatile design"
+    },
+    {
+      "id": 3,
+      "title": "حقيبة كتف عصرية",
+      "title_en": "Modern Shoulder Bag",
+      "vendor": "7777 Store",
+      "product_type": "Bags",
+      "tags": ["bags", "shoulder", "modern", "new"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["S", "M", "L"],
+          "price": 749.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 35,
+          "requires_shipping": true,
+          "weight": 0.5,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1591348278900-019a8a2a8b1d", "alt": "Modern Shoulder Bag" }
+      ],
+      "description_ar": "حقيبة كتف عصرية بتصميم مبتكر وعملي",
+      "description_en": "A modern shoulder bag with an innovative and practical design"
+    },
+    {
+      "id": 4,
+      "title": "قميص صيفي أنيق",
+      "title_en": "Elegant Summer Shirt",
+      "vendor": "7777 Store",
+      "product_type": "Shirts",
+      "tags": ["shirts", "summer", "elegant", "new"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["XS", "S", "M", "L", "XL", "XXL"],
+          "price": 299.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 100,
+          "requires_shipping": true,
+          "weight": 0.3,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1715533173683-737d4a2433dd", "alt": "Elegant Summer Shirt" }
+      ],
+      "description_ar": "قميص صيفي أنيق مصنوع من قماش قطني خفيف وناعم",
+      "description_en": "An elegant summer shirt made from light and soft cotton fabric"
+    },
+    {
+      "id": 5,
+      "title": "جاكيت رسمي",
+      "title_en": "Formal Jacket",
+      "vendor": "7777 Store",
+      "product_type": "Jackets",
+      "tags": ["jackets", "formal"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["XS", "S", "M", "L", "XL", "XXL"],
+          "price": 599.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 60,
+          "requires_shipping": true,
+          "weight": 1.0,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1558769132-cb1aea458c5e", "alt": "Formal Jacket" }
+      ],
+      "description_ar": "جاكيت رسمي فاخر مناسب للمناسبات الرسمية والعمل",
+      "description_en": "A luxurious formal jacket suitable for business occasions and work"
+    },
+    {
+      "id": 6,
+      "title": "بنطلون كلاسيكي",
+      "title_en": "Classic Pants",
+      "vendor": "7777 Store",
+      "product_type": "Pants",
+      "tags": ["pants", "classic", "new"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["28", "30", "32", "34", "36", "38"],
+          "price": 399.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 80,
+          "requires_shipping": true,
+          "weight": 0.6,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04", "alt": "Classic Pants" }
+      ],
+      "description_ar": "بنطلون كلاسيكي بقصة مريحة وأناقة لا تنتهي",
+      "description_en": "Classic pants with a comfortable cut and timeless elegance"
+    },
+    {
+      "id": 7,
+      "title": "حقيبة ظهر عملية",
+      "title_en": "Practical Backpack",
+      "vendor": "7777 Store",
+      "product_type": "Bags",
+      "tags": ["bags", "backpack", "practical"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["One Size"],
+          "price": 549.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 45,
+          "requires_shipping": true,
+          "weight": 0.9,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1590739225287-bd31519780c3", "alt": "Practical Backpack" }
+      ],
+      "description_ar": "حقيبة ظهر عملية بتصميم مريح وسعة كبيرة",
+      "description_en": "A practical backpack with a comfortable design and large capacity"
+    },
+    {
+      "id": 8,
+      "title": "قميص قطني فاخر",
+      "title_en": "Premium Cotton Shirt",
+      "vendor": "7777 Store",
+      "product_type": "Shirts",
+      "tags": ["shirts", "cotton", "premium", "new"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["XS", "S", "M", "L", "XL", "XXL"],
+          "price": 349.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 90,
+          "requires_shipping": true,
+          "weight": 0.3,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1716951220992-2bbe913ddbf8", "alt": "Premium Cotton Shirt" }
+      ],
+      "description_ar": "قميص قطني فاخر بجودة عالية ومستوى راحة ممتاز",
+      "description_en": "A premium cotton shirt with high quality and excellent comfort level"
+    },
+    {
+      "id": 9,
+      "title": "جاكيت كاجوال",
+      "title_en": "Casual Jacket",
+      "vendor": "7777 Store",
+      "product_type": "Jackets",
+      "tags": ["jackets", "casual"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["XS", "S", "M", "L", "XL", "XXL"],
+          "price": 699.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 55,
+          "requires_shipping": true,
+          "weight": 0.9,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd", "alt": "Casual Jacket" }
+      ],
+      "description_ar": "جاكيت كاجوال مثالي للإطلالات اليومية العصرية",
+      "description_en": "A casual jacket perfect for modern everyday looks"
+    },
+    {
+      "id": 10,
+      "title": "بنطلون صيفي خفيف",
+      "title_en": "Light Summer Pants",
+      "vendor": "7777 Store",
+      "product_type": "Pants",
+      "tags": ["pants", "summer", "light", "new"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["28", "30", "32", "34", "36", "38"],
+          "price": 449.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 70,
+          "requires_shipping": true,
+          "weight": 0.4,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1716951988375-37d5793385d0", "alt": "Light Summer Pants" }
+      ],
+      "description_ar": "بنطلون صيفي خفيف من قماش متنفس مريح",
+      "description_en": "Light summer pants made from breathable comfortable fabric"
+    },
+    {
+      "id": 11,
+      "title": "قميص بولو أنيق",
+      "title_en": "Elegant Polo Shirt",
+      "vendor": "7777 Store",
+      "product_type": "Shirts",
+      "tags": ["shirts", "polo", "elegant"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["XS", "S", "M", "L", "XL", "XXL"],
+          "price": 279.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 85,
+          "requires_shipping": true,
+          "weight": 0.3,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1716951918731-77d7682b4e63", "alt": "Elegant Polo Shirt" }
+      ],
+      "description_ar": "قميص بولو أنيق مناسب للمناسبات الرسمية والكاجوال",
+      "description_en": "An elegant polo shirt suitable for both formal and casual occasions"
+    },
+    {
+      "id": 12,
+      "title": "جاكيت جلدي فاخر",
+      "title_en": "Luxury Leather Jacket",
+      "vendor": "7777 Store",
+      "product_type": "Jackets",
+      "tags": ["jackets", "leather", "luxury", "new"],
+      "status": "active",
+      "variants": [
+        {
+          "option": "Size",
+          "values": ["XS", "S", "M", "L", "XL", "XXL"],
+          "price": 1499.00,
+          "currency": "SAR",
+          "inventory_management": "shopify",
+          "inventory_quantity": 30,
+          "requires_shipping": true,
+          "weight": 1.5,
+          "weight_unit": "kg"
+        }
+      ],
+      "images": [
+        { "src": "https://images.unsplash.com/photo-1686491730848-0c86413833e5", "alt": "Luxury Leather Jacket" }
+      ],
+      "description_ar": "جاكيت جلدي فاخر مصنوع من أجود أنواع الجلد الطبيعي",
+      "description_en": "A luxury leather jacket made from the finest natural leather"
+    }
+  ],
+
+  "collections": [
+    {
+      "title": "الحقائب (Bags)",
+      "handle": "bags",
+      "description_ar": "مجموعة حقائب فاخرة ومتنوعة",
+      "description_en": "A collection of luxury and diverse bags",
+      "product_type_filter": "Bags"
+    },
+    {
+      "title": "الجاكيتات (Jackets)",
+      "handle": "jackets",
+      "description_ar": "مجموعة جاكيتات رجالية عصرية",
+      "description_en": "A collection of modern men's jackets",
+      "product_type_filter": "Jackets"
+    },
+    {
+      "title": "القمصان (Shirts)",
+      "handle": "shirts",
+      "description_ar": "مجموعة قمصان أنيقة لجميع المناسبات",
+      "description_en": "A collection of elegant shirts for all occasions",
+      "product_type_filter": "Shirts"
+    },
+    {
+      "title": "البناطيل (Pants)",
+      "handle": "pants",
+      "description_ar": "مجموعة بناطيل كلاسيكية وعصرية",
+      "description_en": "A collection of classic and modern pants",
+      "product_type_filter": "Pants"
+    },
+    {
+      "title": "الجديد (New Arrivals)",
+      "handle": "new-arrivals",
+      "description_ar": "أحدث المنتجات الوافدة إلى متجرنا",
+      "description_en": "The latest products to arrive at our store",
+      "tag_filter": "new"
+    }
+  ],
+
+  "admin_panel_guide": {
+    "adding_products": {
+      "steps": [
+        "1. Log in to Shopify admin at https://admin.shopify.com",
+        "2. Click 'Products' in the left sidebar",
+        "3. Click 'Add product' button",
+        "4. Enter the product title (Arabic and English)",
+        "5. Add product description",
+        "6. Upload product images",
+        "7. Set the price in SAR",
+        "8. Add variants (Size: XS, S, M, L, XL, XXL or custom sizes)",
+        "9. Set inventory quantity",
+        "10. Configure shipping weight",
+        "11. Add product to the appropriate collection (Bags, Jackets, Shirts, Pants)",
+        "12. Add SEO title and description",
+        "13. Click 'Save' to publish the product"
+      ]
+    },
+    "managing_orders": {
+      "steps": [
+        "1. Go to Orders in the Shopify admin",
+        "2. View all orders and their payment/fulfillment status",
+        "3. Click an order to view details",
+        "4. Mark as fulfilled and add tracking number when shipped",
+        "5. Issue refunds from the order page if needed"
+      ]
+    },
+    "discount_codes": {
+      "steps": [
+        "1. Go to Discounts in the Shopify admin",
+        "2. Click 'Create discount'",
+        "3. Choose discount type: percentage, fixed amount, or free shipping",
+        "4. Set discount code, value, and usage limits",
+        "5. Save and share the code with customers"
+      ]
+    }
+  },
+
+  "shopify_theme": {
+    "recommended_theme": "Dawn (free Shopify default theme — verify the latest recommended free theme in your Shopify admin under Online Store > Themes > Explore free themes)",
+    "customization_notes": [
+      "Enable RTL (right-to-left) support for Arabic language",
+      "Set primary color to match brand identity",
+      "Upload store logo",
+      "Configure navigation menu with collections: Bags, Jackets, Shirts, Pants",
+      "Add announcement bar for promotions",
+      "Enable sticky header for better UX"
+    ],
+    "required_pages": [
+      { "title": "About Us / من نحن", "handle": "about" },
+      { "title": "Contact Us / اتصل بنا", "handle": "contact" },
+      { "title": "Privacy Policy / سياسة الخصوصية", "handle": "privacy-policy" },
+      { "title": "Refund Policy / سياسة الاسترجاع", "handle": "refund-policy" },
+      { "title": "Shipping Policy / سياسة الشحن", "handle": "shipping-policy" },
+      { "title": "Terms of Service / الشروط والأحكام", "handle": "terms-of-service" }
+    ]
+  }
+}
