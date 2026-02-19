@@ -8,6 +8,42 @@ const CheckoutSuccess = () => {
   const [orderDetails, setOrderDetails] = useState(null);
 
   useEffect(() => {
+    const pollPaymentStatus = async (sessionId, attempts = 0) => {
+      const maxAttempts = 5;
+      const pollInterval = 2000;
+  
+      if (attempts >= maxAttempts) {
+        setStatus('timeout');
+        return;
+      }
+  
+      try {
+        const response = await fetch(`${API_URL}/api/checkout/status/${sessionId}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to check payment status');
+        }
+  
+        const data = await response.json();
+  
+        if (data.payment_status === 'paid') {
+          setStatus('success');
+          setOrderDetails(data);
+          return;
+        } else if (data.status === 'expired') {
+          setStatus('expired');
+          return;
+        }
+  
+        // Continue polling
+        setStatus('processing');
+        setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+      } catch (error) {
+        console.error('Error checking payment status:', error);
+        setStatus('error');
+      }
+    };
+    
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
 
@@ -20,42 +56,6 @@ const CheckoutSuccess = () => {
     // Clear cart after successful payment
     localStorage.removeItem('7777_cart');
   }, []);
-
-  const pollPaymentStatus = async (sessionId, attempts = 0) => {
-    const maxAttempts = 5;
-    const pollInterval = 2000;
-
-    if (attempts >= maxAttempts) {
-      setStatus('timeout');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_URL}/api/checkout/status/${sessionId}`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to check payment status');
-      }
-
-      const data = await response.json();
-
-      if (data.payment_status === 'paid') {
-        setStatus('success');
-        setOrderDetails(data);
-        return;
-      } else if (data.status === 'expired') {
-        setStatus('expired');
-        return;
-      }
-
-      // Continue polling
-      setStatus('processing');
-      setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
-    } catch (error) {
-      console.error('Error checking payment status:', error);
-      setStatus('error');
-    }
-  };
 
   const goHome = () => {
     window.location.href = '/';

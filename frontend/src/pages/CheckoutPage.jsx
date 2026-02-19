@@ -36,28 +36,29 @@ const CheckoutPage = () => {
 
   // Load saved addresses if authenticated
   useEffect(() => {
+    const loadSavedAddresses = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/addresses`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        setSavedAddresses(data.addresses || []);
+        
+        // Auto-select default address
+        const defaultAddr = data.addresses?.find(a => a.is_default);
+        if (defaultAddr) {
+          selectAddress(defaultAddr);
+        }
+      } catch (error) {
+        console.error('Error loading addresses:', error);
+      }
+    };
+
     if (isAuthenticated && token) {
       loadSavedAddresses();
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, token]);
-
-  const loadSavedAddresses = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/addresses`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await response.json();
-      setSavedAddresses(data.addresses || []);
-      
-      // Auto-select default address
-      const defaultAddr = data.addresses?.find(a => a.is_default);
-      if (defaultAddr) {
-        selectAddress(defaultAddr);
-      }
-    } catch (error) {
-      console.error('Error loading addresses:', error);
-    }
-  };
 
   const selectAddress = (address) => {
     setSelectedAddressId(address.id);
@@ -419,7 +420,7 @@ const CheckoutPage = () => {
                       </div>
                       <span>Delivery</span>
                     </div>
-                    <span className="font-medium text-green-600">FREE</span>
+                    <span className="font-medium text-green-600">29 SAR</span>
                   </div>
                 </div>
               </div>
