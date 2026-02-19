@@ -3,9 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@/App.css";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import HomePage from "./pages/HomePage";
 import CheckoutPage from "./pages/CheckoutPage";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
+import NotFoundPage from "./pages/NotFoundPage";
+import MaintenancePage from "./pages/MaintenancePage";
 import ProductDetail from "./components/ProductDetail";
 import CartSidebar from "./components/CartSidebar";
 import AuthModal from "./components/AuthModal";
@@ -18,11 +21,12 @@ function App() {
   const [accountPageOpen, setAccountPageOpen] = React.useState(false);
 
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <div className="App" dir="rtl">
-            <Routes>
+    <LanguageProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+            <div className="App">
+              <Routes>
               <Route 
                 path="/" 
                 element={
@@ -37,6 +41,14 @@ function App() {
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/checkout/cancel" element={
                 <HomePage 
+                  onOpenAuth={() => setAuthModalOpen(true)}
+                  onOpenSearch={() => setSearchModalOpen(true)}
+                  onOpenAccount={() => setAccountPageOpen(true)}
+                />
+              } />
+              <Route path="/maintenance" element={<MaintenancePage />} />
+              <Route path="*" element={
+                <NotFoundPage 
                   onOpenAuth={() => setAuthModalOpen(true)}
                   onOpenSearch={() => setSearchModalOpen(true)}
                   onOpenAccount={() => setAccountPageOpen(true)}
@@ -61,6 +73,7 @@ function App() {
         </Router>
       </CartProvider>
     </AuthProvider>
+    </LanguageProvider>
   );
 }
 

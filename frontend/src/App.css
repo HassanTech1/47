@@ -15,7 +15,7 @@
 }
 
 /* Typography - Arabic Support */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Playfair+Display:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Playfair+Display:wght@400;600;700&family=Dancing+Script:wght@400;700&display=swap');
 
 body {
     font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -359,21 +359,22 @@ body {
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: #25D366;
+    background: #000000;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     cursor: pointer;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
 }
 
 .floating-chat-button:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.6);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+    background: #1a1a1a;
 }
 
 /* Footer */
