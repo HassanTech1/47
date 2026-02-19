@@ -61,6 +61,37 @@ const webpackConfig = {
         ],
       };
 
+      // Output bundled files to Shopify assets folder with consistent names
+      if (process.env.NODE_ENV === 'production') {
+        webpackConfig.output = {
+          ...webpackConfig.output,
+          path: path.resolve(__dirname, '../assets'),
+          filename: 'theme-bundle.js',
+          chunkFilename: 'theme-bundle-[id].chunk.js',
+        };
+
+        // Disable code splitting so all JS lands in a single theme-bundle.js
+        webpackConfig.optimization = {
+          ...webpackConfig.optimization,
+          splitChunks: false,
+          runtimeChunk: false,
+        };
+
+        // Update MiniCssExtractPlugin to output theme-bundle.css
+        try {
+          const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+          const cssPlugin = webpackConfig.plugins.find(
+            (p) => p instanceof MiniCssExtractPlugin
+          );
+          if (cssPlugin) {
+            cssPlugin.options.filename = 'theme-bundle.css';
+            cssPlugin.options.chunkFilename = 'theme-bundle-[id].chunk.css';
+          }
+        } catch (_) {
+          console.warn('[Shopify build] MiniCssExtractPlugin not found; theme-bundle.css filename may not be set correctly.');
+        }
+      }
+
       // Add health check plugin to webpack if enabled
       if (config.enableHealthCheck && healthPluginInstance) {
         webpackConfig.plugins.push(healthPluginInstance);
