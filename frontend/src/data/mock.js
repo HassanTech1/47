@@ -147,4 +147,4 @@ export const heroImages = {
 
 export const lifestyleImage = "https://images.unsplash.com/photo-1770022006565-1217f8c78ba1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjb3VwbGUlMjBtYXRjaGluZyUyMG91dGZpdHN8ZW58MHx8fHwxNzcxMTUwNjYyfDA&ixlib=rb-4.1.0&q=85";
 
-export const promoBannerImage = "https://images.unsplash.com/photo-1659687887993-47ca3c4f4d5c";
+export const promoBannerImage = "pexels-angela-roma-7480093.jpg";

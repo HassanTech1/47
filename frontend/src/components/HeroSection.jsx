@@ -1,172 +1,109 @@
-import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Model3D from './Model3D';
+import React from 'react';
+// Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// Swiper modules
+import { Autoplay, EffectFade } from 'swiper/modules';
 
-gsap.registerPlugin(ScrollTrigger);
+// Swiper styles
+import 'swiper/css';
+import 'swiper/css/effect-fade';
+
+// Images
+import hero1 from '../assest/head/4.jpeg';
+import img1 from '../assest/head/1.png';
+import img2 from '../assest/head/2.jpeg';
+import img3 from '../assest/head/3.jpeg';
 
 const HeroSection = () => {
-  const heroRef = useRef(null);
-  const topModelRef = useRef(null);
-  const bottomModelRef = useRef(null);
-  const leftButtonRef = useRef(null);
-  const rightButtonRef = useRef(null);
-
-  useEffect(() => {
-    const hero = heroRef.current;
-    const topModel = topModelRef.current;
-    const bottomModel = bottomModelRef.current;
-    const leftButton = leftButtonRef.current;
-    const rightButton = rightButtonRef.current;
-
-    // Gentle floating animation for top model (jacket - top right)
-    gsap.to(topModel, {
-      y: -20,
-      duration: 3,
-      ease: 'power1.inOut',
-      repeat: -1,
-      yoyo: true,
-    });
-
-    // Gentle floating animation for bottom model (hoodie - bottom left)
-    gsap.to(bottomModel, {
-      y: 20,
-      duration: 3.5,
-      ease: 'power1.inOut',
-      repeat: -1,
-      yoyo: true,
-    });
-
-    // Simple fade on scroll - NO drag effect
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: hero,
-        start: 'top top',
-        end: '+=100%',
-        scrub: 1,
-        pin: false,
-      }
-    });
-
-    // Just fade out, no movement
-    tl.to([topModel, bottomModel, leftButton, rightButton], {
-      opacity: 0,
-      duration: 1,
-    }, 0);
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, []);
+    // Array of images with corresponding text content
+  const slides = [
+    {
+      img: hero1,
+      title: "Creativity",
+      subtitle: "With  4seven's products",
+      desc: "٧"
+    },
+    {
+      img: img2,
+      title: "Elegance",
+      subtitle: "Shine with our collection",
+      desc: "٧٧"
+    },
+    {
+      img: img3,
+      title: "Preparation",
+      subtitle: "Embrace your future ",
+      desc: "٧٧٧"
+    },
+    {
+      img: img1,
+      title: "Fashion",
+      subtitle: "Luxurious design from the other side",
+      desc: "٧٧٧٧"
+    }
+  ];
 
   return (
-    <div 
-      ref={heroRef}
-      className="hero-section relative w-full overflow-hidden"
-      style={{ height: '100vh' }}
-    >
-      {/* Split Background - Red Left, Black Right */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute left-0 top-0 w-1/2 h-full bg-red-600"></div>
-        <div className="absolute right-0 top-0 w-1/2 h-full bg-black"></div>
-        {/* Vertical line in center */}
-        <div className="absolute left-1/2 top-0 w-px h-full bg-white/30 transform -translate-x-1/2"></div>
-      </div>
-
-      {/* Center Branding - Raised Higher */}
-      <div className="absolute top-[15%] left-1/2 transform -translate-x-1/2 z-15 text-center">
-        <h1 className="text-9xl lg:text-[12rem] font-bold text-white hero-logo mb-6">
-          ٧٧٧٧
-        </h1>
-        <p className="text-3xl lg:text-4xl text-white/90 font-light tracking-widest">
-          PREMIUM FASHION
-        </p>
-        <div className="mt-8 flex justify-center gap-3">
-          <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-          <div className="w-3 h-3 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
-          <div className="w-3 h-3 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.6s' }}></div>
-        </div>
-      </div>
-
-      {/* 3D Model - Top Right (Jacket) - Dark Red on Black Background */}
-      <div 
-        ref={topModelRef}
-        className="absolute top-8 right-8 w-[600px] h-[600px] z-20 pointer-events-none"
-        style={{ 
-          opacity: 1,
-          filter: 'drop-shadow(0 30px 60px rgba(139, 0, 0, 0.5))',
+    <div id="hero" className="hero-section relative w-full h-[100vh] bg-black">
+      <Swiper
+        modules={[Autoplay, EffectFade]}
+        spaceBetween={0}
+        slidesPerView={1}
+        effect="fade"
+        fadeEffect={{ crossFade: true }}
+        speed={2500} /* Slower, calmer transition */
+        loop={true}
+        allowTouchMove={false} /* Disable swiping by hand for a pure background feel */
+        autoplay={{
+          delay: 6000,
+          disableOnInteraction: false,
         }}
+        className="w-full h-full"
       >
-        <Model3D 
-          modelUrl="/models/jacket.obj"
-          position="top"
-          color="#8B0000"
-        />
-      </div>
+        {slides.map((slide, index) => (
+          <SwiperSlide key={index} className="relative w-full h-full overflow-hidden">
+             {/* Slide Content */}
+             {({ isActive }) => (
+               <>
+                  <img 
+                    src={slide.img} 
+                    alt={slide.title} 
+                    className={`w-full h-full object-cover transition-transform duration-[6000ms] ease-out ${isActive ? 'scale-110' : 'scale-100'}`}
+                  />
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-black/30"></div>
+                  
+                  {/* Text Content with Animation based on isActive state */}
+                  <div className={`absolute inset-0 flex flex-col items-center justify-center text-center text-white transition-all duration-1000 delay-300 ease-out ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+                      
+                      {/* Top Tag */}
+                      <div className="text-white/80 tracking-[0.3em] text-xs font-bold border-b border-white/20 pb-2 mb-6">
+                        {slide.desc}
+                      </div>
 
-      {/* 3D Model - Bottom Left (Hoodie) - White on Red Background */}
-      <div 
-        ref={bottomModelRef}
-        className="absolute bottom-12 left-8 w-[600px] h-[600px] z-20 pointer-events-none"
-        style={{ 
-          opacity: 1,
-          filter: 'drop-shadow(0 30px 60px rgba(255, 255, 255, 0.5))',
-        }}
-      >
-        <Model3D 
-          modelUrl="/models/hoodie.obj"
-          position="bottom"
-          color="#FFFFFF"
-        />
-      </div>
-
-      {/* Split Buttons - Fixed Position, Bottom of Screen */}
-      <div className="absolute bottom-20 left-0 right-0 flex items-center justify-center z-40 gap-12 pointer-events-auto">
-        {/* Left Button - "Take Code 7777" */}
-        <button ref={leftButtonRef} className="split-button left-button group" style={{ opacity: 1 }}>
-          <div className="text-center">
-            <p className="text-3xl lg:text-4xl font-bold mb-3">لك</p>
-            <p className="text-sm lg:text-base opacity-90 group-hover:opacity-100 transition-opacity">
-              خذ الكود 7777
-            </p>
-          </div>
-        </button>
-
-        {/* Right Button - "Enter Your Code" */}
-        <button ref={rightButtonRef} className="split-button right-button group" style={{ opacity: 1 }}>
-          <div className="text-center">
-            <p className="text-3xl lg:text-4xl font-bold mb-3">لي</p>
-            <p className="text-sm lg:text-base opacity-90 group-hover:opacity-100 transition-opacity">
-              أدخل الكود الخاص بك
-            </p>
-          </div>
-        </button>
-      </div>
-
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 z-10">
-        {/* Left side (red) decorative elements */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/3 left-1/3 w-48 h-48 bg-black/20 rounded-full blur-2xl" style={{ animationDelay: '1s' }}></div>
-        
-        {/* Right side (black) decorative elements */}
-        <div className="absolute top-1/3 right-1/4 w-56 h-56 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-        <div className="absolute bottom-1/4 right-1/3 w-72 h-72 bg-red-600/10 rounded-full blur-3xl"></div>
-        
-        {/* Center glow */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl"></div>
-      </div>
-
-      {/* Bottom Text */}
-      <div className="absolute bottom-8 left-0 right-0 z-40 flex justify-center">
-        <div className="text-center">
-          <p className="text-lg lg:text-xl text-white/70 tracking-widest">
-            مجموعة صيف ٢٠٢٥
-          </p>
-        </div>
+                      {/* Main Title */}
+                      <h1 className="text-7xl md:text-9xl font-serif font-bold leading-none tracking-tighter mix-blend-overlay mb-4" style={{ fontFamily: '"Dancing Script", cursive' }}>
+                        {slide.title}
+                      </h1>
+                      
+                      {/* Subtitle */}
+                      <p className="text-xl md:text-2xl font-light tracking-[0.5em] uppercase border-t border-white/30 pt-4 inline-block">
+                        {slide.subtitle}
+                      </p>
+                  </div>
+               </>
+             )}
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      
+      {/* Scroll Indicator (Static on top of slider) */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/70 text-sm tracking-widest uppercase animate-bounce z-20 pointer-events-none">
+            Scroll to Explore
       </div>
     </div>
   );
 };
+
 
 export default HeroSection;

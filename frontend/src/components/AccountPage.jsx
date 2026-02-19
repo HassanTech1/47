@@ -25,19 +25,7 @@ const AccountPage = ({ isOpen, onClose }) => {
     is_default: false,
   });
 
-  useEffect(() => {
-    if (user) {
-      setProfileForm({ name: user.name, phone: user.phone || '' });
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (isOpen && token) {
-      loadData();
-    }
-  }, [isOpen, activeTab, token]);
-
-  const loadData = async () => {
+  const loadData = React.useCallback(async () => {
     setLoading(true);
     try {
       if (activeTab === 'orders') {
@@ -58,7 +46,19 @@ const AccountPage = ({ isOpen, onClose }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, authFetch]);
+
+  useEffect(() => {
+    if (user) {
+      setProfileForm({ name: user.name, phone: user.phone || '' });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (isOpen && token) {
+      loadData();
+    }
+  }, [isOpen, token, loadData]);
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();

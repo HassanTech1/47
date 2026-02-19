@@ -1,26 +1,33 @@
 import React from 'react';
-import { promoBannerImage } from '../data/mock';
+import newBg from '../assest/preview/new-background.jpeg';
 
 const PromoBanner = () => {
   return (
-    <section className="relative h-[500px] lg:h-[600px] overflow-hidden my-24">
+    <section className="relative h-[500px] lg:h-[600px] overflow-hidden">
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${promoBannerImage})`,
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${newBg})`,
         }}
       />
       
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="text-center px-8">
           <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight promo-text">
-            حقيبتك علينا<br />وملابسك علينا
+              Elevate Your Style<br />With Premium Essentials
           </h2>
-          <p className="text-2xl lg:text-3xl text-gold font-light mb-8">
-            صيفك يكتمل معنا
+          <p className="text-2xl lg:text-3xl text-gold font-light mb-8" style={{ color: '#FFFFFF' }}>
+            Complete your style ensemble with our latest collection
           </p>
-          <button className="cta-button">
-            تسوق الآن
+          <button
+            className="cta-button"
+            onClick={(e) => {
+              e.preventDefault();
+              const el = document.getElementById('product-grid');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Discover Collection
           </button>
         </div>
       </div>
