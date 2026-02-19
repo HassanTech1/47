@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "react-app",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
