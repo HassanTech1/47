@@ -1,0 +1,231 @@
+{
+  "general": {
+    "continue_shopping": "Continue shopping",
+    "search": {
+      "search": "Search",
+      "placeholder": "Search our store",
+      "results_with_count": {
+        "one": "{{ count }} result for \"{{ terms }}\"",
+        "other": "{{ count }} results for \"{{ terms }}\""
+      },
+      "no_results": "No results for \"{{ terms }}\""
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{ number }}"
+    },
+    "slider": {
+      "of": "of"
+    }
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content"
+  },
+  "sections": {
+    "header": {
+      "announcement": "Announcement",
+      "cart": "Cart",
+      "cart_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      },
+      "account": "Account",
+      "menu": "Main menu"
+    },
+    "announcement-bar": {
+      "name": "Announcement bar",
+      "settings": {
+        "text": {
+          "label": "Announcement text"
+        }
+      },
+      "presets": {
+        "name": "Announcement bar"
+      }
+    },
+    "slideshow": {
+      "name": "Slideshow",
+      "previous_slideshow": "Previous slide",
+      "next_slideshow": "Next slide",
+      "load_slide": "Load slide",
+      "settings": {
+        "autoplay": {
+          "label": "Auto-rotate slides"
+        },
+        "delay": {
+          "label": "Change slides every"
+        }
+      },
+      "blocks": {
+        "slide": {
+          "name": "Slide",
+          "settings": {
+            "image": { "label": "Image" },
+            "heading": {
+              "label": "Heading",
+              "info": "Enter an optional heading"
+            },
+            "subheading": { "label": "Subheading" },
+            "button_label": {
+              "label": "Button label",
+              "info": "Leave blank to hide button"
+            },
+            "button_link": { "label": "Button link" },
+            "text_alignment": {
+              "label": "Desktop content alignment",
+              "options__1": { "label": "Left" },
+              "options__2": { "label": "Center" },
+              "options__3": { "label": "Right" }
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Slideshow"
+      }
+    },
+    "footer": {
+      "name": "Footer",
+      "newsletter_heading": "Stay in touch",
+      "newsletter_description": "Subscribe to receive news and exclusive offers.",
+      "email_placeholder": "Your email address",
+      "subscribe_btn": "Subscribe",
+      "settings": {
+        "newsletter_enable": {
+          "label": "Show email signup"
+        },
+        "enable_country_selector": {
+          "label": "Enable country/region selector"
+        },
+        "payment_enable": {
+          "label": "Show payment icons"
+        }
+      },
+      "blocks": {
+        "link_list": {
+          "name": "Link list",
+          "settings": {
+            "heading": { "label": "Heading" },
+            "menu": { "label": "Menu" }
+          }
+        }
+      },
+      "presets": {
+        "name": "Footer"
+      }
+    },
+    "featured-collection": {
+      "name": "Featured collection",
+      "settings": {
+        "title": { "label": "Heading" },
+        "collection": { "label": "Collection" },
+        "products_to_show": { "label": "Maximum products to show" },
+        "columns_desktop": { "label": "Number of columns on desktop" },
+        "columns_mobile": {
+          "label": "Number of columns on mobile",
+          "options__1": { "label": "1 column" },
+          "options__2": { "label": "2 columns" }
+        },
+        "show_view_all": { "label": "Enable \"View all\" button if collection has more products than shown" }
+      },
+      "view_all_label": "View all {{ collection_name }}",
+      "view_all": "View all",
+      "presets": {
+        "name": "Featured collection"
+      }
+    },
+    "main-product": {
+      "name": "Product information",
+      "settings": {
+        "show_vendor": { "label": "Show vendor" }
+      },
+      "presets": {
+        "name": "Product information"
+      }
+    },
+    "main-collection-product-grid": {
+      "name": "Product grid",
+      "settings": {
+        "products_per_page": { "label": "Products per page" }
+      },
+      "presets": {
+        "name": "Product grid"
+      }
+    },
+    "main-cart-items": {
+      "name": "Cart items",
+      "presets": {
+        "name": "Cart items"
+      }
+    },
+    "main-404": {
+      "name": "Page not found",
+      "presets": {
+        "name": "Page not found"
+      }
+    },
+    "main-page": {
+      "name": "Page",
+      "presets": {
+        "name": "Page"
+      }
+    },
+    "cart": {
+      "title": "Your cart",
+      "empty": "Your cart is empty",
+      "subtotal": "Subtotal",
+      "taxes_note": "Taxes and shipping calculated at checkout",
+      "update": "Update cart",
+      "checkout": "Check out",
+      "headings": {
+        "product": "Product",
+        "price": "Price",
+        "quantity": "Quantity",
+        "total": "Total"
+      }
+    },
+    "collection_template": {
+      "empty": "No products found in this collection.",
+      "use_filters_to_show_products": "Use fewer filters or clear all"
+    },
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you requested does not exist.",
+      "link": "Return home"
+    }
+  },
+  "all": {
+    "color_scheme": {
+      "label": "Color scheme",
+      "options__1": { "value": "background-1", "label": "Background 1" },
+      "options__2": { "value": "background-2", "label": "Background 2" },
+      "options__3": { "value": "inverse", "label": "Inverse" }
+    },
+    "heading_size": {
+      "label": "Heading size",
+      "options__1": { "label": "Small" },
+      "options__2": { "label": "Medium" },
+      "options__3": { "label": "Large" }
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "quantity": {
+        "decrease": "Decrease quantity of {{ product }}",
+        "increase": "Increase quantity of {{ product }}",
+        "input_label": "Quantity for {{ product }}"
+      }
+    }
+  },
+  "newsletter": {
+    "button_label": "Subscribe",
+    "success": "Thanks for subscribing!"
+  },
+  "onboarding": {
+    "product_title": "Example product title"
+  }
+}

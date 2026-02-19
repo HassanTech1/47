@@ -1,0 +1,117 @@
+<section
+  id="MainCart-{{ section.id }}"
+  class="cart-template page-width"
+  aria-labelledby="CartHeading-{{ section.id }}"
+>
+  <h1 id="CartHeading-{{ section.id }}" class="cart-template__title">
+    {{ 'sections.cart.title' | t }}
+  </h1>
+
+  {%- if cart.item_count == 0 -%}
+    <div class="cart-template__empty">
+      <p>{{ 'sections.cart.empty' | t }}</p>
+      <a href="{{ routes.root_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+    </div>
+  {%- else -%}
+    {%- form 'cart', cart, id: 'CartForm', class: 'cart-form' -%}
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'sections.cart.headings.product' | t }}</th>
+            <th scope="col">{{ 'sections.cart.headings.price' | t }}</th>
+            <th scope="col">{{ 'sections.cart.headings.quantity' | t }}</th>
+            <th scope="col">{{ 'sections.cart.headings.total' | t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for item in cart.items -%}
+            <tr class="cart-table__row" id="CartItem-{{ item.index | plus: 1 }}">
+              <td class="cart-table__cell cart-table__cell--product">
+                <a href="{{ item.url }}" class="cart-table__product-link">
+                  {%- if item.image -%}
+                    {{
+                      item.image
+                      | image_url: width: 110
+                      | image_tag:
+                        class: 'cart-table__product-image',
+                        alt: item.image.alt | escape,
+                        loading: 'lazy',
+                        widths: '110, 220'
+                    }}
+                  {%- endif -%}
+                  <div class="cart-table__product-info">
+                    <p class="cart-table__product-name">{{ item.product.title | escape }}</p>
+                    {%- unless item.product.has_only_default_variant -%}
+                      <p class="cart-table__product-variant">{{ item.variant.title | escape }}</p>
+                    {%- endunless -%}
+                  </div>
+                </a>
+              </td>
+              <td class="cart-table__cell">{{ item.original_price | money }}</td>
+              <td class="cart-table__cell">
+                <div class="quantity">
+                  <button
+                    class="quantity__button"
+                    type="button"
+                    name="minus"
+                    aria-label="{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}"
+                    onclick="this.nextElementSibling.stepDown(); this.closest('form').submit();"
+                  >&#8722;</button>
+                  <input
+                    class="quantity__input"
+                    type="number"
+                    name="updates[]"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+                    id="Quantity-{{ item.index | plus: 1 }}"
+                  >
+                  <button
+                    class="quantity__button"
+                    type="button"
+                    name="plus"
+                    aria-label="{{ 'products.product.quantity.increase' | t: product: item.product.title | escape }}"
+                    onclick="this.previousElementSibling.stepUp(); this.closest('form').submit();"
+                  >&#43;</button>
+                </div>
+              </td>
+              <td class="cart-table__cell">{{ item.final_line_price | money }}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+
+      <div class="cart-template__footer">
+        <div class="cart-template__summary">
+          <div class="cart-template__subtotal">
+            <span>{{ 'sections.cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money_with_currency }}</span>
+          </div>
+          <p class="cart-template__taxes-note">{{ 'sections.cart.taxes_note' | t }}</p>
+        </div>
+        <div class="cart-template__actions">
+          <button type="submit" name="update" class="button button--secondary">
+            {{ 'sections.cart.update' | t }}
+          </button>
+          <button type="submit" name="checkout" class="button button--primary">
+            {{ 'sections.cart.checkout' | t }}
+          </button>
+        </div>
+      </div>
+    {%- endform -%}
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-items.name",
+  "tag": "section",
+  "class": "section-cart-template",
+  "settings": [],
+  "presets": [
+    {
+      "name": "t:sections.main-cart-items.presets.name"
+    }
+  ]
+}
+{% endschema %}

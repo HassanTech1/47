@@ -1,0 +1,66 @@
+{%- comment -%}
+  Renders a product card.
+  Accepts:
+  - product_ref {Object} - Product Liquid object (optional; renders placeholder if omitted)
+  - show_vendor {Boolean} - Show vendor name (optional, defaults to false)
+  Usage:
+    {%- render 'product-card', product_ref: product, show_vendor: section.settings.show_vendor -%}
+{%- endcomment -%}
+
+{%- if product_ref == blank -%}
+  {%- assign placeholder = true -%}
+{%- endif -%}
+
+<div class="product-card-wrapper">
+  <div class="product-card product-card-clean">
+    {%- if show_vendor and product_ref.vendor != blank -%}
+      <span class="product-card__vendor visually-hidden">{{ product_ref.vendor }}</span>
+    {%- endif -%}
+
+    <div class="product-card__badge">
+      <span class="product-card__badge-text">Unisex</span>
+    </div>
+
+    <div class="product-card__media">
+      <a href="{{ product_ref.url | default: '#' }}" class="product-card__media-link">
+        {%- if placeholder -%}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-card__image' }}
+        {%- else -%}
+          {%- if product_ref.featured_image -%}
+            {{
+              product_ref.featured_image
+              | image_url: width: 500
+              | image_tag:
+                class: 'product-card__image',
+                widths: '165, 360, 533, 720, 940, 1066',
+                loading: 'lazy',
+                alt: product_ref.featured_image.alt | escape
+            }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-card__image' }}
+          {%- endif -%}
+        {%- endif -%}
+      </a>
+    </div>
+
+    <div class="product-card__info">
+      <h3 class="product-card__title">
+        <a href="{{ product_ref.url | default: '#' }}" class="product-card__title-link">
+          {%- if placeholder -%}
+            {{ 'onboarding.product_title' | t }}
+          {%- else -%}
+            {{ product_ref.title | escape }}
+          {%- endif -%}
+        </a>
+      </h3>
+
+      <div class="product-card__price">
+        {%- if placeholder -%}
+          <span class="price__regular">{{ 1999 | money }}</span>
+        {%- else -%}
+          {%- render 'price', product: product_ref -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<div
+  id="AnnouncementBar"
+  class="announcement-bar color-{{ section.settings.color_scheme }}"
+  role="region"
+  aria-label="{{ 'sections.header.announcement' | t }}"
+>
+  <div class="announcement-bar__content page-width">
+    <p class="announcement-bar__message h5">
+      {{ section.settings.announcement_text }}
+    </p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.announcement-bar.name",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "default": "Free delivery for orders above 475 SAR",
+      "label": "t:sections.announcement-bar.settings.text.label"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        { "value": "background-1", "label": "Background 1" },
+        { "value": "background-2", "label": "Background 2" },
+        { "value": "inverse",      "label": "Inverse" }
+      ],
+      "default": "background-1",
+      "label": "t:sections.all.color_scheme.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.announcement-bar.presets.name"
+    }
+  ]
+}
+{% endschema %}

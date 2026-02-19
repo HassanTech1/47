@@ -1,0 +1,132 @@
+<header
+  class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.show_line_separator %} header--border-bottom{% endif %}{% if section.settings.enable_sticky_header %} shopify-section-header-sticky{% endif %}"
+  id="shopify-section-{{ section.id }}"
+>
+  <div class="header__inner">
+    <!-- Cart Icon -->
+    <div class="header__icons header__icons--left">
+      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart" aria-label="{{ 'sections.header.cart' | t }}">
+        {%- render 'icon-cart' -%}
+        {%- if cart != empty -%}
+          <span class="cart-count badge" aria-label="{{ 'sections.header.cart_count' | t: count: cart.item_count }}">
+            {{ cart.item_count }}
+          </span>
+        {%- endif -%}
+      </a>
+
+      <a href="{{ routes.account_url }}" class="header__icon header__icon--account" aria-label="{{ 'sections.header.account' | t }}">
+        {%- render 'icon-account' -%}
+      </a>
+    </div>
+
+    <!-- Logo -->
+    <div class="header__logo">
+      <a href="{{ routes.root_url }}" class="header__logo-link">
+        {%- if section.settings.logo != blank -%}
+          {{
+            section.settings.logo
+            | image_url: width: section.settings.logo_width
+            | image_tag:
+              class: 'header__logo-image',
+              widths: '50, 100, 150, 200, 250, 300',
+              height: section.settings.logo.height,
+              width: section.settings.logo.width,
+              alt: section.settings.logo.alt | default: shop.name
+          }}
+        {%- else -%}
+          <span class="header__logo-text h2">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    <!-- Right icons: Search -->
+    <div class="header__icons header__icons--right">
+      <button
+        type="button"
+        class="header__icon header__icon--search"
+        aria-label="{{ 'general.search.search' | t }}"
+        onclick="toggleSearch()"
+      >
+        {%- render 'icon-search' -%}
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  {%- if section.settings.menu != blank -%}
+    <nav class="header__nav" aria-label="{{ 'sections.header.menu' | t }}">
+      {%- for link in linklists[section.settings.menu].links -%}
+        <a
+          href="{{ link.url }}"
+          class="header__nav-item{% if link.active %} header__nav-item--active{% endif %}"
+          {% if link.active %}aria-current="page"{% endif %}
+        >
+          {{ link.title }}
+        </a>
+      {%- endfor -%}
+    </nav>
+  {%- endif -%}
+</header>
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:sections.header.settings.logo.label"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "default": 160,
+      "unit": "px",
+      "label": "t:sections.header.settings.logo_width.label"
+    },
+    {
+      "type": "select",
+      "id": "logo_position",
+      "options": [
+        { "value": "top-left",    "label": "t:sections.header.settings.logo_position.options__1.label" },
+        { "value": "top-center",  "label": "t:sections.header.settings.logo_position.options__2.label" },
+        { "value": "middle-left", "label": "t:sections.header.settings.logo_position.options__3.label" }
+      ],
+      "default": "top-center",
+      "label": "t:sections.header.settings.logo_position.label"
+    },
+    {
+      "type": "select",
+      "id": "mobile_logo_position",
+      "options": [
+        { "value": "center", "label": "t:sections.header.settings.mobile_logo_position.options__1.label" },
+        { "value": "left",   "label": "t:sections.header.settings.mobile_logo_position.options__2.label" }
+      ],
+      "default": "center",
+      "label": "t:sections.header.settings.mobile_logo_position.label"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "t:sections.header.settings.menu.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_line_separator",
+      "default": true,
+      "label": "t:sections.header.settings.show_line_separator.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_header",
+      "default": true,
+      "label": "t:sections.header.settings.enable_sticky_header.label"
+    }
+  ]
+}
+{% endschema %}

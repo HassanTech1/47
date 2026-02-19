@@ -1,0 +1,13 @@
+{
+  "current": {
+    "color_background": "#FFFFFF",
+    "color_foreground": "#000000",
+    "color_accent": "#000000",
+    "type_body_font": "assistant_n4",
+    "type_header_font": "playfair_display_n4",
+    "social_instagram_link": "https://instagram.com/4sevens.sa",
+    "social_tiktok_link": "",
+    "cart_type": "drawer"
+  },
+  "presets": {}
+}

@@ -1,0 +1,93 @@
+<section
+  id="PromoBanner-{{ section.id }}"
+  class="promo-banner"
+  style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+>
+  <div
+    class="promo-banner__background"
+    {%- if section.settings.image != blank -%}
+      style="background-image: url('{{ section.settings.image | image_url: width: 2000 }}');"
+    {%- endif -%}
+  ></div>
+  <div class="promo-banner__overlay"></div>
+
+  <div class="promo-banner__content page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="promo-banner__heading {{ section.settings.heading_size }} promo-text">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+    {%- if section.settings.subheading != blank -%}
+      <p class="promo-banner__subheading">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link }}" class="button cta-button">
+        {{ section.settings.button_label | escape }}
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Promo banner",
+  "tag": "section",
+  "class": "section-promo-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 50
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Elevate Your Style\nWith Premium Essentials",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "default": "Complete your style ensemble with our latest collection",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Discover Collection",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo banner"
+    }
+  ]
+}
+{% endschema %}

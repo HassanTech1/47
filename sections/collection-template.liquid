@@ -1,0 +1,89 @@
+<section
+  id="MainCollection-{{ section.id }}"
+  class="collection-template page-width"
+  aria-labelledby="CollectionHeading-{{ section.id }}"
+>
+  <div class="collection-template__header">
+    <h1 id="CollectionHeading-{{ section.id }}" class="collection-template__title">
+      {{ collection.title | escape }}
+    </h1>
+    {%- if collection.description != blank -%}
+      <div class="collection-template__description rte">
+        {{ collection.description }}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- paginate collection.products by section.settings.products_per_page -%}
+    <ul
+      class="product-grid grid grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop"
+      role="list"
+    >
+      {%- for product in collection.products -%}
+        <li class="product-grid__item">
+          {%- render 'product-card',
+            product_ref: product,
+            show_vendor: section.settings.show_vendor
+          -%}
+        </li>
+      {%- else -%}
+        <li class="collection-template__empty">
+          <p>{{ 'sections.collection_template.empty' | t }}</p>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    {%- if paginate.pages > 1 -%}
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-collection-product-grid.name",
+  "tag": "section",
+  "class": "section-collection-template",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 16,
+      "label": "t:sections.main-collection-product-grid.settings.products_per_page.label"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "t:sections.featured-collection.settings.columns_desktop.label"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "default": "2",
+      "label": "t:sections.featured-collection.settings.columns_mobile.label",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "t:sections.product_card.settings.show_vendor.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.main-collection-product-grid.presets.name"
+    }
+  ]
+}
+{% endschema %}
