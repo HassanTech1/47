@@ -7,11 +7,12 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+import httpx
 from emergentintegrations.payments.stripe.checkout import (
     StripeCheckout, 
     CheckoutSessionResponse, 
@@ -166,6 +167,134 @@ class Product(BaseModel):
     price: float
     image: str
     isNew: bool = False
+
+
+# ===================== HYPERPAY MODELS =====================
+
+class HyperPayInitiateRequest(BaseModel):
+    amount: float
+    currency: str = "SAR"
+    payment_type: str = "DB"  # DB=debit, PA=pre-auth
+    brand: Optional[str] = None  # VISA, MASTER, MADA, AMEX
+    order_id: Optional[str] = None
+    customer_email: Optional[str] = None
+    customer_name: Optional[str] = None
+
+class HyperPayTransaction(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    checkout_id: str
+    order_id: Optional[str] = None
+    user_id: Optional[str] = None
+    amount: float
+    currency: str
+    payment_type: str
+    brand: Optional[str] = None
+    result_code: Optional[str] = None
+    result_description: Optional[str] = None
+    status: str = "initiated"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+# ===================== DHL MODELS =====================
+
+class DHLAddress(BaseModel):
+    street_lines: List[str]
+    city: str
+    country_code: str
+    postal_code: Optional[str] = None
+    state_or_province_code: Optional[str] = None
+
+class DHLContact(BaseModel):
+    person_name: str
+    company_name: Optional[str] = None
+    phone_number: str
+    email_address: Optional[str] = None
+
+class DHLPackage(BaseModel):
+    weight: float  # kg
+    length: float  # cm
+    width: float   # cm
+    height: float  # cm
+
+class DHLRateRequest(BaseModel):
+    shipper_account: Optional[str] = None
+    origin_country_code: str = "SA"
+    origin_city_name: str = "Riyadh"
+    destination_country_code: str
+    destination_city_name: str
+    weight: float  # kg
+    length: float = 20.0  # cm
+    width: float = 15.0   # cm
+    height: float = 10.0  # cm
+    planned_shipping_date: Optional[str] = None  # YYYY-MM-DD
+
+class DHLShipmentRequest(BaseModel):
+    shipper_name: str
+    shipper_company: Optional[str] = None
+    shipper_phone: str
+    shipper_email: Optional[str] = None
+    shipper_address: DHLAddress
+    recipient_name: str
+    recipient_company: Optional[str] = None
+    recipient_phone: str
+    recipient_email: Optional[str] = None
+    recipient_address: DHLAddress
+    packages: List[DHLPackage]
+    service_code: str = "P"  # P=Express Worldwide
+    description: str = "Fashion goods"
+    declared_value: float = 100.0
+    currency: str = "SAR"
+
+
+# ===================== ARAMEX MODELS =====================
+
+class AramexAddress(BaseModel):
+    line1: str
+    line2: Optional[str] = None
+    line3: Optional[str] = None
+    city: str
+    state_or_province_code: Optional[str] = None
+    country_code: str
+    postal_code: Optional[str] = None
+
+class AramexContact(BaseModel):
+    person_name: str
+    company_name: Optional[str] = None
+    phone_number1: str
+    email_address: Optional[str] = None
+
+class AramexDimensions(BaseModel):
+    length: float  # cm
+    width: float   # cm
+    height: float  # cm
+    unit: str = "CM"
+
+class AramexRateRequest(BaseModel):
+    origin_country_code: str = "SA"
+    origin_city: str = "Riyadh"
+    destination_country_code: str
+    destination_city: str
+    weight: float  # kg
+    dimensions: Optional[AramexDimensions] = None
+    product_type: str = "PPX"   # PPX=Priority Parcel Express
+    product_group: str = "EXP"  # EXP=Express
+
+class AramexShipmentRequest(BaseModel):
+    shipper_contact: AramexContact
+    shipper_address: AramexAddress
+    consignee_contact: AramexContact
+    consignee_address: AramexAddress
+    weight: float  # kg
+    dimensions: Optional[AramexDimensions] = None
+    description: str = "Fashion goods"
+    number_of_pieces: int = 1
+    product_type: str = "PPX"
+    product_group: str = "EXP"
+    declared_value: float = 100.0
+    currency: str = "SAR"
+    cash_on_delivery: Optional[float] = None
 
 
 # ===================== AUTH HELPERS =====================
@@ -663,6 +792,624 @@ async def stripe_webhook(request: Request):
     except Exception as e:
         logging.error(f"Webhook error: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
+
+
+# ===================== HYPERPAY ROUTES =====================
+
+# HyperPay base URL — swap for production URL when going live:
+# Production: https://eu-prod.oppwa.com
+HYPERPAY_BASE_URL = os.environ.get('HYPERPAY_BASE_URL', 'https://eu-test.oppwa.com')
+
+@api_router.post("/payment/hyperpay/initiate")
+async def hyperpay_initiate(
+    req: HyperPayInitiateRequest,
+    user: Optional[dict] = Depends(get_current_user)
+):
+    """
+    Create a HyperPay checkout ID. The frontend renders the HyperPay
+    payment widget using this checkout ID.
+    Requires env vars: HYPERPAY_ENTITY_ID, HYPERPAY_ACCESS_TOKEN
+    """
+    entity_id = os.environ.get('HYPERPAY_ENTITY_ID')
+    access_token = os.environ.get('HYPERPAY_ACCESS_TOKEN')
+    if not entity_id or not access_token:
+        raise HTTPException(status_code=500, detail="HyperPay credentials not configured")
+
+    # Format amount to 2 decimal places as required by HyperPay
+    amount_str = f"{req.amount:.2f}"
+
+    payload = {
+        "entityId": entity_id,
+        "amount": amount_str,
+        "currency": req.currency,
+        "paymentType": req.payment_type,
+    }
+    if req.customer_email:
+        payload["customer.email"] = req.customer_email
+    if req.customer_name:
+        parts = req.customer_name.split(" ", 1)
+        payload["customer.givenName"] = parts[0]
+        if len(parts) > 1:
+            payload["customer.surname"] = parts[1]
+    if req.order_id:
+        payload["merchantTransactionId"] = req.order_id
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.post(
+                f"{HYPERPAY_BASE_URL}/v1/checkouts",
+                data=payload,
+                headers=headers
+            )
+        result = response.json()
+    except Exception as e:
+        logging.error(f"HyperPay initiate error: {e}")
+        raise HTTPException(status_code=502, detail=f"HyperPay request failed: {str(e)}")
+
+    result_code = result.get("result", {}).get("code", "")
+    # HyperPay success pattern for checkout creation: 000.200.100
+    if not result_code.startswith("000.200"):
+        raise HTTPException(
+            status_code=400,
+            detail=result.get("result", {}).get("description", "HyperPay checkout creation failed")
+        )
+
+    checkout_id = result.get("id")
+    now = datetime.now(timezone.utc)
+
+    txn = HyperPayTransaction(
+        checkout_id=checkout_id,
+        order_id=req.order_id,
+        user_id=user["id"] if user else None,
+        amount=req.amount,
+        currency=req.currency,
+        payment_type=req.payment_type,
+        brand=req.brand,
+        status="initiated"
+    )
+    doc = txn.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    doc['updated_at'] = doc['updated_at'].isoformat()
+    await db.hyperpay_transactions.insert_one(doc)
+
+    return {
+        "checkout_id": checkout_id,
+        "widget_url": f"{HYPERPAY_BASE_URL}/v1/paymentWidgets.js?checkoutId={checkout_id}",
+        "entity_id": entity_id
+    }
+
+
+@api_router.get("/payment/hyperpay/status/{checkout_id}")
+async def hyperpay_status(checkout_id: str):
+    """
+    Retrieve the payment result for a completed HyperPay checkout.
+    Call this after the user is redirected back from the payment widget.
+    Requires env vars: HYPERPAY_ENTITY_ID, HYPERPAY_ACCESS_TOKEN
+    """
+    entity_id = os.environ.get('HYPERPAY_ENTITY_ID')
+    access_token = os.environ.get('HYPERPAY_ACCESS_TOKEN')
+    if not entity_id or not access_token:
+        raise HTTPException(status_code=500, detail="HyperPay credentials not configured")
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+    params = {"entityId": entity_id}
+
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.get(
+                f"{HYPERPAY_BASE_URL}/v1/checkouts/{checkout_id}/payment",
+                params=params,
+                headers=headers
+            )
+        result = response.json()
+    except Exception as e:
+        logging.error(f"HyperPay status error: {e}")
+        raise HTTPException(status_code=502, detail=f"HyperPay request failed: {str(e)}")
+
+    result_code = result.get("result", {}).get("code", "")
+    # Successful transaction codes: 000.000.000, 000.000.100, 000.100.110, 000.100.111, 000.100.112
+    is_success = (
+        result_code.startswith("000.000") or
+        result_code.startswith("000.100.1")
+    )
+    status = "completed" if is_success else "failed"
+
+    update_data = {
+        "result_code": result_code,
+        "result_description": result.get("result", {}).get("description", ""),
+        "status": status,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.hyperpay_transactions.update_one(
+        {"checkout_id": checkout_id},
+        {"$set": update_data}
+    )
+    if status == "completed":
+        await db.orders.update_one(
+            {"session_id": checkout_id},
+            {"$set": {"payment_status": "paid", "status": "confirmed",
+                      "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+
+    return {
+        "checkout_id": checkout_id,
+        "result_code": result_code,
+        "result_description": result.get("result", {}).get("description", ""),
+        "status": status,
+        "payment_brand": result.get("paymentBrand"),
+        "amount": result.get("amount"),
+        "currency": result.get("currency"),
+        "transaction_id": result.get("id")
+    }
+
+
+@api_router.post("/webhook/hyperpay")
+async def hyperpay_webhook(request: Request):
+    """
+    Async notification endpoint for HyperPay.
+    Configure this URL in the HyperPay merchant portal as the notification URL.
+    """
+    try:
+        body = await request.body()
+        params = dict(request.query_params)
+        logging.info(f"HyperPay webhook received: {params}")
+
+        checkout_id = params.get("checkoutId", "")
+        result_code = params.get("result.code", "")
+
+        is_success = (
+            result_code.startswith("000.000") or
+            result_code.startswith("000.100.1")
+        )
+        status = "completed" if is_success else "failed"
+
+        if checkout_id:
+            update_data = {
+                "result_code": result_code,
+                "result_description": params.get("result.description", ""),
+                "status": status,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.hyperpay_transactions.update_one(
+                {"checkout_id": checkout_id},
+                {"$set": update_data}
+            )
+
+        return {"status": "received"}
+    except Exception as e:
+        logging.error(f"HyperPay webhook error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# ===================== DHL ROUTES =====================
+
+DHL_API_BASE_URL = "https://express.api.dhl.com/mydhlapi"
+
+def _dhl_headers() -> dict:
+    api_key = os.environ.get('DHL_API_KEY')
+    if not api_key:
+        raise HTTPException(status_code=500, detail="DHL API key not configured")
+    return {"DHL-API-Key": api_key, "Content-Type": "application/json"}
+
+
+@api_router.post("/shipping/dhl/rates")
+async def dhl_get_rates(req: DHLRateRequest):
+    """
+    Get DHL Express rates and transit times between two locations.
+    Requires env var: DHL_API_KEY
+    """
+    headers = _dhl_headers()
+    planned_date = req.planned_shipping_date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    params = {
+        "accountNumber": req.shipper_account or os.environ.get('DHL_ACCOUNT_NUMBER', ''),
+        "originCountryCode": req.origin_country_code,
+        "originCityName": req.origin_city_name,
+        "destinationCountryCode": req.destination_country_code,
+        "destinationCityName": req.destination_city_name,
+        "weight": req.weight,
+        "length": req.length,
+        "width": req.width,
+        "height": req.height,
+        "plannedShippingDate": planned_date,
+        "isCustomsDeclarable": False,
+        "unitOfMeasurement": "metric"
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.get(
+                f"{DHL_API_BASE_URL}/rates",
+                params=params,
+                headers=headers
+            )
+        if response.status_code not in (200, 207):
+            raise HTTPException(status_code=response.status_code,
+                                detail=response.text)
+        return response.json()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"DHL rates error: {e}")
+        raise HTTPException(status_code=502, detail=f"DHL API request failed: {str(e)}")
+
+
+@api_router.post("/shipping/dhl/create-shipment")
+async def dhl_create_shipment(req: DHLShipmentRequest):
+    """
+    Create a DHL Express shipment and get a waybill/label.
+    Requires env vars: DHL_API_KEY, DHL_ACCOUNT_NUMBER
+    """
+    headers = _dhl_headers()
+    account_number = os.environ.get('DHL_ACCOUNT_NUMBER', '')
+    planned_date = datetime.now(timezone(timedelta(hours=3))).strftime("%Y-%m-%dT%H:%M:%S") + " GMT+03:00"
+
+    packages_payload = []
+    for i, pkg in enumerate(req.packages, start=1):
+        packages_payload.append({
+            "weight": pkg.weight,
+            "dimensions": {
+                "length": pkg.length,
+                "width": pkg.width,
+                "height": pkg.height
+            }
+        })
+
+    payload = {
+        "plannedShippingDateAndTime": planned_date,
+        "pickup": {"isRequested": False},
+        "productCode": req.service_code,
+        "accounts": [{"typeCode": "shipper", "number": account_number}],
+        "customerDetails": {
+            "shipperDetails": {
+                "postalAddress": {
+                    "streetLines": req.shipper_address.street_lines,
+                    "city": req.shipper_address.city,
+                    "countryCode": req.shipper_address.country_code,
+                    "postalCode": req.shipper_address.postal_code or "",
+                },
+                "contactInformation": {
+                    "fullName": req.shipper_name,
+                    "companyName": req.shipper_company or req.shipper_name,
+                    "phone": req.shipper_phone,
+                    "email": req.shipper_email or ""
+                }
+            },
+            "receiverDetails": {
+                "postalAddress": {
+                    "streetLines": req.recipient_address.street_lines,
+                    "city": req.recipient_address.city,
+                    "countryCode": req.recipient_address.country_code,
+                    "postalCode": req.recipient_address.postal_code or "",
+                },
+                "contactInformation": {
+                    "fullName": req.recipient_name,
+                    "companyName": req.recipient_company or req.recipient_name,
+                    "phone": req.recipient_phone,
+                    "email": req.recipient_email or ""
+                }
+            }
+        },
+        "content": {
+            "packages": packages_payload,
+            "isCustomsDeclarable": False,
+            "description": req.description,
+            "incoterm": "DAP",
+            "unitOfMeasurement": "metric"
+        },
+        "outputImageProperties": {
+            "printerDPI": 300,
+            "encodingFormat": "pdf",
+            "imageOptions": [{"typeCode": "label", "templateName": "ECOM26_84_001"}]
+        }
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=60) as client:
+            response = await client.post(
+                f"{DHL_API_BASE_URL}/shipments",
+                json=payload,
+                headers=headers
+            )
+        if response.status_code not in (200, 201):
+            raise HTTPException(status_code=response.status_code,
+                                detail=response.text)
+        result = response.json()
+        tracking_number = result.get("shipmentTrackingNumber", "")
+        await db.shipments.insert_one({
+            "id": str(uuid.uuid4()),
+            "carrier": "DHL",
+            "tracking_number": tracking_number,
+            "shipper": req.shipper_name,
+            "recipient": req.recipient_name,
+            "status": "created",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"DHL create shipment error: {e}")
+        raise HTTPException(status_code=502, detail=f"DHL API request failed: {str(e)}")
+
+
+@api_router.get("/shipping/dhl/track/{tracking_number}")
+async def dhl_track_shipment(tracking_number: str):
+    """
+    Track a DHL Express shipment by waybill number.
+    Requires env var: DHL_API_KEY
+    """
+    headers = _dhl_headers()
+    params = {"shipmentTrackingNumber": tracking_number}
+
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.get(
+                f"{DHL_API_BASE_URL}/tracking",
+                params=params,
+                headers=headers
+            )
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code,
+                                detail=response.text)
+        return response.json()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"DHL tracking error: {e}")
+        raise HTTPException(status_code=502, detail=f"DHL API request failed: {str(e)}")
+
+
+# ===================== ARAMEX ROUTES =====================
+
+ARAMEX_API_BASE_URL = "https://ws.aramex.net/ShippingAPI.V2"
+
+def _aramex_client_info() -> dict:
+    username = os.environ.get('ARAMEX_USERNAME')
+    password = os.environ.get('ARAMEX_PASSWORD')
+    account_number = os.environ.get('ARAMEX_ACCOUNT_NUMBER')
+    account_pin = os.environ.get('ARAMEX_ACCOUNT_PIN')
+    account_entity = os.environ.get('ARAMEX_ACCOUNT_ENTITY', 'RUH')
+    account_country_code = os.environ.get('ARAMEX_ACCOUNT_COUNTRY_CODE', 'SA')
+    if not all([username, password, account_number, account_pin]):
+        raise HTTPException(status_code=500, detail="Aramex credentials not configured")
+    return {
+        "UserName": username,
+        "Password": password,
+        "Version": "v1.0",
+        "AccountNumber": account_number,
+        "AccountPin": account_pin,
+        "AccountEntity": account_entity,
+        "AccountCountryCode": account_country_code,
+        "Source": 24
+    }
+
+
+@api_router.post("/shipping/aramex/rates")
+async def aramex_get_rates(req: AramexRateRequest):
+    """
+    Calculate Aramex shipping rate between two locations.
+    Requires env vars: ARAMEX_USERNAME, ARAMEX_PASSWORD,
+                       ARAMEX_ACCOUNT_NUMBER, ARAMEX_ACCOUNT_PIN
+    """
+    client_info = _aramex_client_info()
+
+    dims_payload = None
+    if req.dimensions:
+        dims_payload = {
+            "Length": req.dimensions.length,
+            "Width": req.dimensions.width,
+            "Height": req.dimensions.height,
+            "Unit": req.dimensions.unit
+        }
+
+    payload = {
+        "ClientInfo": client_info,
+        "OriginAddress": {
+            "Line1": req.origin_city,
+            "City": req.origin_city,
+            "CountryCode": req.origin_country_code
+        },
+        "DestinationAddress": {
+            "Line1": req.destination_city,
+            "City": req.destination_city,
+            "CountryCode": req.destination_country_code
+        },
+        "ShipmentDetails": {
+            "Dimensions": dims_payload,
+            "ActualWeight": {"Value": req.weight, "Unit": "KG"},
+            "ProductType": req.product_type,
+            "ProductGroup": req.product_group,
+            "PaymentType": "P",
+            "NumberOfPieces": 1
+        }
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.post(
+                f"{ARAMEX_API_BASE_URL}/shipping/service.svc/json/CalculateRate",
+                json=payload,
+                headers={"Content-Type": "application/json"}
+            )
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code,
+                                detail=response.text)
+        result = response.json()
+        if result.get("HasErrors"):
+            notifications = result.get("Notifications", [])
+            msgs = [n.get("Message", "") for n in notifications]
+            raise HTTPException(status_code=400, detail="; ".join(msgs))
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Aramex rates error: {e}")
+        raise HTTPException(status_code=502, detail=f"Aramex API request failed: {str(e)}")
+
+
+@api_router.post("/shipping/aramex/create-shipment")
+async def aramex_create_shipment(req: AramexShipmentRequest):
+    """
+    Create an Aramex shipment and get a waybill number and label.
+    Requires env vars: ARAMEX_USERNAME, ARAMEX_PASSWORD,
+                       ARAMEX_ACCOUNT_NUMBER, ARAMEX_ACCOUNT_PIN
+    """
+    client_info = _aramex_client_info()
+
+    dims_payload = None
+    if req.dimensions:
+        dims_payload = {
+            "Length": req.dimensions.length,
+            "Width": req.dimensions.width,
+            "Height": req.dimensions.height,
+            "Unit": req.dimensions.unit
+        }
+
+    cod_payload = None
+    if req.cash_on_delivery is not None:
+        cod_payload = {"Amount": req.cash_on_delivery, "CurrencyCode": req.currency}
+
+    payload = {
+        "ClientInfo": client_info,
+        "LabelInfo": {"ReportID": 9729, "ReportType": "RPT"},
+        "Shipments": [
+            {
+                "Shipper": {
+                    "Reference1": str(uuid.uuid4()),
+                    "AccountNumber": client_info["AccountNumber"],
+                    "PartyAddress": {
+                        "Line1": req.shipper_address.line1,
+                        "Line2": req.shipper_address.line2 or "",
+                        "City": req.shipper_address.city,
+                        "StateOrProvinceCode": req.shipper_address.state_or_province_code or "",
+                        "PostCode": req.shipper_address.postal_code or "",
+                        "CountryCode": req.shipper_address.country_code
+                    },
+                    "Contact": {
+                        "Department": "",
+                        "PersonName": req.shipper_contact.person_name,
+                        "Title": "",
+                        "CompanyName": req.shipper_contact.company_name or req.shipper_contact.person_name,
+                        "PhoneNumber1": req.shipper_contact.phone_number1,
+                        "PhoneNumber1Ext": "",
+                        "EmailAddress": req.shipper_contact.email_address or ""
+                    }
+                },
+                "Consignee": {
+                    "Reference1": str(uuid.uuid4()),
+                    "PartyAddress": {
+                        "Line1": req.consignee_address.line1,
+                        "Line2": req.consignee_address.line2 or "",
+                        "City": req.consignee_address.city,
+                        "StateOrProvinceCode": req.consignee_address.state_or_province_code or "",
+                        "PostCode": req.consignee_address.postal_code or "",
+                        "CountryCode": req.consignee_address.country_code
+                    },
+                    "Contact": {
+                        "Department": "",
+                        "PersonName": req.consignee_contact.person_name,
+                        "Title": "",
+                        "CompanyName": req.consignee_contact.company_name or req.consignee_contact.person_name,
+                        "PhoneNumber1": req.consignee_contact.phone_number1,
+                        "PhoneNumber1Ext": "",
+                        "EmailAddress": req.consignee_contact.email_address or ""
+                    }
+                },
+                "Details": {
+                    "Dimensions": dims_payload,
+                    "ActualWeight": {"Value": req.weight, "Unit": "KG"},
+                    "ChargeableWeight": None,
+                    "DescriptionOfGoods": req.description,
+                    "GoodsOriginCountry": req.shipper_address.country_code,
+                    "NumberOfPieces": req.number_of_pieces,
+                    "ProductType": req.product_type,
+                    "ProductGroup": req.product_group,
+                    "PaymentType": "P",
+                    "PaymentOptions": "",
+                    "Services": "CODS" if req.cash_on_delivery else "",
+                    "CashOnDeliveryAmount": cod_payload,
+                    "CollectAmount": None,
+                    "CustomsValueAmount": {"Amount": req.declared_value, "CurrencyCode": req.currency},
+                    "InsuranceAmount": None
+                }
+            }
+        ]
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=60) as client:
+            response = await client.post(
+                f"{ARAMEX_API_BASE_URL}/shipping/service.svc/json/CreateShipments",
+                json=payload,
+                headers={"Content-Type": "application/json"}
+            )
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code,
+                                detail=response.text)
+        result = response.json()
+        if result.get("HasErrors"):
+            notifications = result.get("Notifications", [])
+            msgs = [n.get("Message", "") for n in notifications]
+            raise HTTPException(status_code=400, detail="; ".join(msgs))
+
+        shipments = result.get("Shipments", [])
+        waybill = shipments[0].get("ID", "") if shipments else ""
+        await db.shipments.insert_one({
+            "id": str(uuid.uuid4()),
+            "carrier": "Aramex",
+            "tracking_number": waybill,
+            "shipper": req.shipper_contact.person_name,
+            "recipient": req.consignee_contact.person_name,
+            "status": "created",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Aramex create shipment error: {e}")
+        raise HTTPException(status_code=502, detail=f"Aramex API request failed: {str(e)}")
+
+
+@api_router.get("/shipping/aramex/track/{tracking_number}")
+async def aramex_track_shipment(tracking_number: str):
+    """
+    Track an Aramex shipment by waybill number.
+    Requires env vars: ARAMEX_USERNAME, ARAMEX_PASSWORD,
+                       ARAMEX_ACCOUNT_NUMBER, ARAMEX_ACCOUNT_PIN
+    """
+    client_info = _aramex_client_info()
+
+    payload = {
+        "ClientInfo": client_info,
+        "GetLastTrackingUpdateOnly": False,
+        "Shipments": [tracking_number]
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.post(
+                f"{ARAMEX_API_BASE_URL}/tracking/service.svc/json/TrackShipments",
+                json=payload,
+                headers={"Content-Type": "application/json"}
+            )
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code,
+                                detail=response.text)
+        result = response.json()
+        if result.get("HasErrors"):
+            notifications = result.get("Notifications", [])
+            msgs = [n.get("Message", "") for n in notifications]
+            raise HTTPException(status_code=400, detail="; ".join(msgs))
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Aramex tracking error: {e}")
+        raise HTTPException(status_code=502, detail=f"Aramex API request failed: {str(e)}")
 
 
 # Include router

@@ -34,6 +34,40 @@
         "payment_intent.payment_failed"
       ]
     },
+    "hyperpay_integration": {
+      "description": "HyperPay is a leading payment gateway for Saudi Arabia and the MENA region, supporting MADA, Visa, Mastercard, and Amex cards.",
+      "portal_url": "https://www.hyperpay.com",
+      "merchant_portal": "https://merchant.hyperpay.com",
+      "api_base_url_test": "https://eu-test.oppwa.com",
+      "api_base_url_production": "https://eu-prod.oppwa.com",
+      "required_env_vars": {
+        "HYPERPAY_ENTITY_ID": "Your HyperPay entity ID (channel ID) from the merchant portal",
+        "HYPERPAY_ACCESS_TOKEN": "Your HyperPay bearer access token from the merchant portal",
+        "HYPERPAY_BASE_URL": "Use test URL during development; switch to production URL when live"
+      },
+      "supported_brands": ["VISA", "MASTER", "MADA", "AMEX"],
+      "currency": "SAR",
+      "api_endpoints": {
+        "initiate": "POST /api/payment/hyperpay/initiate",
+        "status": "GET /api/payment/hyperpay/status/{checkout_id}",
+        "webhook": "POST /api/webhook/hyperpay"
+      },
+      "setup_steps": [
+        "1. Register at https://www.hyperpay.com and obtain test credentials",
+        "2. Set HYPERPAY_ENTITY_ID, HYPERPAY_ACCESS_TOKEN, HYPERPAY_BASE_URL in your .env file",
+        "3. Call POST /api/payment/hyperpay/initiate with amount and currency to get a checkout_id",
+        "4. Load the HyperPay payment widget on the frontend using the widget_url returned",
+        "5. After payment, call GET /api/payment/hyperpay/status/{checkout_id} to verify result",
+        "6. Configure /api/webhook/hyperpay as the notification URL in the HyperPay merchant portal"
+      ],
+      "payment_types": {
+        "DB": "Debit (direct charge)",
+        "PA": "Pre-authorization (capture later)",
+        "CP": "Capture (complete a pre-authorization)",
+        "RF": "Refund",
+        "RV": "Reversal"
+      }
+    },
     "shopify_payments_setup": {
       "description": "Enable Shopify Payments under Settings > Payments for the simplest integration",
       "supported_payment_methods": [
@@ -127,7 +161,75 @@
         ]
       }
     ],
-    "setup_in_shopify": "Go to Settings > Shipping and delivery > Manage rates, then add each zone and its rates listed above"
+    "setup_in_shopify": "Go to Settings > Shipping and delivery > Manage rates, then add each zone and its rates listed above",
+    "carrier_integrations": {
+      "dhl_express": {
+        "description": "DHL Express API integration for real-time shipping rates, label creation, and shipment tracking.",
+        "portal_url": "https://developer.dhl.com",
+        "api_base_url": "https://express.api.dhl.com/mydhlapi",
+        "required_env_vars": {
+          "DHL_API_KEY": "Your DHL Express API key from https://developer.dhl.com",
+          "DHL_ACCOUNT_NUMBER": "Your DHL Express account number"
+        },
+        "api_endpoints": {
+          "rates": "POST /api/shipping/dhl/rates",
+          "create_shipment": "POST /api/shipping/dhl/create-shipment",
+          "track": "GET /api/shipping/dhl/track/{tracking_number}"
+        },
+        "service_codes": {
+          "P": "DHL Express Worldwide",
+          "D": "DHL Express Worldwide (Document)",
+          "U": "DHL Express Worldwide (Dutiable)",
+          "K": "DHL Express 9:00",
+          "E": "DHL Express 9:00 (Document)",
+          "T": "DHL Express 12:00",
+          "Y": "DHL Express 12:00 (Document)"
+        },
+        "setup_steps": [
+          "1. Register at https://developer.dhl.com to obtain an API key",
+          "2. Set DHL_API_KEY and DHL_ACCOUNT_NUMBER in your .env file",
+          "3. Call POST /api/shipping/dhl/rates to get available rates for a shipment",
+          "4. Call POST /api/shipping/dhl/create-shipment to create a waybill and get a PDF label",
+          "5. Call GET /api/shipping/dhl/track/{tracking_number} to track the shipment"
+        ]
+      },
+      "aramex": {
+        "description": "Aramex API integration for shipping rates, label creation, and shipment tracking across Saudi Arabia and the Middle East.",
+        "portal_url": "https://www.aramex.com/us/en/developers",
+        "api_base_url": "https://ws.aramex.net/ShippingAPI.V2",
+        "required_env_vars": {
+          "ARAMEX_USERNAME": "Your Aramex API username (email)",
+          "ARAMEX_PASSWORD": "Your Aramex API password",
+          "ARAMEX_ACCOUNT_NUMBER": "Your Aramex account number",
+          "ARAMEX_ACCOUNT_PIN": "Your Aramex account PIN",
+          "ARAMEX_ACCOUNT_ENTITY": "Your Aramex account entity (e.g. RUH for Riyadh)",
+          "ARAMEX_ACCOUNT_COUNTRY_CODE": "Your Aramex account country code (e.g. SA)"
+        },
+        "api_endpoints": {
+          "rates": "POST /api/shipping/aramex/rates",
+          "create_shipment": "POST /api/shipping/aramex/create-shipment",
+          "track": "GET /api/shipping/aramex/track/{tracking_number}"
+        },
+        "product_types": {
+          "PPX": "Priority Parcel Express",
+          "PDX": "Priority Document Express",
+          "PLX": "Priority Letter Express",
+          "CCA": "Aramex Shop & Ship"
+        },
+        "product_groups": {
+          "EXP": "Express",
+          "DOM": "Domestic"
+        },
+        "setup_steps": [
+          "1. Register at https://www.aramex.com/us/en/developers to obtain test credentials",
+          "2. Set all ARAMEX_* environment variables in your .env file",
+          "3. Call POST /api/shipping/aramex/rates to calculate the shipping cost",
+          "4. Call POST /api/shipping/aramex/create-shipment to book and get a waybill number",
+          "5. Call GET /api/shipping/aramex/track/{tracking_number} to track the shipment",
+          "6. For Cash on Delivery (COD) shipments, include cash_on_delivery amount in the create-shipment request"
+        ]
+      }
+    }
   },
 
   "email_notifications": {
