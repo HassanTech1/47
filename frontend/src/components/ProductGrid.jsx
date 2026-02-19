@@ -106,11 +106,6 @@ const ProductGrid = () => {
                   <p className="text-base text-black font-semibold">
                     {product.price}.00 SAR
                   </p>
-                  {product.isNew && (
-                    <p className="text-sm text-gray-400 line-through">
-                      {(product.price * 1.2).toFixed(2)} SAR
-                    </p>
-                  )}
                 </div>
                 
                 {/* Color Swatches */}
@@ -156,11 +151,6 @@ const ProductGrid = () => {
                   <p className="text-base text-black font-semibold">
                     {product.price}.00 SAR
                   </p>
-                  {product.isNew && (
-                    <p className="text-sm text-gray-400 line-through">
-                      {(product.price * 1.2).toFixed(2)} SAR
-                    </p>
-                  )}
                 </div>
                 
                 {/* Color Swatches */}
