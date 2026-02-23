@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import logo2 from '../assest/logo/2.png';
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [mode, setMode] = useState(initialMode);
@@ -66,11 +67,10 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           <X className="w-5 h-5" />
         </button>
 
-        {/* Header */}
         <div className="p-8 pb-0 text-center">
-          <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
-            ٧٧٧٧
-          </h1>
+          <div className="flex justify-center mb-4">
+            <img src={logo2} alt="4Seven's" className="h-12 w-auto object-contain" />
+          </div>
           <h2 className="text-xl font-medium mb-6">
             {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h2>

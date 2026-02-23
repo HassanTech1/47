@@ -102,9 +102,7 @@ const SearchModal = ({ isOpen, onClose }) => {
 
     const debounce = setTimeout(handleSearch, 300);
     return () => clearTimeout(debounce);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // essentialProducts is derived from static imports and constants, not state or props,
-    // so it never changes between renders and can safely be omitted from deps.
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- essentialProducts is derived from static imports and never changes
   }, [query, selectedCategory]);
 
 

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle, Package, MapPin, CreditCard, ArrowRight, Printer } from 'lucide-react';
+import logo1 from '../assest/logo/1.png';
+import logo2 from '../assest/logo/2.png';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -80,8 +82,8 @@ const CheckoutSuccess = () => {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 print:hidden">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <a href="/" className="text-2xl font-bold" style={{ fontFamily: 'Playfair Display, serif' }}>
-            ٧٧٧٧
+          <a href="/">
+            <img src={logo2} alt="4Seven's" className="h-10 w-auto object-contain" />
           </a>
         </div>
       </div>
@@ -113,9 +115,7 @@ const CheckoutSuccess = () => {
               <div className="bg-black text-white p-6 print:bg-black">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
-                      ٧٧٧٧
-                    </h2>
+                    <img src={logo1} alt="4Seven's" className="h-10 w-auto object-contain mb-1" />
                     <p className="text-gray-300 text-sm">Premium Fashion</p>
                   </div>
                   <div className="text-right">

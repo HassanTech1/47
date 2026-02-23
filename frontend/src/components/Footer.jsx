@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Facebook, Youtube, Instagram } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import logo2 from '../assest/logo/2.png';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +17,11 @@ const Footer = () => {
   return (
     <footer id="contact" className="bg-white border-t-2 border-black">
       <div className="container mx-auto px-4 lg:px-8 py-16">
+        {/* Logo */}
+        <div className="flex justify-center mb-12">
+          <img src={logo2} alt="4Seven's" className="h-12 w-auto object-contain" />
+        </div>
+
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Newsletter Section */}

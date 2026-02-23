@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Package, Heart, MapPin, LogOut, ChevronLeft, Edit2, Trash2, Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import logo2 from '../assest/logo/2.png';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -135,9 +136,7 @@ const AccountPage = ({ isOpen, onClose }) => {
             <ChevronLeft className="w-5 h-5" />
             <span>Back to Store</span>
           </button>
-          <h1 className="text-xl font-bold" style={{ fontFamily: 'Playfair Display, serif' }}>
-            ٧٧٧٧
-          </h1>
+          <img src={logo2} alt="4Seven's" className="h-8 w-auto object-contain" />
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors"

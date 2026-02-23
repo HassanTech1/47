@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Lock, Tag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import logo2 from '../assest/logo/2.png';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -209,8 +210,8 @@ const CheckoutPage = () => {
           <div className="lg:w-[60%] p-6 lg:p-12 lg:pr-16">
             {/* Logo */}
             <div className="mb-8">
-              <a href="/" className="text-3xl font-bold" style={{ fontFamily: 'Playfair Display, serif' }}>
-                ٧٧٧٧
+              <a href="/">
+                <img src={logo2} alt="4Seven's" className="h-10 w-auto object-contain" />
               </a>
             </div>
 
