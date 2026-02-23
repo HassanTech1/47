@@ -544,3 +544,11 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: #F3F4F6;
 }
+
+/* Hero CTA Button */
+.hero-cta-btn {
+    transition: background 0.3s ease;
+}
+.hero-cta-btn:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
