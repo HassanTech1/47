@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Lock, Tag } from 'lucide-react';
 import { useCart } from '~/context/CartContext';
 import { useAuth } from '~/context/AuthContext';
-import logo2 from '@assets/logo/2.png';
+import logo1 from '@assets/logo/1.png';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL || '';
 
@@ -193,17 +193,17 @@ const CheckoutPage = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center" dir="ltr">
+      <div className="min-h-screen bg-black text-white flex items-center justify-center" dir="ltr">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
-          <a href="/" className="text-black underline">Continue shopping</a>
+          <a href="/" className="text-white underline hover:text-white/70">Continue shopping</a>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white" dir="ltr">
+    <div className="min-h-screen bg-black text-white" dir="ltr">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row">
           {/* Left Side - Form */}
@@ -211,15 +211,15 @@ const CheckoutPage = () => {
             {/* Logo */}
             <div className="mb-8">
               <a href="/">
-                <img src={logo2} alt="4Seven's" className="h-10 w-auto object-contain" />
+                <img src={logo1} alt="4Seven's" className="h-10 w-auto object-contain" />
               </a>
             </div>
 
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
-              <a href="/" className="hover:text-black">Cart</a>
+            <div className="flex items-center gap-2 text-sm text-white/40 mb-8">
+              <a href="/" className="hover:text-white">Cart</a>
               <span>›</span>
-              <span className="text-black">Information</span>
+              <span className="text-white">Information</span>
               <span>›</span>
               <span>Shipping</span>
               <span>›</span>
@@ -232,7 +232,7 @@ const CheckoutPage = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-medium">Contact</h2>
                   {!isAuthenticated && (
-                    <a href="#" className="text-sm text-blue-600 hover:underline">Sign in</a>
+                    <a href="#" className="text-sm text-white/50 hover:text-white underline">Sign in</a>
                   )}
                 </div>
                 
@@ -243,7 +243,7 @@ const CheckoutPage = () => {
                   onChange={handleChange}
                   placeholder="Email"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black mb-3"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60 mb-3"
                   data-testid="checkout-email"
                 />
                 
@@ -252,7 +252,7 @@ const CheckoutPage = () => {
                     type="checkbox"
                     checked={emailNews}
                     onChange={(e) => setEmailNews(e.target.checked)}
-                    className="w-4 h-4 rounded border-gray-300"
+                    className="w-4 h-4 rounded border-white/30 bg-transparent accent-white"
                   />
                   Email me with news and offers
                 </label>
@@ -274,8 +274,8 @@ const CheckoutPage = () => {
                           onClick={() => selectAddress(addr)}
                           className={`w-full text-left p-3 border rounded-lg transition-colors ${
                             selectedAddressId === addr.id 
-                              ? 'border-black bg-gray-50' 
-                              : 'border-gray-200 hover:border-gray-400'
+                              ? 'border-white bg-white/10' 
+                              : 'border-white/10 hover:border-white/40 text-white/80'
                           }`}
                         >
                           <p className="font-medium">{addr.full_name}</p>
@@ -283,7 +283,7 @@ const CheckoutPage = () => {
                         </button>
                       ))}
                     </div>
-                    <p className="text-sm text-gray-500 mt-2">Or enter a new address below:</p>
+                    <p className="text-sm text-white/30 mt-2">Or enter a new address below:</p>
                   </div>
                 )}
 
@@ -293,7 +293,7 @@ const CheckoutPage = () => {
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black bg-white"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/20 text-white rounded-lg focus:outline-none focus:border-white/60 [&>option]:bg-black"
                   >
                     <option value="Saudi Arabia">Saudi Arabia</option>
                     <option value="UAE">United Arab Emirates</option>
@@ -313,7 +313,7 @@ const CheckoutPage = () => {
                     onChange={handleChange}
                     placeholder="First name"
                     required
-                    className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                    className="px-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60"
                     data-testid="checkout-firstname"
                   />
                   <input
@@ -323,7 +323,7 @@ const CheckoutPage = () => {
                     onChange={handleChange}
                     placeholder="Last name"
                     required
-                    className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                    className="px-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60"
                     data-testid="checkout-lastname"
                   />
                 </div>
@@ -336,7 +336,7 @@ const CheckoutPage = () => {
                   onChange={handleChange}
                   placeholder="Address"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black mb-4"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60 mb-4"
                   data-testid="checkout-address"
                 />
 
@@ -347,7 +347,7 @@ const CheckoutPage = () => {
                   value={formData.apartment}
                   onChange={handleChange}
                   placeholder="Apartment, suite, etc. (optional)"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black mb-4"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60 mb-4"
                 />
 
                 {/* City & Region Row */}
@@ -359,14 +359,14 @@ const CheckoutPage = () => {
                     onChange={handleChange}
                     placeholder="City"
                     required
-                    className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                    className="px-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60"
                     data-testid="checkout-city"
                   />
                   <select
                     name="region"
                     value={formData.region}
                     onChange={handleChange}
-                    className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black bg-white"
+                    className="px-4 py-3 bg-white/5 border border-white/20 text-white rounded-lg focus:outline-none focus:border-white/60 [&>option]:bg-black"
                   >
                     {regions.map((r) => (
                       <option key={r} value={r}>{r}</option>
@@ -381,7 +381,7 @@ const CheckoutPage = () => {
                   value={formData.postalCode}
                   onChange={handleChange}
                   placeholder="Postal code (optional)"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black mb-4"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60 mb-4"
                 />
 
                 {/* Phone */}
@@ -392,7 +392,7 @@ const CheckoutPage = () => {
                   onChange={handleChange}
                   placeholder="Phone"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black mb-4"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60 mb-4"
                   data-testid="checkout-phone"
                 />
 
@@ -403,7 +403,7 @@ const CheckoutPage = () => {
                       type="checkbox"
                       checked={saveInfo}
                       onChange={(e) => setSaveInfo(e.target.checked)}
-                      className="w-4 h-4 rounded border-gray-300"
+                      className="w-4 h-4 rounded border-white/30 bg-transparent accent-white"
                     />
                     Save this information for next time
                   </label>
@@ -413,15 +413,15 @@ const CheckoutPage = () => {
               {/* Shipping Method */}
               <div className="mb-8">
                 <h2 className="text-lg font-medium mb-4">Shipping method</h2>
-                <div className="border border-black rounded-lg p-4 bg-gray-50">
+                <div className="border border-white/30 rounded-lg p-4 bg-white/5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-4 h-4 rounded-full border-2 border-black flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-black"></div>
+                      <div className="w-4 h-4 rounded-full border-2 border-white flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
                       </div>
                       <span>Delivery</span>
                     </div>
-                    <span className="font-medium text-green-600">29 SAR</span>
+                    <span className="font-medium text-emerald-400">29 SAR</span>
                   </div>
                 </div>
               </div>
@@ -429,18 +429,18 @@ const CheckoutPage = () => {
               {/* Payment Section */}
               <div className="mb-8">
                 <h2 className="text-lg font-medium mb-2">Payment</h2>
-                <p className="text-sm text-gray-500 mb-4 flex items-center gap-2">
+                <p className="text-sm text-white/40 mb-4 flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   All transactions are secure and encrypted.
                 </p>
 
                 {/* Payment Options */}
-                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <div className="border border-white/10 rounded-lg overflow-hidden">
                   {/* Credit Card Option */}
-                  <div className="border-b border-gray-200 p-4 bg-gray-50">
+                  <div className="border-b border-white/10 p-4 bg-white/5">
                     <div className="flex items-center gap-3">
-                      <div className="w-4 h-4 rounded-full border-2 border-black flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-black"></div>
+                      <div className="w-4 h-4 rounded-full border-2 border-white flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
                       </div>
                       <span className="font-medium">Credit / Debit Card</span>
                       <div className="flex gap-1 ml-auto">
@@ -448,7 +448,7 @@ const CheckoutPage = () => {
                         <img src="https://cdn.shopify.com/s/files/1/0532/8617/7311/files/mastercard.svg" alt="Mastercard" className="h-6" onError={(e) => e.target.style.display='none'} />
                       </div>
                     </div>
-                    <p className="text-sm text-gray-500 mt-2 ml-7">
+                    <p className="text-sm text-white/40 mt-2 ml-7">
                       You'll be redirected to complete your payment securely.
                     </p>
                   </div>
@@ -458,7 +458,7 @@ const CheckoutPage = () => {
                     <div className="flex items-center gap-3">
                       <div className="w-4 h-4 rounded-full border-2 border-gray-300"></div>
                       <span>Pay later with Tabby</span>
-                      <span className="ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Coming Soon</span>
+                      <span className="ml-auto text-xs bg-white/10 text-white/50 px-2 py-1 rounded">Coming Soon</span>
                     </div>
                   </div>
                 </div>
@@ -468,12 +468,12 @@ const CheckoutPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-4 bg-white text-black font-medium rounded-lg hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 data-testid="complete-order-btn"
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    <div className="animate-spin w-5 h-5 border-2 border-black border-t-transparent rounded-full"></div>
                     Processing...
                   </>
                 ) : (
@@ -484,7 +484,7 @@ const CheckoutPage = () => {
               {/* Back Link */}
               <a 
                 href="/"
-                className="flex items-center gap-2 text-sm text-gray-600 hover:text-black mt-6"
+                className="flex items-center gap-2 text-sm text-white/40 hover:text-white mt-6"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Return to cart
@@ -493,24 +493,24 @@ const CheckoutPage = () => {
           </div>
 
           {/* Right Side - Order Summary */}
-          <div className="lg:w-[40%] bg-gray-50 p-6 lg:p-12 lg:pl-8 border-l border-gray-200">
+          <div className="lg:w-[40%] bg-white/3 border-l border-white/10 p-6 lg:p-12 lg:pl-8">
             {/* Order Items */}
             <div className="space-y-4 mb-6">
               {cartItems.map((item, index) => (
                 <div key={`${item.id}-${item.size}`} className="flex gap-4" data-testid={`checkout-item-${index}`}>
-                  <div className="relative w-16 h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="relative w-16 h-20 bg-white/10 rounded-lg overflow-hidden flex-shrink-0">
                     <img
                       src={item.image}
                       alt={item.nameEn}
                       className="w-full h-full object-cover"
                     />
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gray-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-white text-black text-xs rounded-full flex items-center justify-center">
                       {item.quantity}
                     </span>
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-sm">{item.nameEn}</p>
-                    <p className="text-xs text-gray-500">{item.size}</p>
+                    <p className="text-xs text-white/40">{item.size}</p>
                   </div>
                   <p className="font-medium text-sm">SAR {(item.price * item.quantity).toFixed(2)}</p>
                 </div>
@@ -520,20 +520,20 @@ const CheckoutPage = () => {
             {/* Discount Code */}
             <div className="flex gap-2 mb-6">
               <div className="relative flex-1">
-                <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                 <input
                   type="text"
                   value={discountCode}
                   onChange={(e) => setDiscountCode(e.target.value)}
                   placeholder="Discount code or gift card"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 rounded-lg focus:outline-none focus:border-white/60"
                   data-testid="discount-code-input"
                 />
               </div>
               <button
                 type="button"
                 onClick={applyDiscount}
-                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                className="px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors font-medium border border-white/20"
                 data-testid="apply-discount-btn"
               >
                 Apply
@@ -542,8 +542,8 @@ const CheckoutPage = () => {
 
             {/* Applied Discount */}
             {discountApplied && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-6 flex items-center justify-between">
-                <span className="text-green-700 text-sm">
+              <div className="bg-emerald-900/30 border border-emerald-500/30 rounded-lg p-3 mb-6 flex items-center justify-between">
+                <span className="text-emerald-400 text-sm">
                   {discountApplied.percent 
                     ? `${discountApplied.percent}% off applied!` 
                     : `SAR ${discountApplied.amount.toFixed(2)} off applied!`
@@ -551,7 +551,7 @@ const CheckoutPage = () => {
                 </span>
                 <button 
                   onClick={() => setDiscountApplied(null)}
-                  className="text-green-700 hover:text-green-800"
+                  className="text-emerald-400 hover:text-emerald-300"
                 >
                   ×
                 </button>
@@ -559,36 +559,36 @@ const CheckoutPage = () => {
             )}
 
             {/* Order Summary */}
-            <div className="space-y-3 border-t border-gray-200 pt-6">
+            <div className="space-y-3 border-t border-white/10 pt-6">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal</span>
+                <span className="text-white/50">Subtotal</span>
                 <span>SAR {getCartTotal().toFixed(2)}</span>
               </div>
               
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600 flex items-center gap-1">
+                <span className="text-white/50 flex items-center gap-1">
                   Shipping
-                  <span className="w-4 h-4 rounded-full border border-gray-400 text-xs flex items-center justify-center">?</span>
+                  <span className="w-4 h-4 rounded-full border border-white/30 text-xs flex items-center justify-center">?</span>
                 </span>
-                <span className="text-green-600">FREE</span>
+                <span className="text-emerald-400">FREE</span>
               </div>
 
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600 flex items-center gap-1">
+                <span className="text-white/50 flex items-center gap-1">
                   Estimated taxes (15% VAT)
-                  <span className="w-4 h-4 rounded-full border border-gray-400 text-xs flex items-center justify-center">?</span>
+                  <span className="w-4 h-4 rounded-full border border-white/30 text-xs flex items-center justify-center">?</span>
                 </span>
                 <span>SAR {calculateTax().toFixed(2)}</span>
               </div>
 
               {discountApplied && (
-                <div className="flex justify-between text-sm text-green-600">
+                <div className="flex justify-between text-sm text-emerald-400">
                   <span>Discount ({discountApplied.code})</span>
                   <span>-SAR {discountApplied.amount.toFixed(2)}</span>
                 </div>
               )}
 
-              <div className="flex justify-between text-lg font-bold pt-3 border-t border-gray-200">
+              <div className="flex justify-between text-lg font-bold pt-3 border-t border-white/10">
                 <span>Total</span>
                 <span>SAR {getFinalTotal().toFixed(2)}</span>
               </div>
