@@ -1,10 +1,12 @@
 
 import {useLoaderData} from 'react-router';
+import {useState} from 'react';
 import {data} from 'react-router';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
 import {Plus, Minus, X} from 'lucide-react';
 import {Header} from '~/components/Header';
 import {Footer} from '~/components/Footer';
+import {MOCK_PRODUCTS} from '~/lib/mock-data';
 
 /**
  * Cart page for Shopify Hydrogen.
@@ -13,9 +15,14 @@ import {Footer} from '~/components/Footer';
  * @param {import('@shopify/remix-oxygen').LoaderFunctionArgs} args
  */
 export async function loader({context}) {
-  const {cart} = context;
+  const {cart, storefront} = context;
+  
+  const {shop} = await storefront.query(SHOP_QUERY, {
+    cache: storefront.CacheLong(),
+  });
+  
   const cartData = await cart.get();
-  return {cart: cartData};
+  return {cart: cartData, shop};
 }
 
 export async function action({request, context}) {
@@ -74,13 +81,19 @@ export async function action({request, context}) {
 }
 
 export default function CartPage() {
-  const {cart} = useLoaderData();
+  const {cart, shop} = useLoaderData();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const lines = cart?.lines?.nodes ?? [];
   const totalAmount = cart?.cost?.totalAmount;
 
   return (
     <>
-      <Header onOpenCart={() => {}} onOpenSearch={() => {}} />
+      <Header 
+        shop={shop}
+        cartCount={cart?.totalQuantity ?? 0}
+        onOpenCart={() => {}} 
+        onOpenSearch={() => setIsSearchOpen(true)} 
+      />
 
       <main className="min-h-screen pt-24 pb-16">
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
@@ -215,10 +228,105 @@ function CartLine({line}) {
           </CartForm>
         </div>
       </div>
+
+      {/* Search modal */}
+      {isSearchOpen && (
+        <SearchModal onClose={() => setIsSearchOpen(false)} />
+      )}
     </div>
+  );
+}
+
+/**
+ * Search modal component
+ */
+function SearchModal({onClose}) {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+
+  const handleSearch = (searchQuery) => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      return;
+    }
+    
+    const mockResults = MOCK_PRODUCTS.filter((p) =>
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    setResults(mockResults);
+  };
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-[110] bg-black/50"
+        onClick={onClose}
+      />
+      <div className="fixed top-0 left-0 right-0 z-[120] bg-white p-6 shadow-xl">
+        <div className="container mx-auto max-w-2xl">
+          <div className="flex items-center gap-4 border-b-2 border-black pb-4 mb-6">
+            <input
+              type="text"
+              autoFocus
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                handleSearch(e.target.value);
+              }}
+              placeholder="Search products..."
+              className="flex-1 text-lg outline-none"
+            />
+            <button onClick={onClose} className="text-sm uppercase tracking-widest hover:text-gray-600">
+              Close
+            </button>
+          </div>
+
+          {query && (
+            <ul className="space-y-4">
+              {results.length === 0 ? (
+                <p className="text-gray-500">No results for &ldquo;{query}&rdquo;</p>
+              ) : (
+                results.map((product) => (
+                  <li key={product.id}>
+                    <a
+                      href={`/products/${product.handle}`}
+                      className="flex items-center gap-4 hover:bg-gray-50 p-2 transition-colors rounded"
+                    >
+                      {product.featuredImage && (
+                        <img
+                          src={product.featuredImage.url}
+                          alt={product.title}
+                          className="w-16 h-16 object-cover bg-gray-100 rounded"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{product.title}</p>
+                        <p className="text-sm text-gray-500">
+                          {product.priceRange.minVariantPrice.amount}{' '}
+                          {product.priceRange.minVariantPrice.currencyCode}
+                        </p>
+                      </div>
+                    </a>
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
 export function meta() {
   return [{title: "Cart | 4Seven's"}];
 }
+
+const SHOP_QUERY = `#graphql
+  query ShopInfo {
+    shop {
+      name
+      description
+    }
+  }
+`;

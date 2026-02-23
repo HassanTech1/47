@@ -17,6 +17,11 @@ export async function loader({params, context}) {
 
   let product = null;
 
+  // Fetch shop info
+  const {shop} = await storefront.query(SHOP_QUERY, {
+    cache: storefront.CacheLong(),
+  });
+
   // Try fetching from Shopify
   try {
     const {product: shopifyProduct} = await storefront.query(
@@ -43,16 +48,44 @@ export async function loader({params, context}) {
 
   const cartData = await cart.get();
 
-  return {product, cart: cartData};
+  return {product, cart: cartData, shop};
+}
+
+export async function action({request, context}) {
+  const {cart} = context;
+  const formData = await request.formData();
+  const {action: cartAction, inputs} = CartForm.getFormInput(formData);
+
+  if (!cartAction) {
+    throw new Error('No cartAction defined');
+  }
+
+  let result;
+  switch (cartAction) {
+    case CartForm.ACTIONS.LinesAdd:
+      result = await cart.addLines(inputs.lines);
+      break;
+    case CartForm.ACTIONS.LinesUpdate:
+      result = await cart.updateLines(inputs.lines);
+      break;
+    case CartForm.ACTIONS.LinesRemove:
+      result = await cart.removeLines(inputs.lineIds);
+      break;
+    default:
+      throw new Error(`Unknown action: ${cartAction}`);
+  }
+
+  return result;
 }
 
 export default function ProductPage() {
-  const {product, cart} = useLoaderData();
+  const {product, cart, shop} = useLoaderData();
   const navigate = useNavigate();
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
   const variants = product.variants?.nodes ?? [];
@@ -64,7 +97,12 @@ export default function ProductPage() {
 
   return (
     <>
-      <Header onOpenCart={() => setIsCartOpen(true)} onOpenSearch={() => {}} />
+      <Header 
+        shop={shop}
+        cartCount={cart?.totalQuantity ?? 0}
+        onOpenCart={() => setIsCartOpen(true)} 
+        onOpenSearch={() => setIsSearchOpen(true)} 
+      />
 
       <main className="min-h-screen pt-24 pb-16">
         <div className="container mx-auto px-4 lg:px-8">
@@ -265,6 +303,103 @@ export default function ProductPage() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
       />
+
+      {/* Search modal */}
+      {isSearchOpen && (
+        <SearchModal 
+          onClose={() => setIsSearchOpen(false)} 
+        />
+      )}
+    </>
+  );
+}
+
+/**
+ * Search modal component
+ */
+function SearchModal({onClose}) {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = async (searchQuery) => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      return;
+    }
+    
+    setLoading(true);
+    // For now, use mock data - you can replace with real search later
+    const mockResults = MOCK_PRODUCTS.filter((p) =>
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    setResults(mockResults);
+    setLoading(false);
+  };
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-[110] bg-black/50"
+        onClick={onClose}
+      />
+      <div className="fixed top-0 left-0 right-0 z-[120] bg-white p-6 shadow-xl">
+        <div className="container mx-auto max-w-2xl">
+          <div className="flex items-center gap-4 border-b-2 border-black pb-4 mb-6">
+            <input
+              type="text"
+              autoFocus
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                handleSearch(e.target.value);
+              }}
+              placeholder="Search products..."
+              className="flex-1 text-lg outline-none"
+            />
+            <button onClick={onClose} className="text-sm uppercase tracking-widest hover:text-gray-600">
+              Close
+            </button>
+          </div>
+
+          {loading && (
+            <p className="text-gray-500">Searching...</p>
+          )}
+
+          {!loading && query && (
+            <ul className="space-y-4">
+              {results.length === 0 ? (
+                <p className="text-gray-500">No results for &ldquo;{query}&rdquo;</p>
+              ) : (
+                results.map((product) => (
+                  <li key={product.id}>
+                    <a
+                      href={`/products/${product.handle}`}
+                      className="flex items-center gap-4 hover:bg-gray-50 p-2 transition-colors rounded"
+                      onClick={onClose}
+                    >
+                      {product.featuredImage && (
+                        <img
+                          src={product.featuredImage.url}
+                          alt={product.title}
+                          className="w-16 h-16 object-cover bg-gray-100 rounded"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{product.title}</p>
+                        <p className="text-sm text-gray-500">
+                          {product.priceRange.minVariantPrice.amount}{' '}
+                          {product.priceRange.minVariantPrice.currencyCode}
+                        </p>
+                      </div>
+                    </a>
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
+        </div>
+      </div>
     </>
   );
 }
@@ -318,6 +453,15 @@ const PRODUCT_QUERY = `#graphql
           }
         }
       }
+    }
+  }
+`;
+
+const SHOP_QUERY = `#graphql
+  query ShopInfo {
+    shop {
+      name
+      description
     }
   }
 `;

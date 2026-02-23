@@ -1,0 +1,26 @@
+# Learn more about configuring your Shopify app at
+# https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "4sevens-hydrogen-storefront"
+client_id = ""  # Add your Shopify app client_id here
+application_url = "https://4sevens-2.myshopify.com"
+embedded = false
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products,read_products,write_orders,read_orders"
+
+[auth]
+redirect_urls = [
+  "https://4sevens-2.myshopify.com/auth/callback"
+]
+
+[webhooks]
+api_version = "2025-01"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "4sevens-2.myshopify.com"

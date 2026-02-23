@@ -16,6 +16,11 @@ import {CartDrawer} from '~/components/CartDrawer';
 export async function loader({context}) {
   const {storefront, cart} = context;
 
+  // Fetch shop info
+  const {shop} = await storefront.query(SHOP_QUERY, {
+    cache: storefront.CacheLong(),
+  });
+
   // Fetch products from Shopify, fall back to mock data
   let products = MOCK_PRODUCTS;
   try {
@@ -36,17 +41,18 @@ export async function loader({context}) {
 
   const cartData = await cart.get();
 
-  return {products, cart: cartData};
+  return {products, cart: cartData, shop};
 }
 
 export default function Homepage() {
-  const {products, cart} = useLoaderData();
+  const {products, cart, shop} = useLoaderData();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <>
       <Header
+        shop={shop}
         cartCount={cart?.totalQuantity ?? 0}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
@@ -143,6 +149,15 @@ function SearchModal({onClose, products}) {
     </>
   );
 }
+
+const SHOP_QUERY = `#graphql
+  query ShopInfo {
+    shop {
+      name
+      description
+    }
+  }
+`;
 
 export function meta() {
   return [

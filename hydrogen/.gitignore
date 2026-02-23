@@ -3,5 +3,10 @@ build/
 dist/
 .cache/
 .env
-.env.*
+.env.local
 *.local
+
+# Keep .env.example
+!.env.example
+
+.shopify
