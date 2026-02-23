@@ -1,80 +1,225 @@
-import React, { useState } from "react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import logo from "../assest/logo/1.png";
 
 const MaintenancePage = () => {
+  const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Connect to backend API
-    console.log("Feedback submitted:", { email, message });
-    alert("Thank you! We'll notify you when we're back online.");
+    setSubmitted(true);
     setEmail("");
-    setMessage("");
   };
 
-  return (
-    <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 mb-4">
-            <svg 
-              className="w-8 h-8 text-yellow-600" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Under Maintenance
-          </h1>
-          <p className="text-gray-600">
-            We're currently performing scheduled maintenance. We'll be back shortly.
-          </p>
-        </div>
+  const base = { opacity: visible ? 1 : 0, transition: "opacity 0.7s ease-out, transform 0.7s ease-out" };
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">
-              Notify me when it's ready
-            </label>
-            <Input
-              id="email"
+  return (
+    <div
+      className="relative min-h-screen bg-black text-white flex flex-col items-center justify-center overflow-hidden px-6"
+      style={{ fontFamily: "'Cairo', sans-serif" }}
+    >
+      {/* Subtle background grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      {/* Logo */}
+      <div
+        style={{
+          ...base,
+          transform: visible ? "translateY(0)" : "translateY(-20px)",
+          transitionDelay: "0ms",
+          marginBottom: "3rem",
+        }}
+      >
+        <img src={logo} alt="4Seven's" className="h-10 w-auto object-contain" />
+      </div>
+
+      {/* Icon */}
+      <div
+        style={{
+          ...base,
+          transform: visible ? "scale(1)" : "scale(0.8)",
+          transitionDelay: "200ms",
+          marginBottom: "1.5rem",
+          width: "4rem",
+          height: "4rem",
+          border: "1px solid rgba(255,255,255,0.2)",
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      </div>
+
+      {/* Divider */}
+      <div
+        style={{
+          width: visible ? "5rem" : "0",
+          height: "1px",
+          background: "rgba(255,255,255,0.35)",
+          transition: "width 0.6s ease-out",
+          transitionDelay: "450ms",
+          marginBottom: "1.5rem",
+        }}
+      />
+
+      {/* Headline */}
+      <h1
+        style={{
+          ...base,
+          transform: visible ? "translateY(0)" : "translateY(16px)",
+          transitionDelay: "550ms",
+          fontSize: "clamp(0.75rem, 2vw, 1rem)",
+          fontWeight: 600,
+          letterSpacing: "0.35em",
+          textTransform: "uppercase",
+          textAlign: "center",
+          marginBottom: "0.75rem",
+        }}
+      >
+        Under Maintenance
+      </h1>
+
+      {/* Subtext */}
+      <p
+        style={{
+          ...base,
+          transform: visible ? "translateY(0)" : "translateY(14px)",
+          transitionDelay: "700ms",
+          color: "rgba(255,255,255,0.5)",
+          fontSize: "clamp(0.8rem, 1.5vw, 0.95rem)",
+          maxWidth: "28rem",
+          lineHeight: 1.7,
+          textAlign: "center",
+          marginBottom: "2.5rem",
+        }}
+      >
+        We&apos;re currently performing scheduled maintenance.
+        <br />
+        We&apos;ll be back shortly with something special.
+      </p>
+
+      {/* Notify form */}
+      <div
+        style={{
+          ...base,
+          transform: visible ? "translateY(0)" : "translateY(14px)",
+          transitionDelay: "850ms",
+          width: "100%",
+          maxWidth: "22rem",
+          marginBottom: "2rem",
+        }}
+      >
+        {submitted ? (
+          <p
+            style={{
+              textAlign: "center",
+              color: "rgba(255,255,255,0.6)",
+              fontSize: "0.8rem",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              border: "1px solid rgba(255,255,255,0.15)",
+              padding: "0.9rem 1rem",
+            }}
+          >
+            ✓ &nbsp; We&apos;ll notify you when we&apos;re back
+          </p>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem" }}>
+            <input
               type="email"
-              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
               required
+              style={{
+                flex: 1,
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "white",
+                padding: "0.75rem 1rem",
+                fontSize: "0.8rem",
+                outline: "none",
+                fontFamily: "inherit",
+              }}
             />
-          </div>
-          
-          <div className="space-y-2">
-            <label htmlFor="message" className="text-sm font-medium text-gray-700">
-              Leave a message (optional)
-            </label>
-            <Textarea
-              id="message"
-              placeholder="Questions or feedback?"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="resize-none"
-            />
-          </div>
-
-          <Button type="submit" className="w-full">
-            Notify Me
-          </Button>
-        </form>
-        
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Our Company. All rights reserved.</p>
-        </div>
+            <button
+              type="submit"
+              style={{
+                background: "white",
+                color: "black",
+                border: "none",
+                padding: "0.75rem 1.25rem",
+                fontSize: "0.65rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Notify Me
+            </button>
+          </form>
+        )}
       </div>
+
+      {/* Back to home */}
+      <Link
+        to="/"
+        className="hero-cta-btn"
+        style={{
+          ...base,
+          transform: visible ? "translateY(0) scale(1)" : "translateY(12px) scale(0.97)",
+          transitionDelay: "1000ms",
+          display: "inline-block",
+          padding: "0.8rem 2.75rem",
+          border: "1.5px solid rgba(255,255,255,0.4)",
+          color: "rgba(255,255,255,0.6)",
+          fontSize: "0.65rem",
+          letterSpacing: "0.3em",
+          textTransform: "uppercase",
+          fontWeight: 500,
+          textDecoration: "none",
+        }}
+      >
+        Return Home
+      </Link>
+
+      {/* Footer tag */}
+      <p
+        style={{
+          position: "absolute",
+          bottom: "2rem",
+          color: "rgba(255,255,255,0.2)",
+          fontSize: "0.65rem",
+          letterSpacing: "0.25em",
+          textTransform: "uppercase",
+          opacity: visible ? 1 : 0,
+          transition: "opacity 1s ease-out",
+          transitionDelay: "1200ms",
+        }}
+      >
+        4Seven&apos;s &mdash; Premium Fashion
+      </p>
     </div>
   );
 };

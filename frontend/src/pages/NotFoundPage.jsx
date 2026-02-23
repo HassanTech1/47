@@ -1,91 +1,153 @@
-import React, { useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import logo from "../assest/logo/1.png";
 
+const NotFoundPage = () => {
+  const [visible, setVisible] = useState(false);
 
-const NotFoundPage = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: Connect to backend API
-    console.log("Feedback submitted:", { email, message });
-    alert("Thank you for your report! We will look into it.");
-    setEmail("");
-    setMessage("");
+  const base = {
+    opacity: visible ? 1 : 0,
+    transition: "opacity 0.7s ease-out, transform 0.7s ease-out",
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header 
-        onOpenAuth={onOpenAuth} 
-        onOpenSearch={onOpenSearch}
-        onOpenAccount={onOpenAccount}
+    <div
+      className="relative min-h-screen bg-black text-white flex flex-col items-center justify-center overflow-hidden px-6"
+      style={{ fontFamily: "\'Cairo\', sans-serif" }}
+    >
+      {/* Subtle background grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
       />
-      
-      <main className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-gray-50">
-        <div className="max-w-2xl w-full bg-white p-8 rounded-lg shadow-sm border">
-          <div className="mb-8">
-            <div className="text-8xl font-black text-gray-200 mb-4">404</div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Design is a journey of discovery.
-            </h1>
-            <p className="text-gray-600 mb-1">
-              Sometimes we get lost, but that's ok.
-            </p>
-            <p className="text-gray-500 text-sm">
-              The route error could not be found.
-            </p>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 text-left">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Email Address
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label htmlFor="message" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Describe what you were doing
-              </label>
-              <Textarea
-                id="message"
-                placeholder="I was just trying to do... and then I ended up on this page."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="min-h-[120px]"
-                required
-              />
-            </div>
+      {/* Logo */}
+      <div
+        style={{
+          ...base,
+          transform: visible ? "translateY(0)" : "translateY(-20px)",
+          transitionDelay: "0ms",
+          marginBottom: "3rem",
+        }}
+      >
+        <img src={logo} alt="4Seven\'s" className="h-10 w-auto object-contain" />
+      </div>
 
-            <div className="pt-2">
-                <Button type="submit" className="w-full">
-                    Fix this problem!
-                </Button>
-            </div>
-            
-            <p className="text-xs text-gray-400 text-center mt-4">
-             Very best,<br/>
-             The Team
-            </p>
-          </form>
-        </div>
-      </main>
+      {/* Giant 404 */}
+      <div
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? "scale(1)" : "scale(0.88)",
+          transition: "opacity 0.8s ease-out, transform 0.8s ease-out",
+          transitionDelay: "200ms",
+          lineHeight: 1,
+          marginBottom: "1.5rem",
+          fontFamily: "\'Playfair Display\', serif",
+          fontSize: "clamp(6rem, 20vw, 16rem)",
+          fontWeight: 700,
+          letterSpacing: "-0.04em",
+          color: "transparent",
+          WebkitTextStroke: "1px rgba(255,255,255,0.25)",
+        }}
+      >
+        404
+      </div>
 
-      <Footer />
+      {/* Divider */}
+      <div
+        style={{
+          width: visible ? "5rem" : "0",
+          height: "1px",
+          background: "rgba(255,255,255,0.35)",
+          transition: "width 0.6s ease-out",
+          transitionDelay: "500ms",
+          marginBottom: "1.5rem",
+        }}
+      />
+
+      {/* Headline */}
+      <h1
+        style={{
+          ...base,
+          transform: visible ? "translateY(0)" : "translateY(16px)",
+          transitionDelay: "600ms",
+          fontSize: "clamp(0.75rem, 2vw, 1rem)",
+          fontWeight: 600,
+          letterSpacing: "0.35em",
+          textTransform: "uppercase",
+          textAlign: "center",
+          marginBottom: "0.75rem",
+        }}
+      >
+        Page Not Found
+      </h1>
+
+      {/* Subtext */}
+      <p
+        style={{
+          ...base,
+          transform: visible ? "translateY(0)" : "translateY(14px)",
+          transitionDelay: "750ms",
+          color: "rgba(255,255,255,0.5)",
+          fontSize: "clamp(0.8rem, 1.5vw, 0.95rem)",
+          maxWidth: "28rem",
+          lineHeight: 1.7,
+          textAlign: "center",
+          marginBottom: "2.5rem",
+        }}
+      >
+        The page you&apos;re looking for doesn&apos;t exist or has been moved.
+        <br />
+        Let&apos;s get you back to the collection.
+      </p>
+
+      {/* CTA */}
+      <Link
+        to="/"
+        className="hero-cta-btn"
+        style={{
+          ...base,
+          transform: visible ? "translateY(0) scale(1)" : "translateY(12px) scale(0.97)",
+          transitionDelay: "900ms",
+          display: "inline-block",
+          padding: "0.8rem 2.75rem",
+          border: "1.5px solid rgba(255,255,255,0.8)",
+          color: "white",
+          fontSize: "0.7rem",
+          letterSpacing: "0.32em",
+          textTransform: "uppercase",
+          fontWeight: 500,
+          textDecoration: "none",
+        }}
+      >
+        Return Home
+      </Link>
+
+      {/* Footer tag */}
+      <p
+        style={{
+          position: "absolute",
+          bottom: "2rem",
+          color: "rgba(255,255,255,0.2)",
+          fontSize: "0.65rem",
+          letterSpacing: "0.25em",
+          textTransform: "uppercase",
+          opacity: visible ? 1 : 0,
+          transition: "opacity 1s ease-out",
+          transitionDelay: "1100ms",
+        }}
+      >
+        4Seven&apos;s &mdash; Premium Fashion
+      </p>
     </div>
   );
 };
