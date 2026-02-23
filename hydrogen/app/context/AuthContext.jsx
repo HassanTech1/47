@@ -1,9 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const BACKEND_URL = typeof window !== 'undefined'
-  ? (window.ENV?.BACKEND_URL || import.meta.env?.VITE_BACKEND_URL || '')
-  : '';
-
 const AuthContext = createContext(null);
 
 export const useAuth = () => {
@@ -37,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const register = async (email, password, name, phone) => {
-    const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
+    const response = await fetch(`/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, name, phone }),
@@ -59,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+    const response = await fetch(`/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -90,7 +86,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateProfile = async (name, phone) => {
-    const response = await fetch(`${BACKEND_URL}/api/auth/profile`, {
+    const response = await fetch(`/api/auth/profile`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

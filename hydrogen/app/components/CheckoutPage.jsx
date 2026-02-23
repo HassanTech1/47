@@ -4,8 +4,6 @@ import { useCart } from '~/context/CartContext';
 import { useAuth } from '~/context/AuthContext';
 import logo1 from '@assets/logo/1.png';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || '';
-
 const CheckoutPage = () => {
   const { cartItems, getCartTotal, clearCart } = useCart();
   const { isAuthenticated, user, token } = useAuth();
@@ -39,7 +37,7 @@ const CheckoutPage = () => {
   useEffect(() => {
     const loadSavedAddresses = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/addresses`, {
+        const response = await fetch(`/api/addresses`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
@@ -124,7 +122,7 @@ const CheckoutPage = () => {
     try {
       // Save address if requested and authenticated
       if (saveInfo && isAuthenticated) {
-        await fetch(`${API_URL}/api/addresses`, {
+        await fetch(`/api/addresses`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -144,7 +142,7 @@ const CheckoutPage = () => {
       }
 
       // Create checkout session with shipping info
-      const response = await fetch(`${API_URL}/api/checkout/create-session`, {
+      const response = await fetch(`/api/checkout/create-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

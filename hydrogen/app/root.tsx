@@ -1,6 +1,19 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react';
+import { json } from '@remix-run/node';
 import type { LinksFunction } from '@remix-run/node';
 import React from 'react';
+
+declare global {
+  interface Window {
+    ENV: { BACKEND_URL: string };
+  }
+}
+
+export async function loader() {
+  return json({
+    ENV: { BACKEND_URL: process.env.BACKEND_URL ?? '' },
+  });
+}
 
 import tailwindStyles from '~/styles/tailwind.css?url';
 import appStyles from '~/styles/app.css?url';
@@ -30,6 +43,7 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
+  const { ENV } = useLoaderData<typeof loader>();
   const [authModalOpen, setAuthModalOpen] = React.useState(false);
   const [searchModalOpen, setSearchModalOpen] = React.useState(false);
   const [accountPageOpen, setAccountPageOpen] = React.useState(false);
@@ -73,6 +87,11 @@ export default function App() {
           </AuthProvider>
         </LanguageProvider>
         <ScrollRestoration />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(ENV)}`,
+          }}
+        />
         <Scripts />
       </body>
     </html>

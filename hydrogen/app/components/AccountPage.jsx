@@ -3,8 +3,6 @@ import { User, Package, Heart, MapPin, LogOut, ChevronLeft, Edit2, Trash2, Plus 
 import { useAuth } from '~/context/AuthContext';
 import logo1 from '@assets/logo/1.png';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || '';
-
 const AccountPage = ({ isOpen, onClose }) => {
   const { user, token, logout, updateProfile, authFetch } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
@@ -30,15 +28,15 @@ const AccountPage = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       if (activeTab === 'orders') {
-        const res = await authFetch(`${API_URL}/api/orders`);
+        const res = await authFetch(`/api/orders`);
         const data = await res.json();
         setOrders(data.orders || []);
       } else if (activeTab === 'wishlist') {
-        const res = await authFetch(`${API_URL}/api/wishlist`);
+        const res = await authFetch(`/api/wishlist`);
         const data = await res.json();
         setWishlist(data.items || []);
       } else if (activeTab === 'addresses') {
-        const res = await authFetch(`${API_URL}/api/addresses`);
+        const res = await authFetch(`/api/addresses`);
         const data = await res.json();
         setAddresses(data.addresses || []);
       }
@@ -74,7 +72,7 @@ const AccountPage = ({ isOpen, onClose }) => {
   const handleAddAddress = async (e) => {
     e.preventDefault();
     try {
-      await authFetch(`${API_URL}/api/addresses`, {
+      await authFetch(`/api/addresses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(addressForm),
@@ -93,7 +91,7 @@ const AccountPage = ({ isOpen, onClose }) => {
   const handleDeleteAddress = async (addressId) => {
     if (!window.confirm('Are you sure you want to delete this address?')) return;
     try {
-      await authFetch(`${API_URL}/api/addresses/${addressId}`, { method: 'DELETE' });
+      await authFetch(`/api/addresses/${addressId}`, { method: 'DELETE' });
       loadData();
     } catch (error) {
       alert('Failed to delete address');
@@ -102,7 +100,7 @@ const AccountPage = ({ isOpen, onClose }) => {
 
   const removeFromWishlist = async (productId) => {
     try {
-      await authFetch(`${API_URL}/api/wishlist/${productId}`, { method: 'DELETE' });
+      await authFetch(`/api/wishlist/${productId}`, { method: 'DELETE' });
       setWishlist(wishlist.filter(item => item.product_id !== productId));
     } catch (error) {
       alert('Failed to remove from wishlist');

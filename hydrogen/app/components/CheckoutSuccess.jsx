@@ -3,8 +3,6 @@ import { CheckCircle, Package, MapPin, CreditCard, ArrowRight, Printer } from 'l
 import logo1 from '@assets/logo/1.png';
 import logo2 from '@assets/logo/2.png';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || '';
-
 const CheckoutSuccess = () => {
   const [status, setStatus] = useState('checking');
   const [orderDetails, setOrderDetails] = useState(null);
@@ -20,7 +18,7 @@ const CheckoutSuccess = () => {
       }
   
       try {
-        const response = await fetch(`${API_URL}/api/checkout/status/${sessionId}`);
+        const response = await fetch(`/api/checkout/status/${sessionId}`);
         
         if (!response.ok) {
           throw new Error('Failed to check payment status');
