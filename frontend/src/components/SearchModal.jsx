@@ -102,6 +102,7 @@ const SearchModal = ({ isOpen, onClose }) => {
 
     const debounce = setTimeout(handleSearch, 300);
     return () => clearTimeout(debounce);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- essentialProducts is derived from static imports and never changes
   }, [query, selectedCategory]);
 
 
@@ -113,21 +114,21 @@ const SearchModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] bg-white" data-testid="search-modal">
+    <div className="fixed inset-0 z-[200] bg-black text-white" data-testid="search-modal">
       {/* Header */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-white/10">
         <div className="container mx-auto px-4 lg:px-8 py-4">
           <div className="flex items-center gap-4">
             {/* Search Input */}
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by name..."
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black text-lg"
+                className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/20 text-white placeholder-white/30 focus:outline-none focus:border-white/60 text-lg"
                 data-testid="search-input"
               />
             </div>
@@ -135,7 +136,7 @@ const SearchModal = ({ isOpen, onClose }) => {
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors"
+              className="w-12 h-12 flex items-center justify-center hover:bg-white/10 rounded-full transition-colors"
               data-testid="close-search"
             >
               <X className="w-6 h-6" />
@@ -148,11 +149,11 @@ const SearchModal = ({ isOpen, onClose }) => {
       <div className="container mx-auto px-4 lg:px-8 py-8 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 160px)' }}>
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin w-8 h-8 border-2 border-gray-200 border-t-black rounded-full" />
+            <div className="animate-spin w-8 h-8 border-2 border-white/10 border-t-white rounded-full" />
           </div>
         ) : results.length > 0 ? (
           <>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-white/40 mb-6">
               {results.length} product{results.length !== 1 ? 's' : ''} found
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -163,22 +164,22 @@ const SearchModal = ({ isOpen, onClose }) => {
                   onClick={() => handleProductClick(product)}
                   data-testid={`search-result-${product.id}`}
                 >
-                  <div className="relative h-64 bg-gray-50 mb-4 overflow-hidden rounded-lg flex items-center justify-center">
+                  <div className="relative h-64 bg-white/5 border border-white/10 mb-4 overflow-hidden rounded-lg flex items-center justify-center">
                     <img
                       src={product.image}
                       alt={product.nameEn}
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                     />
                     {product.isNew && (
-                      <span className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded">
+                      <span className="absolute top-2 left-2 bg-white text-black text-xs px-2 py-1">
                         NEW
                       </span>
                     )}
                   </div>
-                  <h3 className="text-sm font-medium uppercase tracking-wide mb-1">
+                  <h3 className="text-sm font-medium uppercase tracking-wide mb-1 text-white/90">
                     {product.nameEn}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-white/50">
                     {product.price.toFixed(2)} SAR
                   </p>
                 </div>
@@ -187,14 +188,14 @@ const SearchModal = ({ isOpen, onClose }) => {
           </>
         ) : query || selectedCategory ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No products found</p>
-            <p className="text-gray-400 text-sm mt-2">Try a different search term or category</p>
+            <p className="text-white/50 text-lg">No products found</p>
+            <p className="text-white/30 text-sm mt-2">Try a different search term or category</p>
           </div>
         ) : (
           <div className="text-center py-12">
-            <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">Start typing to search</p>
-            <p className="text-gray-400 text-sm mt-2">Search for bags, shirts, jackets, and more</p>
+            <Search className="w-16 h-16 text-white/20 mx-auto mb-4" />
+            <p className="text-white/50 text-lg">Start typing to search</p>
+            <p className="text-white/30 text-sm mt-2">Search for bags, shirts, jackets, and more</p>
           </div>
         )}
       </div>
