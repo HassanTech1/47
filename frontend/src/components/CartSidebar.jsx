@@ -32,25 +32,25 @@ const CartSidebar = () => {
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/50 z-[90] transition-opacity"
+        className="fixed inset-0 bg-black/70 z-[90] transition-opacity"
         onClick={() => setIsCartOpen(false)}
         data-testid="cart-overlay"
       />
 
       {/* Sidebar */}
       <div
-        className="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[95] shadow-2xl transform transition-transform duration-300 overflow-y-auto"
+        className="fixed top-0 right-0 h-full w-full max-w-md bg-black text-white z-[95] shadow-2xl transform transition-transform duration-300 overflow-y-auto"
         data-testid="cart-sidebar"
         dir="ltr"
       >
         {/* Header */}
-        <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="sticky top-0 bg-black z-10 px-6 py-4 border-b border-white/10 flex items-center justify-between">
           <h2 className="text-lg font-medium tracking-wider uppercase">
             YOUR CART ({cartItems.length})
           </h2>
           <button
             onClick={() => setIsCartOpen(false)}
-            className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors"
+            className="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-full transition-colors"
             data-testid="close-cart-btn"
           >
             <X className="w-5 h-5" />
@@ -61,7 +61,7 @@ const CartSidebar = () => {
         <div className="px-6 py-4">
           {cartItems.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">Your cart is empty</p>
+              <p className="text-white/40">Your cart is empty</p>
             </div>
           ) : (
             <>
@@ -74,7 +74,7 @@ const CartSidebar = () => {
                     data-testid={`cart-item-${index}`}
                   >
                     {/* Product Image */}
-                    <div className="w-20 h-28 bg-gray-100 flex-shrink-0">
+                    <div className="w-20 h-28 bg-white/5 flex-shrink-0">
                       <img
                         src={item.image}
                         alt={item.nameEn}
@@ -89,7 +89,7 @@ const CartSidebar = () => {
                           <h3 className="text-sm font-medium uppercase tracking-wide">
                             {item.nameEn}
                           </h3>
-                          <p className="text-sm text-gray-500 mt-1">
+                          <p className="text-sm text-white/50 mt-1">
                             Size: {item.size}
                           </p>
                         </div>
@@ -100,10 +100,10 @@ const CartSidebar = () => {
 
                       {/* Quantity Controls */}
                       <div className="flex items-center gap-4 mt-4">
-                        <div className="flex items-center border border-gray-300">
+                        <div className="flex items-center border border-white/20">
                           <button
                             onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
-                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                            className="w-8 h-8 flex items-center justify-center hover:bg-white/10 transition-colors"
                             data-testid={`decrease-qty-${index}`}
                           >
                             <Minus className="w-3 h-3" />
@@ -111,7 +111,7 @@ const CartSidebar = () => {
                           <span className="w-8 text-center text-sm">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
-                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                            className="w-8 h-8 flex items-center justify-center hover:bg-white/10 transition-colors"
                             data-testid={`increase-qty-${index}`}
                           >
                             <Plus className="w-3 h-3" />
@@ -119,7 +119,7 @@ const CartSidebar = () => {
                         </div>
                         <button
                           onClick={() => removeFromCart(item.id, item.size)}
-                          className="text-xs text-gray-500 underline hover:text-black transition-colors"
+                          className="text-xs text-white/40 underline hover:text-white transition-colors"
                           data-testid={`remove-item-${index}`}
                         >
                           Remove
@@ -133,21 +133,21 @@ const CartSidebar = () => {
               {/* You May Like Section Removed */}
 
               {/* Subtotal & Checkout */}
-              <div className="mt-8 pt-6 border-t border-gray-200">
+              <div className="mt-8 pt-6 border-t border-white/10">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium uppercase">SUBTOTAL:</span>
+                  <span className="text-sm font-medium uppercase text-white/70">SUBTOTAL:</span>
                   <span className="text-lg font-medium">{getCartTotal().toFixed(2)}</span>
                 </div>
-                <p className="text-xs text-gray-500 mb-2">
+                <p className="text-xs text-white/40 mb-2">
                   Taxes, discounts and <span className="underline">shipping</span> calculated at checkout.
                 </p>
-                <button className="text-xs text-gray-500 underline mb-6">
+                <button className="text-xs text-white/30 underline mb-6">
                   Order note
                 </button>
 
                 <button
                   onClick={handleCheckout}
-                  className="w-full py-4 bg-black text-white font-medium uppercase tracking-wider hover:bg-gray-800 transition-colors"
+                  className="w-full py-4 bg-white text-black font-medium uppercase tracking-wider hover:bg-white/90 transition-colors"
                   data-testid="checkout-btn"
                 >
                   CHECKOUT
