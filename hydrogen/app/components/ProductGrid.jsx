@@ -53,28 +53,30 @@ export const ProductGrid = ({products: shopifyProducts = []}) => {
   // When using mock data the GIDs are placeholders that will be replaced once products
   // are added in Shopify Admin.
   const essentialProducts = React.useMemo(() => {
-    const source = Array.isArray(shopifyProducts) ? shopifyProducts.slice(0, 6) : [];
-    return source.map((p, index) => ({
-      id: index + 1, // numeric ID used for local image / PRODUCT_IMAGES lookup
-      shopifyId: p.id,
-      // All size variants with their Shopify GIDs – used to pick correct variantId on checkout
-      variants: (p.variants?.nodes ?? []).map((v) => ({
-        id: v.id,
-        title: v.title,
-        availableForSale: v.availableForSale ?? true,
-      })),
-      // Default to the first variant (size S); ProductDetail selects the right one by size
-      variantId: p.variants?.nodes?.[0]?.id ?? null,
-      nameEn: productNames[index] ?? p.title,
-      name: productNamesAr[index] ?? p.title,
-      price: parseFloat(p.priceRange?.minVariantPrice?.amount ?? productPrices[index]),
-      image: productImages[index],
-      images: [productImages[index]],
-      preview: previewImages[index],
-      backView: backImages[index],
-      badge: t("unisex"),
-    }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const result = [];
+    for (let index = 0; index < 6; index++) {
+      const p = Array.isArray(shopifyProducts) ? shopifyProducts[index] : undefined;
+      result.push({
+        id: index + 1,
+        shopifyId: p?.id ?? null,
+        variants: (p?.variants?.nodes ?? []).map((v) => ({
+          id: v.id,
+          title: v.title,
+          availableForSale: v.availableForSale ?? true,
+        })),
+        variantId: p?.variants?.nodes?.[0]?.id ?? null,
+        nameEn: productNames[index] ?? p?.title ?? '',
+        name: productNamesAr[index] ?? p?.title ?? '',
+        price: parseFloat(p?.priceRange?.minVariantPrice?.amount ?? productPrices[index]),
+        image: productImages[index],
+        images: [productImages[index]],
+        preview: previewImages[index],
+        backView: backImages[index],
+        badge: t('unisex'),
+      });
+    }
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shopifyProducts, language]);
 
   const handleProductClick = (product) => {
