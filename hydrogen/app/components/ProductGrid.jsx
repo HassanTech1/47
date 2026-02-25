@@ -20,7 +20,7 @@ const prev5 = '/preview/5.png';
 const prev11 = '/product/1-1.png';
 const back4 = '/behind/4.png';
 
-export const ProductGrid = ({products: shopifyProducts = []}) => {
+export const ProductGrid = ({products: shopifyProducts = [], onProductClick}) => {
   const { openProductDetail } = useCart();
   const { t, language, formatPrice } = useLanguage();
 
@@ -80,7 +80,11 @@ export const ProductGrid = ({products: shopifyProducts = []}) => {
   }, [shopifyProducts, language]);
 
   const handleProductClick = (product) => {
-    openProductDetail(product);
+    if (onProductClick) {
+      onProductClick(product);
+    } else {
+      openProductDetail(product);
+    }
   };
 
   return (
