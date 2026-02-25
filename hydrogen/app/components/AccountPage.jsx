@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { User, Package, Heart, MapPin, LogOut, ChevronLeft, Edit2, Trash2, Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const AccountPage = ({ isOpen, onClose }) => {
   const { user, token, logout, updateProfile, authFetch } = useAuth();
+  const { t, language, formatPrice } = useLanguage();
   const [activeTab, setActiveTab] = useState('profile');
   const [orders, setOrders] = useState([]);
   const [wishlist, setWishlist] = useState([]);
@@ -116,10 +118,10 @@ const AccountPage = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const tabs = [
-    { id: 'profile', icon: User, label: 'Profile' },
-    { id: 'orders', icon: Package, label: 'Orders' },
-    { id: 'wishlist', icon: Heart, label: 'Wishlist' },
-    { id: 'addresses', icon: MapPin, label: 'Addresses' },
+    { id: 'profile', icon: User, label: t('profileInfo') },
+    { id: 'orders', icon: Package, label: t('orderHistory') },
+    { id: 'wishlist', icon: Heart, label: t('myWishlist') },
+    { id: 'addresses', icon: MapPin, label: t('savedAddresses') },
   ];
 
   return (
@@ -132,8 +134,8 @@ const AccountPage = ({ isOpen, onClose }) => {
             className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
             data-testid="close-account"
           >
-            <ChevronLeft className="w-5 h-5" />
-            <span>Back to Store</span>
+            <ChevronLeft className={`w-5 h-5 ${language === 'ar' ? 'rotate-180' : ''}`} />
+            <span>{t('backToStore')}</span>
           </button>
           <h1 className="text-xl font-bold" style={{ fontFamily: 'Playfair Display, serif' }}>
             ٧٧٧٧
@@ -143,13 +145,13 @@ const AccountPage = ({ isOpen, onClose }) => {
             className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors"
             data-testid="logout-btn"
           >
-            <LogOut className="w-5 h-5" />
-            <span className="hidden sm:inline">Logout</span>
+            <LogOut className={`w-5 h-5 ${language === 'ar' ? 'rotate-180' : ''}`} />
+            <span className="hidden sm:inline">{t('logout')}</span>
           </button>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 lg:px-8 py-8" dir="ltr">
+      <div className="container mx-auto px-4 lg:px-8 py-8" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <div className="lg:w-64 flex-shrink-0">
@@ -194,14 +196,14 @@ const AccountPage = ({ isOpen, onClose }) => {
                 {activeTab === 'profile' && (
                   <div className="bg-white rounded-lg border border-gray-200 p-6">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-xl font-bold">Profile Information</h2>
+                      <h2 className="text-xl font-bold">{t('profileInfo')}</h2>
                       {!editingProfile && (
                         <button
                           onClick={() => setEditingProfile(true)}
                           className="flex items-center gap-2 text-sm text-gray-600 hover:text-black"
                         >
                           <Edit2 className="w-4 h-4" />
-                          Edit
+                          {t('edit')}
                         </button>
                       )}
                     </div>
@@ -209,7 +211,7 @@ const AccountPage = ({ isOpen, onClose }) => {
                     {editingProfile ? (
                       <form onSubmit={handleUpdateProfile} className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium mb-2">Name</label>
+                          <label className="block text-sm font-medium mb-2">{t('name')}</label>
                           <input
                             type="text"
                             value={profileForm.name}
@@ -218,7 +220,7 @@ const AccountPage = ({ isOpen, onClose }) => {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-2">Phone</label>
+                          <label className="block text-sm font-medium mb-2">{t('phone')}</label>
                           <input
                             type="tel"
                             value={profileForm.phone}
@@ -231,30 +233,30 @@ const AccountPage = ({ isOpen, onClose }) => {
                             type="submit"
                             className="px-6 py-3 bg-black text-white font-medium rounded hover:bg-gray-800"
                           >
-                            Save Changes
+                            {t('saveChanges')}
                           </button>
                           <button
                             type="button"
                             onClick={() => setEditingProfile(false)}
                             className="px-6 py-3 border border-gray-300 rounded hover:bg-gray-50"
                           >
-                            Cancel
+                            {t('cancel')}
                           </button>
                         </div>
                       </form>
                     ) : (
                       <div className="space-y-4">
                         <div>
-                          <p className="text-sm text-gray-500">Name</p>
+                          <p className="text-sm text-gray-500">{t('name')}</p>
                           <p className="font-medium">{user?.name}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500">Email</p>
+                          <p className="text-sm text-gray-500">{t('email')}</p>
                           <p className="font-medium">{user?.email}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500">Phone</p>
-                          <p className="font-medium">{user?.phone || 'Not provided'}</p>
+                          <p className="text-sm text-gray-500">{t('phone')}</p>
+                          <p className="font-medium">{user?.phone || ''}</p>
                         </div>
                       </div>
                     )}
@@ -264,11 +266,11 @@ const AccountPage = ({ isOpen, onClose }) => {
                 {/* Orders Tab */}
                 {activeTab === 'orders' && (
                   <div>
-                    <h2 className="text-xl font-bold mb-6">Order History</h2>
+                    <h2 className="text-xl font-bold mb-6">{t('orderHistory')}</h2>
                     {orders.length === 0 ? (
                       <div className="text-center py-12 bg-gray-50 rounded-lg">
                         <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500">No orders yet</p>
+                        <p className="text-gray-500">{t('noOrders')}</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
@@ -303,8 +305,8 @@ const AccountPage = ({ isOpen, onClose }) => {
                               ))}
                             </div>
                             <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between">
-                              <span className="font-medium">Total</span>
-                              <span className="font-bold">{order.total?.toFixed(2)} SAR</span>
+                              <span className="font-medium">{t('totalAmount')}</span>
+                              <span className="font-bold">{formatPrice(order.total)}</span>
                             </div>
                           </div>
                         ))}
@@ -316,11 +318,11 @@ const AccountPage = ({ isOpen, onClose }) => {
                 {/* Wishlist Tab */}
                 {activeTab === 'wishlist' && (
                   <div>
-                    <h2 className="text-xl font-bold mb-6">My Wishlist</h2>
+                    <h2 className="text-xl font-bold mb-6">{t('myWishlist')}</h2>
                     {wishlist.length === 0 ? (
                       <div className="text-center py-12 bg-gray-50 rounded-lg">
                         <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500">Your wishlist is empty</p>
+                        <p className="text-gray-500">{t('wishlistEmpty')}</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -340,7 +342,7 @@ const AccountPage = ({ isOpen, onClose }) => {
                               />
                             </div>
                             <p className="text-sm font-medium truncate">{item.name}</p>
-                            <p className="text-sm text-gray-600">{item.price.toFixed(2)} SAR</p>
+                            <p className="text-sm text-gray-600">{formatPrice(item.price)}</p>
                           </div>
                         ))}
                       </div>
@@ -352,19 +354,19 @@ const AccountPage = ({ isOpen, onClose }) => {
                 {activeTab === 'addresses' && (
                   <div>
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-xl font-bold">Saved Addresses</h2>
+                      <h2 className="text-xl font-bold">{t('savedAddresses')}</h2>
                       <button
                         onClick={() => setShowAddAddress(true)}
                         className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
                       >
                         <Plus className="w-4 h-4" />
-                        Add Address
+                        {t('addAddress')}
                       </button>
                     </div>
 
                     {showAddAddress && (
                       <form onSubmit={handleAddAddress} className="bg-gray-50 rounded-lg p-6 mb-6">
-                        <h3 className="font-medium mb-4">New Address</h3>
+                        <h3 className="font-medium mb-4">{t('newAddress')}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <input
                             placeholder="Title (e.g., Home, Work)"
@@ -429,14 +431,14 @@ const AccountPage = ({ isOpen, onClose }) => {
                             type="submit"
                             className="px-6 py-3 bg-black text-white font-medium rounded hover:bg-gray-800"
                           >
-                            Save Address
+                            {t('saveAddress')}
                           </button>
                           <button
                             type="button"
                             onClick={() => setShowAddAddress(false)}
                             className="px-6 py-3 border border-gray-300 rounded hover:bg-gray-50"
                           >
-                            Cancel
+                            {t('cancel')}
                           </button>
                         </div>
                       </form>
@@ -445,15 +447,15 @@ const AccountPage = ({ isOpen, onClose }) => {
                     {addresses.length === 0 && !showAddAddress ? (
                       <div className="text-center py-12 bg-gray-50 rounded-lg">
                         <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500">No saved addresses</p>
+                        <p className="text-gray-500">{t('noAddresses')}</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {addresses.map((address) => (
                           <div key={address.id} className="border border-gray-200 rounded-lg p-4 relative">
                             {address.is_default && (
-                              <span className="absolute top-2 right-2 bg-black text-white text-xs px-2 py-1 rounded">
-                                Default
+                              <span className={`absolute top-2 ${language === 'ar' ? 'left-2' : 'right-2'} bg-black text-white text-xs px-2 py-1 rounded`}>
+                                {t('default')}
                               </span>
                             )}
                             <h3 className="font-medium mb-2">{address.title}</h3>
@@ -469,7 +471,7 @@ const AccountPage = ({ isOpen, onClose }) => {
                               className="mt-4 text-sm text-red-500 hover:text-red-700 flex items-center gap-1"
                             >
                               <Trash2 className="w-4 h-4" />
-                              Delete
+                              {t('delete')}
                             </button>
                           </div>
                         ))}

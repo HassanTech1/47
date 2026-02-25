@@ -1,17 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
 
-// Import all product images dynamically
-const productImagesContext = require.context('../assest/product', false, /\.(png|jpe?g|svg)$/);
+// Static image imports (Vite-compatible)
+import img1   from '../assest/product/1.png';
+import img1_1 from '../assest/product/1-1.png';
+import img1_2 from '../assest/product/1-2.png';
+import img2   from '../assest/product/2.png';
+import img2_1 from '../assest/product/2-1.png';
+import img2_2 from '../assest/product/2-2.png';
+import img2_3 from '../assest/product/2-3.png';
+import img3   from '../assest/product/3.png';
+import img3_1 from '../assest/product/3-1.png';
+import img3_2 from '../assest/product/3-2.png';
+import img4   from '../assest/product/4.png';
+import img4_1 from '../assest/product/4-1.png';
+import img4_2 from '../assest/product/4-2.png';
+import img5   from '../assest/product/5.png';
+import img5_1 from '../assest/product/5-1.png';
+import img5_2 from '../assest/product/5-2.png';
+import img5_3 from '../assest/product/5-3.png';
+import img6   from '../assest/product/6.png';
+import img6_1 from '../assest/product/6-1.jpeg';
+import img6_2 from '../assest/product/6-2.png';
+
+const PRODUCT_IMAGES = {
+  1: [img1, img1_1, img1_2],
+  2: [img2, img2_1, img2_2, img2_3],
+  3: [img3, img3_1, img3_2],
+  4: [img4, img4_1, img4_2],
+  5: [img5, img5_1, img5_2, img5_3],
+  6: [img6, img6_1, img6_2],
+};
+
+const RECOMMENDED_PRODUCTS = [
+  { id: 1, nameEn: 'VVVV PANTS', name: 'بنطال VVVV', price: 179.00, image: img1 },
+  { id: 2, nameEn: 'CAN BE HOODY', name: 'هودي CAN BE', price: 249.00, image: img2 },
+  { id: 3, nameEn: 'T-SHIRT', name: 'تي شيرت', price: 149.00, image: img3 },
+  { id: 4, nameEn: 'VVVV ZIP-UP', name: 'سحاب VVVV', price: 269.00, image: img4 },
+  { id: 5, nameEn: 'MY FUTURE IS CALLING', name: 'المستقبل ينادي', price: 269.00, image: img5 },
+  { id: 6, nameEn: "4SEVEN'S PANTS", name: "بنطال 4SEVEN'S", price: 179.00, image: img6 },
+];
 
 const ProductDetail = () => {
-  const { selectedProduct, closeProductDetail, addToCart, setIsCartOpen } = useCart();
-  const [selectedSize, setSelectedSize] = useState('M/15');
+  const { selectedProduct, closeProductDetail, addToCart, setIsCartOpen, openProductDetail } = useCart();
+  const { t, language, formatPrice } = useLanguage();
+  const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Black');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isCareOpen, setIsCareOpen] = useState(false);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   
   // Zoom State
   const [zoomLevel, setZoomLevel] = useState(1); // 1 = no zoom, >1 zoomed
@@ -29,74 +69,27 @@ const ProductDetail = () => {
     { name: 'Beige', hex: '#E1C699', border: 'border-transparent' },
   ];
 
-  // Generate multiple images from local assets
+  // Get product images from static map
   const productImages = React.useMemo(() => {
     if (!selectedProduct) return [];
-    
-    try {
-      const allKeys = productImagesContext.keys();
-      
-      // Filter images for current product ID
-      // Matches: {id}.ext or {id}-{number}.ext
-      // Examples: 1.png, 1-1.png, 1-2.jpg
-      const imageKeys = allKeys.filter(key => {
-        const fileName = key.replace('./', '');
-        return fileName.match(new RegExp(`^${selectedProduct.id}(\\.|-[0-9]+\\.)`));
-      });
+    const images = PRODUCT_IMAGES[selectedProduct.id];
+    if (images && images.length > 0) return images;
+    return [
+      selectedProduct.image,
+      selectedProduct.backView || selectedProduct.preview || selectedProduct.image,
+    ].filter(Boolean);
+  }, [selectedProduct]);
 
-      // Sort images: main image (no dash) first, then by sequence number
-      imageKeys.sort((a, b) => {
-        const nameA = a.replace('./', '');
-        const nameB = b.replace('./', '');
-        
-        // Main image (e.g. "1.png") comes first
-        const isMainA = !nameA.includes('-');
-        const isMainB = !nameB.includes('-');
-
-        if (isMainA && !isMainB) return -1;
-        if (!isMainA && isMainB) return 1;
-        if (isMainA && isMainB) return 0;
-        
-        // Extract sequence numbers for sorting (e.g. "1-2.png" -> 2)
-        const getSeq = (name) => {
-          const match = name.match(/-(\d+)\./);
-          return match ? parseInt(match[1], 10) : 0;
-        };
-        
-        return getSeq(nameA) - getSeq(nameB);
-      });
-
-      // Ensure main image is definitely first if explicit sorting failed or to be double sure
-      // (The sort above should handle it but let's be robust)
-      
-      const images = imageKeys.map(key => {
-        const img = productImagesContext(key);
-        return img.default || img;
-      });
-      
-      if (images.length > 0) return images;
-
-      // Fallback to mock data if no local images found
-      return [
-        selectedProduct.image,
-        selectedProduct.backView || selectedProduct.preview || selectedProduct.image,
-        selectedProduct.preview || selectedProduct.image,
-      ];
-    } catch (error) {
-      console.error("Error processing product images:", error);
-      return [
-        selectedProduct.image,
-        selectedProduct.backView || selectedProduct.preview || selectedProduct.image,
-        selectedProduct.preview || selectedProduct.image,
-      ];
-    }
+  // Recommended Items (Before early return)
+  const recommendedItems = React.useMemo(() => {
+    return RECOMMENDED_PRODUCTS.filter((p) => p.id !== selectedProduct?.id).slice(0, 3);
   }, [selectedProduct]);
 
   useEffect(() => {
     if (selectedProduct) {
       document.body.style.overflow = 'hidden';
       setCurrentImageIndex(0);
-      setSelectedSize('M/15');
+      setSelectedSize('M');
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -177,15 +170,29 @@ const ProductDetail = () => {
     setZoomLevel((prev) => Math.max(1, +(prev - 0.5).toFixed(2)));
   };
 
+  // Helper: resolve the Shopify variant GID for the currently selected size.
+  // Falls back to the product-level variantId (first variant) if no match found.
+  const resolveVariantId = (size) => {
+    const nodes = selectedProduct?.variants?.nodes ?? [];
+    if (nodes.length === 0) return selectedProduct?.variantId ?? null;
+    // Try exact title match first, then case-insensitive, then first available
+    const exact = nodes.find((v) => v.title === size);
+    if (exact) return exact.id;
+    const loose = nodes.find((v) => v.title?.toUpperCase() === size?.toUpperCase());
+    return loose ? loose.id : (nodes[0]?.id ?? selectedProduct?.variantId ?? null);
+  };
+
   const handleAddToCart = () => {
-    addToCart({ ...selectedProduct, color: selectedColor }, selectedSize, 1);
+    const variantId = resolveVariantId(selectedSize);
+    addToCart({ ...selectedProduct, color: selectedColor, variantId }, selectedSize, 1);
     setIsCartOpen(true);
     closeProductDetail();
   };
 
   const handleBuyNow = () => {
-    addToCart({ ...selectedProduct, color: selectedColor }, selectedSize, 1);
-    // Navigate to checkout (will be implemented with routing)
+    const variantId = resolveVariantId(selectedSize);
+    addToCart({ ...selectedProduct, color: selectedColor, variantId }, selectedSize, 1);
+    // Shopify checkout redirect handled by CartSidebar → /api/checkout
   };
 
   const openLightbox = () => {
@@ -308,13 +315,13 @@ const ProductDetail = () => {
             className="text-2xl lg:text-3xl font-medium tracking-wide uppercase mb-2"
             data-testid="product-name"
           >
-            {selectedProduct.nameEn}
+            {language === 'ar' && selectedProduct.name ? selectedProduct.name : selectedProduct.nameEn}
           </h1>
           <p 
             className="text-lg text-gray-700 mb-8"
             data-testid="product-price"
           >
-            {selectedProduct.price.toFixed(2)} SAR
+            {formatPrice(selectedProduct.price)}
           </p>
 
           <div className="mb-8">
@@ -324,9 +331,16 @@ const ProductDetail = () => {
           {/* Size Selection */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium">Size</span>
-              <button className="text-sm text-gray-500 underline hover:text-black transition-colors">
-                Size guide
+              <span className="text-sm font-medium">{t('size')}</span>
+              <button 
+                className="text-sm text-gray-500 underline hover:text-black transition-colors"
+                onClick={() => {
+                  setIsSizeGuideOpen(true);
+                  const el = document.getElementById('size-guide-toggle');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                {t('sizeGuide')}
               </button>
             </div>
             <div className="flex gap-2">
@@ -353,7 +367,7 @@ const ProductDetail = () => {
             className="w-full py-4 border-2 border-black bg-white text-black font-medium uppercase tracking-wider hover:bg-black hover:text-white transition-all mb-4"
             data-testid="add-to-cart-btn"
           >
-            ADD TO CART
+            {t('addToCart')}
           </button>
 
           {/* Buy Now Button */}
@@ -362,7 +376,7 @@ const ProductDetail = () => {
             className="w-full py-4 bg-white text-black font-medium uppercase tracking-wider hover:underline transition-all mb-8"
             data-testid="buy-now-btn"
           >
-            BUY IT NOW
+            {t('buyItNow')}
           </button>
 
           {/* Accordion Sections */}
@@ -374,12 +388,12 @@ const ProductDetail = () => {
                 className="w-full py-4 flex items-center justify-between text-left"
                 data-testid="description-toggle"
               >
-                <span className="font-medium">Description</span>
+                <span className="font-medium">{t('description')}</span>
                 <Plus className={`w-4 h-4 transition-transform ${isDescriptionOpen ? 'rotate-45' : ''}`} />
               </button>
               {isDescriptionOpen && (
                 <div className="pb-4 text-gray-600 text-sm leading-relaxed">
-                  <p>{selectedProduct.nameEn} - Premium quality fashion item from the 7777 collection. 
+                  <p>{language === 'ar' && selectedProduct.name ? selectedProduct.name : selectedProduct.nameEn} - Premium quality fashion item from the 7777 collection. 
                   Made with the finest materials for ultimate comfort and style. 
                   Perfect for both casual and formal occasions.</p>
                 </div>
@@ -393,7 +407,7 @@ const ProductDetail = () => {
                 className="w-full py-4 flex items-center justify-between text-left"
                 data-testid="care-toggle"
               >
-                <span className="font-medium uppercase">CARE AND MAINTENANCE</span>
+                <span className="font-medium uppercase">{t('careAndMaintenance')}</span>
                 <Plus className={`w-4 h-4 transition-transform ${isCareOpen ? 'rotate-45' : ''}`} />
               </button>
               {isCareOpen && (
@@ -408,7 +422,111 @@ const ProductDetail = () => {
                 </div>
               )}
             </div>
+
+            {/* Size Guide */}
+            <div className="border-b border-gray-200">
+              <button
+                id="size-guide-toggle"
+                onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
+                className="w-full py-4 flex items-center justify-between text-left"
+                data-testid="size-guide-toggle"
+              >
+                <span className="font-medium uppercase">{t('sizeGuide')}</span>
+                <Plus className={`w-4 h-4 transition-transform ${isSizeGuideOpen ? 'rotate-45' : ''}`} />
+              </button>
+              {isSizeGuideOpen && (
+                <div className="pb-6 pt-2 overflow-x-auto">
+                  <div className="min-w-[300px]">
+                    <table className="w-full text-left text-sm border-collapse">
+                      <thead>
+                        <tr className="border-b border-gray-100">
+                          <th className="py-2 font-semibold uppercase text-gray-400 text-[10px] tracking-widest">{language === 'ar' ? 'المقاس' : 'SIZE'}</th>
+                          <th className="py-2 font-semibold uppercase text-gray-400 text-[10px] tracking-widest">{selectedProduct.nameEn.toLowerCase().includes('pants') ? (language === 'ar' ? 'الخصر' : 'WAIST') : (language === 'ar' ? 'الصدر' : 'CHEST')}</th>
+                          <th className="py-2 font-semibold uppercase text-gray-400 text-[10px] tracking-widest">{language === 'ar' ? 'الطول' : 'LENGTH'}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-gray-600">
+                        {(selectedProduct.nameEn.toLowerCase().includes('pants') ? [
+                          { s: 'XS', v1: '31.5', v2: '101' },
+                          { s: 'S', v1: '34', v2: '102' },
+                          { s: 'M', v1: '36.5', v2: '103' },
+                          { s: 'L', v1: '39', v2: '104' },
+                          { s: 'XL', v1: '41.5', v2: '105' },
+                          { s: 'XXL', v1: '44', v2: '106' },
+                          { s: 'XXXL', v1: '46.5', v2: '107' }
+                        ] : [
+                          { s: 'XS', v1: '57.5', v2: '63' },
+                          { s: 'S', v1: '60', v2: '65' },
+                          { s: 'M', v1: '62.5', v2: '67' },
+                          { s: 'L', v1: '65', v2: '69' },
+                          { s: 'XL', v1: '67.5', v2: '71' },
+                          { s: 'XXL', v1: '70', v2: '73' },
+                          { s: 'XXXL', v1: '72.5', v2: '75' }
+                        ]).map((row, i) => (
+                          <tr key={i} className="border-b border-gray-50 last:border-0">
+                            <td className="py-3 font-medium text-black">{row.s}</td>
+                            <td className="py-3">{row.v1} cm</td>
+                            <td className="py-3">{row.v2} cm</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <div className="mt-4 flex justify-center opacity-40">
+                      {selectedProduct.nameEn.toLowerCase().includes('pants') ? (
+                        <svg width="80" height="100" viewBox="0 0 100 120" fill="none" stroke="currentColor" strokeWidth="1">
+                          <path d="M30 10 H70 L85 110 H65 L50 40 L35 110 H15 L30 10 Z" />
+                          <path d="M30 30 H70" strokeDasharray="2 2" />
+                          <text x="50" y="25" fontSize="8" textAnchor="middle" fill="currentColor">WAIST</text>
+                          <path d="M10 10 V110" strokeDasharray="2 2" />
+                          <text x="5" y="60" fontSize="8" textAnchor="middle" transform="rotate(-90 5 60)" fill="currentColor">LENGTH</text>
+                        </svg>
+                      ) : (
+                        <svg width="100" height="100" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1">
+                          <path d="M40 20 L20 40 L30 50 L40 45 V100 H80 V45 L90 50 L100 40 L80 20 H40 Z" />
+                          <path d="M40 40 H80" strokeDasharray="2 2" />
+                          <text x="60" y="35" fontSize="8" textAnchor="middle" fill="currentColor">CHEST</text>
+                          <path d="M85 20 V100" strokeDasharray="2 2" />
+                          <text x="95" y="60" fontSize="8" textAnchor="middle" transform="rotate(90 95 60)" fill="currentColor">LENGTH</text>
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* You May Also Like */}
+          {recommendedItems.length > 0 && (
+            <div className="mt-12 pt-8 border-t border-gray-200">
+              <h3 className="text-lg font-medium mb-6 uppercase tracking-wider text-center">{t('youMayAlsoLike')}</h3>
+              <div className="grid grid-cols-3 gap-4">
+                {recommendedItems.map((p) => (
+                  <div 
+                    key={p.id} 
+                    className="cursor-pointer group flex flex-col items-center text-center" 
+                    onClick={() => {
+                      openProductDetail(p);
+                    }}
+                  >
+                    <div className="aspect-[3/4] overflow-hidden mb-3 bg-gray-100 w-full max-w-[140px] mx-auto shadow-sm">
+                      <img 
+                        src={p.image} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                        alt={p.nameEn} 
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-xs font-bold uppercase tracking-wide">
+                        {language === 'ar' && p.name ? p.name : p.nameEn}
+                      </p>
+                      <p className="text-xs text-gray-500">{formatPrice(p.price)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { X, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [mode, setMode] = useState(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -54,7 +56,6 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       {/* Modal */}
       <div 
         className="relative bg-white w-full max-w-md mx-4 rounded-lg shadow-2xl"
-        dir="ltr"
         data-testid="auth-modal"
       >
         {/* Close Button */}
@@ -72,7 +73,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             ٧٧٧٧
           </h1>
           <h2 className="text-xl font-medium mb-6">
-            {mode === 'login' ? 'Welcome Back' : 'Create Account'}
+            {mode === 'login' ? t('welcomeBack') : t('createAccount')}
           </h2>
         </div>
 
@@ -87,7 +88,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           {mode === 'register' && (
             <>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <label className="block text-sm font-medium mb-2">{t('firstName')}</label>
                 <input
                   type="text"
                   name="name"
@@ -95,13 +96,13 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black transition-colors"
-                  placeholder="Enter your name"
+                  placeholder={t('firstName')}
                   data-testid="register-name-input"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Phone (Optional)</label>
+                <label className="block text-sm font-medium mb-2">{t('phone')}</label>
                 <input
                   type="tel"
                   name="phone"
@@ -116,7 +117,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           )}
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Email</label>
+            <label className="block text-sm font-medium mb-2">{t('email')}</label>
             <input
               type="email"
               name="email"
@@ -130,7 +131,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Password</label>
+            <label className="block text-sm font-medium mb-2">{t('password')}</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -159,12 +160,12 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             className="w-full py-4 bg-black text-white font-medium uppercase tracking-wider hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             data-testid="auth-submit-btn"
           >
-            {loading ? 'Please wait...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
+            {loading ? '...' : (mode === 'login' ? t('signIn') : t('createAccount'))}
           </button>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              {mode === 'login' ? "Don't have an account?" : "Already have an account?"}
+              {mode === 'login' ? t('noAccount') : t('haveAccount')}
               <button
                 type="button"
                 onClick={() => {
@@ -174,7 +175,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 className="ml-1 text-black font-medium hover:underline"
                 data-testid="toggle-auth-mode"
               >
-                {mode === 'login' ? 'Sign Up' : 'Sign In'}
+                {mode === 'login' ? t('register') : t('signIn')}
               </button>
             </p>
           </div>

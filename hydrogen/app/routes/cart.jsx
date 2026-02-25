@@ -1,12 +1,10 @@
-
 import {useLoaderData} from 'react-router';
 import {useState} from 'react';
 import {data} from 'react-router';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
 import {Plus, Minus, X} from 'lucide-react';
-import {Header} from '~/components/Header';
-import {Footer} from '~/components/Footer';
-import {MOCK_PRODUCTS} from '~/lib/mock-data';
+import {useCart} from '~/context/CartContext';
+import {useLanguage} from '~/context/LanguageContext';
 
 /**
  * Cart page for Shopify Hydrogen.
@@ -16,11 +14,17 @@ import {MOCK_PRODUCTS} from '~/lib/mock-data';
  */
 export async function loader({context}) {
   const {cart, storefront} = context;
-  
-  const {shop} = await storefront.query(SHOP_QUERY, {
-    cache: storefront.CacheLong(),
-  });
-  
+
+  let shop = null;
+  try {
+    const result = await storefront.query(SHOP_QUERY, {
+      cache: storefront.CacheLong(),
+    });
+    shop = result.shop;
+  } catch (err) {
+    console.warn('Could not fetch shop info for cart:', err.message);
+  }
+
   const cartData = await cart.get();
   return {cart: cartData, shop};
 }
@@ -81,92 +85,139 @@ export async function action({request, context}) {
 }
 
 export default function CartPage() {
-  const {cart, shop} = useLoaderData();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const lines = cart?.lines?.nodes ?? [];
-  const totalAmount = cart?.cost?.totalAmount;
+  return <ClientCartPage />;
+}
+
+/**
+ * Client-side cart page — reads from CartContext (localStorage).
+ * The loader's server-side Shopify cart is intentionally not used here
+ * because items are added client-side via CartContext before any Shopify
+ * sync. The CHECKOUT button calls /api/checkout which creates the Shopify
+ * cart and returns the hosted-checkout URL.
+ */
+function ClientCartPage() {
+  const {cartItems, updateQuantity, removeFromCart, getCartTotal} = useCart();
+  const {t, language, formatPrice} = useLanguage();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(null);
+
+  const total = getCartTotal();
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    setIsRedirecting(true);
+    setCheckoutError(null);
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          items: cartItems.map((item) => ({
+            nameEn: item.nameEn ?? item.name ?? '',
+            variantId: item.variantId ?? null,
+            quantity: item.quantity ?? 1,
+            size: item.size ?? '',
+          })),
+        }),
+      });
+      const responseData = await res.json();
+      if (responseData.checkoutUrl) {
+        window.location.href = responseData.checkoutUrl;
+      } else {
+        setCheckoutError(responseData.error ?? 'تعذّر إنشاء الطلب، يرجى المحاولة مجدداً.');
+        setIsRedirecting(false);
+      }
+    } catch {
+      setCheckoutError('خطأ في الشبكة، يرجى المحاولة مجدداً.');
+      setIsRedirecting(false);
+    }
+  };
 
   return (
-    <>
-      <Header 
-        shop={shop}
-        cartCount={cart?.totalQuantity ?? 0}
-        onOpenCart={() => {}} 
-        onOpenSearch={() => setIsSearchOpen(true)} 
-      />
+    <main className="min-h-screen pt-24 pb-16">
+      <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
+        <h1 className="text-3xl font-bold uppercase tracking-widest mb-12 pt-8">
+          {t('shoppingCart')}
+        </h1>
 
-      <main className="min-h-screen pt-24 pb-16">
-        <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
-          <h1 className="text-3xl font-bold uppercase tracking-widest mb-12 pt-8">
-            Shopping Cart
-          </h1>
-
-          {lines.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-gray-500 text-lg mb-8">Your cart is empty</p>
-              <a
-                href="/"
-                className="px-8 py-3 border-2 border-black text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-all"
-              >
-                Continue Shopping
-              </a>
+        {cartItems.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-gray-500 text-lg mb-8">{t('cartEmpty')}</p>
+            <a
+              href="/"
+              className="px-8 py-3 border-2 border-black text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+            >
+              {t('continueShopping')}
+            </a>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Line items */}
+            <div className="lg:col-span-2 space-y-8">
+              {cartItems.map((item) => (
+                <ClientCartLine
+                  key={`${item.id}-${item.size}`}
+                  item={item}
+                  onUpdateQuantity={updateQuantity}
+                  onRemove={removeFromCart}
+                  t={t}
+                  language={language}
+                  formatPrice={formatPrice}
+                />
+              ))}
             </div>
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              {/* Line items */}
-              <div className="lg:col-span-2 space-y-8">
-                {lines.map((line) => (
-                  <CartLine key={line.id} line={line} />
-                ))}
-              </div>
 
-              {/* Summary */}
-              <div className="lg:col-span-1">
-                <div className="border-2 border-black p-6">
-                  <h2 className="text-lg font-bold uppercase tracking-widest mb-6">
-                    Order Summary
-                  </h2>
+            {/* Summary */}
+            <div className="lg:col-span-1">
+              <div className="border-2 border-black p-6">
+                <h2 className="text-lg font-bold uppercase tracking-widest mb-6">
+                  {t('orderSummary')}
+                </h2>
 
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm">Subtotal</span>
-                    {totalAmount && <Money data={totalAmount} className="text-sm font-semibold" />}
-                  </div>
-                  <p className="text-xs text-gray-500 mb-6">
-                    Shipping calculated at checkout
-                  </p>
-
-                  <a
-                    href={cart?.checkoutUrl ?? '/checkout'}
-                    className="block w-full py-4 bg-black text-white text-center text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors"
-                  >
-                    Checkout
-                  </a>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-gray-600">{t('subtotal')}</span>
+                  <span className="text-xl font-bold">{formatPrice(getCartTotal())}</span>
                 </div>
+                <p className="text-xs text-gray-500 mb-6">
+                  {t('shippingCalculated')}
+                </p>
+
+                <button
+                  onClick={handleCheckout}
+                  disabled={isRedirecting}
+                  className="block w-full py-4 bg-black text-white text-center text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {isRedirecting ? '...' : t('checkout')}
+                </button>
+
+                {checkoutError && (
+                  <p className="mt-3 text-xs text-red-600">{checkoutError}</p>
+                )}
+
+                {checkoutError && (
+                  <p className="mt-4 text-xs text-red-600 leading-relaxed">
+                    {checkoutError}
+                  </p>
+                )}
               </div>
             </div>
-          )}
-        </div>
-      </main>
-
-      <Footer />
-    </>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
 
-function CartLine({line}) {
-  const {id, merchandise, quantity, cost} = line;
-  const {product, title, image} = merchandise;
-
+function ClientCartLine({item, onUpdateQuantity, onRemove, t, language, formatPrice}) {
   return (
     <div className="flex gap-6 border-b border-gray-100 pb-8">
       {/* Image */}
-      <div className="w-24 h-32 bg-gray-50 flex-shrink-0">
-        {image ? (
-          <Image
-            data={image}
-            width={96}
-            height={128}
-            className="w-full h-full object-cover"
+      <div className="w-24 h-32 bg-gray-50 flex-shrink-0 overflow-hidden">
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={item.nameEn ?? item.name ?? 'Product'}
+            className="w-full h-full object-contain"
           />
         ) : (
           <div className="w-full h-full bg-gray-200" />
@@ -178,144 +229,51 @@ function CartLine({line}) {
         <div className="flex justify-between">
           <div>
             <p className="font-medium uppercase tracking-wide mb-1">
-              {product.title}
+              {language === 'ar' && item.name ? item.name : (item.nameEn || item.name || 'Product')}
             </p>
-            <p className="text-sm text-gray-500 mb-3">{title}</p>
+            {item.size && (
+              <p className="text-sm text-gray-500 mb-3">{t('size')}: {item.size}</p>
+            )}
           </div>
-          <CartForm
-            route="/cart"
-            action={CartForm.ACTIONS.LinesRemove}
-            inputs={{lineIds: [id]}}
+          <button
+            onClick={() => onRemove(item.id, item.size)}
+            aria-label="Remove item"
           >
-            <button type="submit" aria-label="Remove item">
-              <X className="w-5 h-5 text-gray-400 hover:text-black transition-colors" />
-            </button>
-          </CartForm>
+            <X className="w-5 h-5 text-gray-400 hover:text-black transition-colors" />
+          </button>
         </div>
 
-        <Money data={cost.totalAmount} className="text-sm font-semibold mb-4" />
+        <p className="text-sm font-semibold mb-4">
+          {formatPrice(item.price * item.quantity)}
+        </p>
 
         {/* Quantity */}
         <div className="flex items-center gap-3">
-          <CartForm
-            route="/cart"
-            action={CartForm.ACTIONS.LinesUpdate}
-            inputs={{lines: [{id, quantity: Math.max(quantity - 1, 0)}]}}
+          <button
+            onClick={() => onUpdateQuantity(item.id, item.size, Math.max((item.quantity ?? 1) - 1, 0))}
+            className="w-8 h-8 border border-gray-300 flex items-center justify-center hover:border-black transition-colors"
+            aria-label="Decrease quantity"
           >
-            <button
-              type="submit"
-              className="w-8 h-8 border border-gray-300 flex items-center justify-center hover:border-black transition-colors"
-              aria-label="Decrease quantity"
-            >
-              <Minus className="w-3 h-3" />
-            </button>
-          </CartForm>
-
-          <span className="text-sm w-8 text-center">{quantity}</span>
-
-          <CartForm
-            route="/cart"
-            action={CartForm.ACTIONS.LinesUpdate}
-            inputs={{lines: [{id, quantity: quantity + 1}]}}
+            <Minus className="w-3 h-3" />
+          </button>
+          <span className="text-sm w-8 text-center">{item.quantity ?? 1}</span>
+          <button
+            onClick={() => onUpdateQuantity(item.id, item.size, (item.quantity ?? 1) + 1)}
+            className="w-8 h-8 border border-gray-300 flex items-center justify-center hover:border-black transition-colors"
+            aria-label="Increase quantity"
           >
-            <button
-              type="submit"
-              className="w-8 h-8 border border-gray-300 flex items-center justify-center hover:border-black transition-colors"
-              aria-label="Increase quantity"
-            >
-              <Plus className="w-3 h-3" />
-            </button>
-          </CartForm>
+            <Plus className="w-3 h-3" />
+          </button>
         </div>
       </div>
-
-      {/* Search modal */}
-      {isSearchOpen && (
-        <SearchModal onClose={() => setIsSearchOpen(false)} />
-      )}
     </div>
   );
 }
 
-/**
- * Search modal component
- */
-function SearchModal({onClose}) {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-
-  const handleSearch = (searchQuery) => {
-    if (!searchQuery.trim()) {
-      setResults([]);
-      return;
-    }
-    
-    const mockResults = MOCK_PRODUCTS.filter((p) =>
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    setResults(mockResults);
-  };
-
-  return (
-    <>
-      <div
-        className="fixed inset-0 z-[110] bg-black/50"
-        onClick={onClose}
-      />
-      <div className="fixed top-0 left-0 right-0 z-[120] bg-white p-6 shadow-xl">
-        <div className="container mx-auto max-w-2xl">
-          <div className="flex items-center gap-4 border-b-2 border-black pb-4 mb-6">
-            <input
-              type="text"
-              autoFocus
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                handleSearch(e.target.value);
-              }}
-              placeholder="Search products..."
-              className="flex-1 text-lg outline-none"
-            />
-            <button onClick={onClose} className="text-sm uppercase tracking-widest hover:text-gray-600">
-              Close
-            </button>
-          </div>
-
-          {query && (
-            <ul className="space-y-4">
-              {results.length === 0 ? (
-                <p className="text-gray-500">No results for &ldquo;{query}&rdquo;</p>
-              ) : (
-                results.map((product) => (
-                  <li key={product.id}>
-                    <a
-                      href={`/products/${product.handle}`}
-                      className="flex items-center gap-4 hover:bg-gray-50 p-2 transition-colors rounded"
-                    >
-                      {product.featuredImage && (
-                        <img
-                          src={product.featuredImage.url}
-                          alt={product.title}
-                          className="w-16 h-16 object-cover bg-gray-100 rounded"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{product.title}</p>
-                        <p className="text-sm text-gray-500">
-                          {product.priceRange.minVariantPrice.amount}{' '}
-                          {product.priceRange.minVariantPrice.currencyCode}
-                        </p>
-                      </div>
-                    </a>
-                  </li>
-                ))
-              )}
-            </ul>
-          )}
-        </div>
-      </div>
-    </>
-  );
+function CartLine({line}) {
+  // Legacy Shopify server-cart line — kept for reference but not rendered.
+  // The active cart page uses ClientCartLine with CartContext data.
+  return null;
 }
 
 export function meta() {

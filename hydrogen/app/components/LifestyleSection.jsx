@@ -1,8 +1,11 @@
 import React from 'react';
 import { ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 import parisImage from '../assest/preview/p-15.png';
 
 const LifestyleSection = () => {
+  const { t } = useLanguage();
+
   return (
     <section id="catalog" className="py-24 bg-white">
       <div className="container mx-auto px-4 lg:px-8">
@@ -10,13 +13,13 @@ const LifestyleSection = () => {
           {/* Text Content */}
           <div className="order-2 lg:order-1">
             <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-black">
-             About 4seven's
+             {t('aboutTitleSection')}
             </h2>
             <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-             We are a store specializing in offering the finest selection of modern and elegant hoodies. We believe that fashion should be both comfortable and practical at the same time.
+             {t('aboutDesc1')}
             </p>
             <p className="text-gray-600 text-lg mb-12 leading-relaxed">
-             All our products are made from the highest quality premium cotton fabrics, with attention to the finest details to ensure your comfort and complete satisfaction.
+             {t('aboutDesc2')}
             </p>
             
             {/* Features Icons */}
@@ -24,15 +27,15 @@ const LifestyleSection = () => {
                 {/* Feature 1 */}
                 <div className="flex flex-col items-center text-center">
                     <ShieldCheck className="w-12 h-12 text-black mb-4" />
-                    <h3 className="font-bold text-lg mb-1">High Quality</h3>
-                    <p className="text-gray-500 text-sm">Premium fabrics</p>
+                    <h3 className="font-bold text-lg mb-1">{t('highQuality')}</h3>
+                    <p className="text-gray-500 text-sm">{t('premiumFabrics')}</p>
                 </div>
 
                 {/* Feature 2 */}
                 <div className="flex flex-col items-center text-center">
                     <Truck className="w-12 h-12 text-black mb-4" />
-                    <h3 className="font-bold text-lg mb-1">Fast Shipping</h3>
-                    <p className="text-gray-500 text-sm">Free delivery</p>
+                    <h3 className="font-bold text-lg mb-1">{t('fastShipping')}</h3>
+                    <p className="text-gray-500 text-sm">{t('freeDelivery')}</p>
                 </div>
             </div>
           </div>

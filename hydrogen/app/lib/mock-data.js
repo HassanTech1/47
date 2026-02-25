@@ -105,7 +105,7 @@ export const MOCK_PRODUCTS = [
     handle: 't-shirt',
     description: 'Classic T-shirt from the 4Seven\'s essential collection.',
     priceRange: {
-      minVariantPrice: {amount: '194.00', currencyCode: 'SAR'},
+      minVariantPrice: {amount: '149.00', currencyCode: 'SAR'},
     },
     featuredImage: {
       url: 'https://images.unsplash.com/photo-1715533173683-737d4a2433dd?w=800&q=85',

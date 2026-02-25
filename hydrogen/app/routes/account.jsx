@@ -1,11 +1,6 @@
-import {Header} from '~/components/Header';
-import {Footer} from '~/components/Footer';
-
 export default function AccountPage() {
   return (
-    <>
-      <Header onOpenCart={() => {}} onOpenSearch={() => {}} />
-      <main className="min-h-screen pt-32 pb-16">
+    <main className="min-h-screen pt-32 pb-16">
         <div className="container mx-auto px-4 max-w-md text-center">
           <h1 className="text-3xl font-bold uppercase tracking-widest mb-8">
             My Account
@@ -28,9 +23,7 @@ export default function AccountPage() {
             </a>
           </div>
         </div>
-      </main>
-      <Footer />
-    </>
+    </main>
   );
 }
 

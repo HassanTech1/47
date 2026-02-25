@@ -2,12 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
-// Import all product images dynamically
-const productImagesContext = require.context('../assest/product', false, /\.(png|jpe?g|svg)$/);
+// Static image imports
+import img1   from '../assest/product/1.png';
+import img1_1 from '../assest/product/1-1.png';
+import img1_2 from '../assest/product/1-2.png';
+import img2   from '../assest/product/2.png';
+import img2_1 from '../assest/product/2-1.png';
+import img2_2 from '../assest/product/2-2.png';
+import img2_3 from '../assest/product/2-3.png';
+import img3   from '../assest/product/3.png';
+import img3_1 from '../assest/product/3-1.png';
+import img3_2 from '../assest/product/3-2.png';
+import img4   from '../assest/product/4.png';
+import img4_1 from '../assest/product/4-1.png';
+import img4_2 from '../assest/product/4-2.png';
+import img5   from '../assest/product/5.png';
+import img5_1 from '../assest/product/5-1.png';
+import img5_2 from '../assest/product/5-2.png';
+import img5_3 from '../assest/product/5-3.png';
+import img5_4 from '../assest/product/5-4.png';
+import img6   from '../assest/product/6.png';
+import img6_1 from '../assest/product/6-1.jpeg';
+import img6_2 from '../assest/product/6-2.png';
+
+const PRODUCT_IMAGES = {
+  1: [img1, img1_1, img1_2],
+  2: [img2, img2_1, img2_2, img2_3],
+  3: [img3, img3_1, img3_2],
+  4: [img4, img4_1, img4_2],
+  5: [img5, img5_1, img5_2, img5_3, img5_4],
+  6: [img6, img6_1, img6_2],
+};
 
 const ProductDetail = () => {
   const { selectedProduct, closeProductDetail, addToCart, setIsCartOpen } = useCart();
-  const [selectedSize, setSelectedSize] = useState('M/15');
+  const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Black');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
@@ -29,67 +58,15 @@ const ProductDetail = () => {
     { name: 'Beige', hex: '#E1C699', border: 'border-transparent' },
   ];
 
-  // Generate multiple images from local assets
+  // Get product images from static map
   const productImages = React.useMemo(() => {
     if (!selectedProduct) return [];
-    
-    try {
-      const allKeys = productImagesContext.keys();
-      
-      // Filter images for current product ID
-      // Matches: {id}.ext or {id}-{number}.ext
-      // Examples: 1.png, 1-1.png, 1-2.jpg
-      const imageKeys = allKeys.filter(key => {
-        const fileName = key.replace('./', '');
-        return fileName.match(new RegExp(`^${selectedProduct.id}(\\.|-[0-9]+\\.)`));
-      });
-
-      // Sort images: main image (no dash) first, then by sequence number
-      imageKeys.sort((a, b) => {
-        const nameA = a.replace('./', '');
-        const nameB = b.replace('./', '');
-        
-        // Main image (e.g. "1.png") comes first
-        const isMainA = !nameA.includes('-');
-        const isMainB = !nameB.includes('-');
-
-        if (isMainA && !isMainB) return -1;
-        if (!isMainA && isMainB) return 1;
-        if (isMainA && isMainB) return 0;
-        
-        // Extract sequence numbers for sorting (e.g. "1-2.png" -> 2)
-        const getSeq = (name) => {
-          const match = name.match(/-(\d+)\./);
-          return match ? parseInt(match[1], 10) : 0;
-        };
-        
-        return getSeq(nameA) - getSeq(nameB);
-      });
-
-      // Ensure main image is definitely first if explicit sorting failed or to be double sure
-      // (The sort above should handle it but let's be robust)
-      
-      const images = imageKeys.map(key => {
-        const img = productImagesContext(key);
-        return img.default || img;
-      });
-      
-      if (images.length > 0) return images;
-
-      // Fallback to mock data if no local images found
-      return [
-        selectedProduct.image,
-        selectedProduct.backView || selectedProduct.preview || selectedProduct.image,
-        selectedProduct.preview || selectedProduct.image,
-      ];
-    } catch (error) {
-      console.error("Error processing product images:", error);
-      return [
-        selectedProduct.image,
-        selectedProduct.backView || selectedProduct.preview || selectedProduct.image,
-        selectedProduct.preview || selectedProduct.image,
-      ];
-    }
+    const images = PRODUCT_IMAGES[selectedProduct.id];
+    if (images && images.length > 0) return images;
+    return [
+      selectedProduct.image,
+      selectedProduct.backView || selectedProduct.preview || selectedProduct.image,
+    ].filter(Boolean);
   }, [selectedProduct]);
 
   useEffect(() => {

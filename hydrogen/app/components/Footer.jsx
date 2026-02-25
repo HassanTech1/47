@@ -4,7 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language, setLanguage, currency, setCurrency } = useLanguage();
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
@@ -65,16 +65,22 @@ const Footer = () => {
         <div className="border-t-2 border-black pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           {/* Country & Language Selectors */}
           <div className="flex gap-4">
-            <select className="footer-select">
-              <option>Saudi Arabia (SAR ر.س)</option>
-              <option>United States (USD $)</option>
+            <select 
+              className="footer-select"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+            >
+              <option value="SAR">Saudi Arabia (SAR ر.س)</option>
+              <option value="GBP">United Kingdom (GBP £)</option>
+              <option value="EUR">Europe (EUR €)</option>
+              <option value="USD">United States (USD $)</option>
             </select>
             <select 
               className="footer-select"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
             >
-              {/* <option value="ar">العربية</option> */}
+              <option value="ar">العربية</option>
               <option value="en">English</option>
             </select>
           </div>

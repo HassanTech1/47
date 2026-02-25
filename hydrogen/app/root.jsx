@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {
   Links,
   Meta,
@@ -7,25 +8,18 @@ import {
   useRouteError,
   isRouteErrorResponse,
 } from 'react-router';
-import {useShopifyCookies} from '@shopify/hydrogen';
+import {useShopifyCookies, useNonce} from '@shopify/hydrogen';
 import appStyles from '~/styles/app.css?url';
-
-/**
- * @param {import('@shopify/remix-oxygen').LoaderFunctionArgs} args
- */
-export async function loader(args) {
-  const {storefront, env} = args.context;
-
-  // Fetch shop information for SEO
-  const {shop} = await storefront.query(SHOP_QUERY, {
-    cache: storefront.CacheLong(),
-  });
-
-  return {
-    shop,
-    storeDomain: env.PUBLIC_STORE_DOMAIN,
-  };
-}
+import {CartProvider} from '~/context/CartContext';
+import {AuthProvider} from '~/context/AuthContext';
+import {LanguageProvider} from '~/context/LanguageContext';
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
+import CartSidebar from '~/components/CartSidebar';
+import AuthModal from '~/components/AuthModal';
+import AppAccountPage from '~/components/AccountPage';
+import SearchModal from '~/components/SearchModal';
+import ProductDetail from '~/components/ProductDetail';
 
 export function links() {
   return [
@@ -38,16 +32,20 @@ export function links() {
 /**
  * @param {import('@remix-run/react').MetaArgs} args
  */
-export function meta({data}) {
+export function meta() {
   return [
-    {title: data?.shop?.name ?? '4Seven\'s Fashion'},
+    {title: "4Seven's Fashion | Premium Saudi Streetwear"},
     {charset: 'utf-8'},
     {name: 'viewport', content: 'width=device-width,initial-scale=1'},
   ];
 }
 
 export function App() {
+  const nonce = useNonce();
   useShopifyCookies();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [accountPageOpen, setAccountPageOpen] = useState(false);
 
   return (
     <html lang="en">
@@ -58,9 +56,26 @@ export function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
+        <CartProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              <Header
+                onOpenSearch={() => setIsSearchOpen(true)}
+                onOpenAuth={() => setAuthModalOpen(true)}
+                onOpenAccount={() => setAccountPageOpen(true)}
+              />
+              <Outlet />
+              <Footer />
+              <CartSidebar />
+              <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+              <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+              <AppAccountPage isOpen={accountPageOpen} onClose={() => setAccountPageOpen(false)} />
+              <ProductDetail />
+            </LanguageProvider>
+          </AuthProvider>
+        </CartProvider>
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
@@ -105,21 +120,3 @@ export function ErrorBoundary() {
   );
 }
 
-const SHOP_QUERY = `#graphql
-  query ShopInfo {
-    shop {
-      name
-      description
-      primaryDomain {
-        url
-      }
-      brand {
-        logo {
-          image {
-            url
-          }
-        }
-      }
-    }
-  }
-` ;

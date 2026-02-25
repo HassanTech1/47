@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
 import { products } from '../data/mock';
 
 // Import images to match ProductGrid
@@ -19,7 +20,7 @@ import prev3 from '../assest/preview/3.png';
 import prev4 from '../assest/preview/4.png';
 import prev5 from '../assest/preview/5.png';
 import prev11 from '../assest/product/1-1.png';
-import back4 from '../behind/4.png';
+const back4 = '/behind/4.png'; // served from public/behind/4.png
 
 const SearchModal = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
@@ -28,6 +29,7 @@ const SearchModal = ({ isOpen, onClose }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const inputRef = useRef(null);
   const { openProductDetail } = useCart();
+  const { t, language, formatPrice } = useLanguage();
 
   // Reconstruct essentialProducts locally
   const productImages = [pro1, pro2, pro3, pro4, pro5, pro6];
@@ -35,25 +37,35 @@ const SearchModal = ({ isOpen, onClose }) => {
   const backImages = [prev11, null, null, back4, pro5back, pro6back];
   
   const productNames = [
-    "٧٧٧٧ pants",
+    "VVVV pants",
     "Can be hoody",
     "T-shirt",
-    "٧٧٧٧ zip-up",
+    "VVVV zip-up",
     "My future is calling",
     "4Seven's pants"
   ];
 
-  const productPrices = [179, 249, 194, 269, 269, 179];
+  const productNamesAr = [
+    "بنطال VVVV",
+    "هودي CAN BE",
+    "تي شيرت",
+    "سحاب VVVV",
+    "المستقبل ينادي",
+    "بنطال 4SEVEN'S"
+  ];
+
+  const productPrices = [179, 249, 149, 269, 269, 179];
 
   const essentialProducts = products.slice(0, 6).map((p, index) => ({
     ...p,
     nameEn: productNames[index],
+    name: productNamesAr[index], // Add Arabic name here
     price: productPrices[index],
     image: productImages[index],
     images: [productImages[index], productImages[index], productImages[index]],
     preview: previewImages[index],
     backView: backImages[index], 
-    badge: "Unisex",
+    badge: t("unisex"),
   }));
 
   // const categories = [
@@ -120,15 +132,16 @@ const SearchModal = ({ isOpen, onClose }) => {
           <div className="flex items-center gap-4">
             {/* Search Input */}
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className={`absolute ${language === 'ar' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400`} />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by name..."
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black text-lg"
+                placeholder={t('searchPlaceholder')}
+                className={`w-full ${language === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black text-lg`}
                 data-testid="search-input"
+                dir={language === 'ar' ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -153,7 +166,7 @@ const SearchModal = ({ isOpen, onClose }) => {
         ) : results.length > 0 ? (
           <>
             <p className="text-sm text-gray-500 mb-6">
-              {results.length} product{results.length !== 1 ? 's' : ''} found
+              {results.length} {results.length !== 1 ? t('productsFound') : t('productFound')}
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {results.map((product) => (
@@ -170,16 +183,16 @@ const SearchModal = ({ isOpen, onClose }) => {
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                     />
                     {product.isNew && (
-                      <span className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded">
-                        NEW
+                      <span className={`absolute top-2 ${language === 'ar' ? 'right-2' : 'left-2'} bg-black text-white text-xs px-2 py-1 rounded`}>
+                        {t('newBadge')}
                       </span>
                     )}
                   </div>
                   <h3 className="text-sm font-medium uppercase tracking-wide mb-1">
-                    {product.nameEn}
+                    {language === 'ar' && product.name ? product.name : product.nameEn}
                   </h3>
                   <p className="text-sm text-gray-600">
-                    {product.price.toFixed(2)} SAR
+                    {formatPrice(product.price)}
                   </p>
                 </div>
               ))}
@@ -187,14 +200,14 @@ const SearchModal = ({ isOpen, onClose }) => {
           </>
         ) : query || selectedCategory ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No products found</p>
-            <p className="text-gray-400 text-sm mt-2">Try a different search term or category</p>
+            <p className="text-gray-500 text-lg">{t('noProducts')}</p>
+            <p className="text-gray-400 text-sm mt-2">{t('tryDifferent')}</p>
           </div>
         ) : (
           <div className="text-center py-12">
             <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">Start typing to search</p>
-            <p className="text-gray-400 text-sm mt-2">Search for bags, shirts, jackets, and more</p>
+            <p className="text-gray-500 text-lg">{t('startTyping')}</p>
+            <p className="text-gray-400 text-sm mt-2">{t('searchDesc')}</p>
           </div>
         )}
       </div>

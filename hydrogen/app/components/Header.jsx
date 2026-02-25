@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Search, User, ShoppingCart, Heart, Menu, ArrowLeft, ArrowRight, Instagram } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useLanguage } from '../context/LanguageContext';
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import logo from '../assest/logo/1.png';
 import logo2 from '../assest/logo/2.png';
 const Header = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
@@ -11,6 +12,7 @@ const Header = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
   const [wishlistCount, setWishlistCount] = useState(0);
   const { getCartCount, setIsCartOpen, cartItems } = useCart();
   const { isAuthenticated, user } = useAuth();
+  const { t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Calculate free shipping progress
@@ -54,8 +56,15 @@ const Header = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
           scrolled ? '-translate-y-full' : 'translate-y-0'
         }`}
       >
-        <span>
-              Free delivery for orders above <span style={{color: 'green'}}>475</span> SAR</span>
+        {remainingForFreeShipping > 0 ? (
+          <span>
+            {t('freeDeliveryMsg')} <span style={{color: 'green'}}>475</span> SAR
+          </span>
+        ) : (
+          <span className="text-green-600 font-bold flex items-center gap-2">
+            {t('freeDeliveryCongrats')}
+          </span>
+        )}
       </div>
 
       {/* Compact Header - Shows in Hero */}
@@ -208,28 +217,28 @@ const Header = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
                           onClick={(e) => handleNavClick(e, 'hero')}
                           className="block hover:text-gray-600 transition-colors"
                         >
-                          Home
+                          {t('home')}
                         </a>
                         <a
                           href="#product-grid"
                           onClick={(e) => handleNavClick(e, 'product-grid')}
                           className="block hover:text-gray-600 transition-colors"
                         >
-                          All products
+                          {t('allProducts')}
                         </a>
                         <a
                           href="#catalog"
                           onClick={(e) => handleNavClick(e, 'catalog')}
                           className="block hover:text-gray-600 transition-colors"
                         >
-                          Catalog
+                          {t('catalog')}
                         </a>
                         <a
                           href="#contact"
                           onClick={(e) => handleNavClick(e, 'contact')}
                           className="block hover:text-gray-600 transition-colors"
                         >
-                          Contact
+                          {t('contact')}
                         </a>
                     </nav>
                 </div>
@@ -238,7 +247,7 @@ const Header = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
                      <div className="space-y-6">
                         <button onClick={handleUserClick} className="flex items-center gap-3 text-sm hover:text-gray-600 transition-colors w-full">
                             <User className="w-5 h-5" />
-                            <span>{isAuthenticated ? 'My Account' : 'Log in'}</span>
+                            <span>{isAuthenticated ? t('myAccount') : t('login')}</span>
                         </button>
                      </div>
 

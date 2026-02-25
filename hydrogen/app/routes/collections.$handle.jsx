@@ -1,12 +1,8 @@
 
 import {useLoaderData} from 'react-router';
-import {useState} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import {MOCK_PRODUCTS} from '~/lib/mock-data';
-import {Header} from '~/components/Header';
-import {Footer} from '~/components/Footer';
-import {CartDrawer} from '~/components/CartDrawer';
 
 /**
  * @param {import('@shopify/remix-oxygen').LoaderFunctionArgs} args
@@ -38,14 +34,10 @@ export async function loader({params, context}) {
 }
 
 export default function CollectionPage() {
-  const {products, collectionTitle, cart} = useLoaderData();
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const {products, collectionTitle} = useLoaderData();
 
   return (
-    <>
-      <Header onOpenCart={() => setIsCartOpen(true)} onOpenSearch={() => {}} />
-
-      <main className="min-h-screen pt-24 pb-16">
+    <main className="min-h-screen pt-24 pb-16">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Title */}
           <div className="text-center py-12 border-b-2 border-black mb-12">
@@ -84,16 +76,7 @@ export default function CollectionPage() {
             ))}
           </div>
         </div>
-      </main>
-
-      <Footer />
-
-      <CartDrawer
-        cart={cart}
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-      />
-    </>
+    </main>
   );
 }
 

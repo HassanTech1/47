@@ -1,7 +1,10 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import newBg from '../assest/preview/new-background.jpeg';
 
 const PromoBanner = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="relative h-[500px] lg:h-[600px] overflow-hidden">
       <div 
@@ -14,20 +17,20 @@ const PromoBanner = () => {
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="text-center px-8">
           <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight promo-text">
-              Elevate Your Style<br />With Premium Essentials
+              {t('elevateStyle')}<br />{t('withPremium')}
           </h2>
           <p className="text-2xl lg:text-3xl text-gold font-light mb-8" style={{ color: '#FFFFFF' }}>
-            Complete your style ensemble with our latest collection
+            {t('completeStyle')}
           </p>
           <button
-            className="cta-button"
+            className="mt-8 px-10 py-4 border border-white text-white text-sm uppercase tracking-[0.2em] font-medium hover:bg-white hover:text-black transition-all duration-500 bg-transparent"
             onClick={(e) => {
               e.preventDefault();
               const el = document.getElementById('product-grid');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            Discover Collection
+            {t('discoverCollection')}
           </button>
         </div>
       </div>

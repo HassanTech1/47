@@ -1,12 +1,9 @@
 
-import {useLoaderData, useNavigate} from 'react-router';
+import {useLoaderData} from 'react-router';
 import {useState} from 'react';
 import {Image, Money, CartForm} from '@shopify/hydrogen';
-import {ChevronLeft, ChevronRight, Plus, Minus, X} from 'lucide-react';
+import {ChevronLeft, ChevronRight, Plus, Minus} from 'lucide-react';
 import {MOCK_PRODUCTS} from '~/lib/mock-data';
-import {Header} from '~/components/Header';
-import {Footer} from '~/components/Footer';
-import {CartDrawer} from '~/components/CartDrawer';
 
 /**
  * @param {import('@shopify/remix-oxygen').LoaderFunctionArgs} args
@@ -17,10 +14,16 @@ export async function loader({params, context}) {
 
   let product = null;
 
-  // Fetch shop info
-  const {shop} = await storefront.query(SHOP_QUERY, {
-    cache: storefront.CacheLong(),
-  });
+  // Fetch shop info — try/catch so the route still works without a connected storefront
+  let shop = null;
+  try {
+    const shopResult = await storefront.query(SHOP_QUERY, {
+      cache: storefront.CacheLong(),
+    });
+    shop = shopResult.shop;
+  } catch (err) {
+    console.warn('Could not fetch shop info:', err.message);
+  }
 
   // Try fetching from Shopify
   try {
@@ -79,13 +82,10 @@ export async function action({request, context}) {
 }
 
 export default function ProductPage() {
-  const {product, cart, shop} = useLoaderData();
-  const navigate = useNavigate();
+  const {product} = useLoaderData();
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
   const variants = product.variants?.nodes ?? [];
@@ -97,13 +97,6 @@ export default function ProductPage() {
 
   return (
     <>
-      <Header 
-        shop={shop}
-        cartCount={cart?.totalQuantity ?? 0}
-        onOpenCart={() => setIsCartOpen(true)} 
-        onOpenSearch={() => setIsSearchOpen(true)} 
-      />
-
       <main className="min-h-screen pt-24 pb-16">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Breadcrumb */}
@@ -295,111 +288,6 @@ export default function ProductPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
-
-      <CartDrawer
-        cart={cart}
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-      />
-
-      {/* Search modal */}
-      {isSearchOpen && (
-        <SearchModal 
-          onClose={() => setIsSearchOpen(false)} 
-        />
-      )}
-    </>
-  );
-}
-
-/**
- * Search modal component
- */
-function SearchModal({onClose}) {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const handleSearch = async (searchQuery) => {
-    if (!searchQuery.trim()) {
-      setResults([]);
-      return;
-    }
-    
-    setLoading(true);
-    // For now, use mock data - you can replace with real search later
-    const mockResults = MOCK_PRODUCTS.filter((p) =>
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    setResults(mockResults);
-    setLoading(false);
-  };
-
-  return (
-    <>
-      <div
-        className="fixed inset-0 z-[110] bg-black/50"
-        onClick={onClose}
-      />
-      <div className="fixed top-0 left-0 right-0 z-[120] bg-white p-6 shadow-xl">
-        <div className="container mx-auto max-w-2xl">
-          <div className="flex items-center gap-4 border-b-2 border-black pb-4 mb-6">
-            <input
-              type="text"
-              autoFocus
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                handleSearch(e.target.value);
-              }}
-              placeholder="Search products..."
-              className="flex-1 text-lg outline-none"
-            />
-            <button onClick={onClose} className="text-sm uppercase tracking-widest hover:text-gray-600">
-              Close
-            </button>
-          </div>
-
-          {loading && (
-            <p className="text-gray-500">Searching...</p>
-          )}
-
-          {!loading && query && (
-            <ul className="space-y-4">
-              {results.length === 0 ? (
-                <p className="text-gray-500">No results for &ldquo;{query}&rdquo;</p>
-              ) : (
-                results.map((product) => (
-                  <li key={product.id}>
-                    <a
-                      href={`/products/${product.handle}`}
-                      className="flex items-center gap-4 hover:bg-gray-50 p-2 transition-colors rounded"
-                      onClick={onClose}
-                    >
-                      {product.featuredImage && (
-                        <img
-                          src={product.featuredImage.url}
-                          alt={product.title}
-                          className="w-16 h-16 object-cover bg-gray-100 rounded"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{product.title}</p>
-                        <p className="text-sm text-gray-500">
-                          {product.priceRange.minVariantPrice.amount}{' '}
-                          {product.priceRange.minVariantPrice.currencyCode}
-                        </p>
-                      </div>
-                    </a>
-                  </li>
-                ))
-              )}
-            </ul>
-          )}
-        </div>
-      </div>
     </>
   );
 }
