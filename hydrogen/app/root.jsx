@@ -107,7 +107,11 @@ export function ErrorBoundary() {
           <h1 className="text-4xl font-bold mb-4">
             {errorStatus === 404 ? '404 - Not Found' : 'Error'}
           </h1>
-          <p className="text-gray-600 mb-8">{errorMessage}</p>
+          <p className="text-gray-600 mb-4">{errorMessage}</p>
+          {/* Show stack trace in dev / for debugging to pinpoint the failing code path */}
+          {error instanceof Error && (
+            <pre className="bg-gray-100 p-4 rounded text-left overflow-auto max-w-4xl mb-4">{error.stack}</pre>
+          )}
           <a href="/" className="px-6 py-3 bg-black text-white">
             Return Home
           </a>
