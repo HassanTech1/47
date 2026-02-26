@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 import {useShopifyCookies, useNonce} from '@shopify/hydrogen';
 import appStyles from '~/styles/app.css?url';
+import customFonts from '~/styles/custom-fonts.css?url';
 import {CartProvider} from '~/context/CartContext';
 import {AuthProvider} from '~/context/AuthContext';
 import {LanguageProvider} from '~/context/LanguageContext';
@@ -24,12 +25,9 @@ import ProductDetail from '~/components/ProductDetail';
 export function links() {
   return [
     {rel: 'stylesheet', href: appStyles},
+    {rel: 'stylesheet', href: customFonts},
     {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
     {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap',
-    },
   ];
 }
 
