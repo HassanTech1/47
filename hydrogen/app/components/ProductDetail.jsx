@@ -196,10 +196,30 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
   // Check if a given size is available based on product variants
   const isSizeAvailable = (size) => {
     const nodes = selectedProduct?.variants?.nodes ?? [];
-    const match = nodes.find((v) => v.title?.toUpperCase() === size?.toUpperCase());
-    if (!match) return true; // assume available when no variant info
+    if (!nodes || nodes.length === 0) return true; // no variant info -> assume available
+
+    const target = String(size).toUpperCase();
+
+    const match = nodes.find((v) => {
+      const title = String(v.title ?? '').toUpperCase();
+      if (title === target) return true;
+      if (title.includes(target)) return true; // e.g. "L / Black"
+      const opts = v.selectedOptions ?? v.selected_options ?? [];
+      const optMatch = opts.find((o) => {
+        const name = String(o.name ?? o.option_name ?? '').toUpperCase();
+        const value = String(o.value ?? o.option_value ?? '').toUpperCase();
+        return (name === 'SIZE' || name === 'حجم' || name === 'SIZE:') && value === target;
+      });
+      if (optMatch) return true;
+      return false;
+    });
+
+    if (!match) return true; // if we can't find a matching variant, default to available
+
     if (typeof match.availableForSale !== 'undefined') return !!match.availableForSale;
     if (typeof match.available !== 'undefined') return !!match.available;
+    // some APIs expose inventoryQuantity or similar
+    if (typeof match.inventoryQuantity !== 'undefined') return match.inventoryQuantity > 0;
     return true;
   };
 
