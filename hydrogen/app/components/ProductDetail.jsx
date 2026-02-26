@@ -58,6 +58,7 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [fullProduct, setFullProduct] = useState(null);
+  const [fetchError, setFetchError] = useState(null);
   
   // Zoom State
   const [zoomLevel, setZoomLevel] = useState(1); // 1 = no zoom, >1 zoomed
@@ -124,18 +125,24 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
           ? `/api.product.json?handle=${encodeURIComponent(handle)}`
           : `/api.product.json?id=${encodeURIComponent(id)}`;
 
+        setFetchError(null);
         const res = await fetch(url);
-        if (!res.ok) return;
+        if (!res.ok) {
+          setFetchError(`status:${res.status}`);
+          return;
+        }
         const body = await res.json();
         if (cancelled) return;
         if (body?.product) setFullProduct(body.product);
+        else setFetchError('no-product');
       } catch (err) {
-        // ignore fetch errors silently
+        setFetchError(err.message || String(err));
       }
     }
     fetchFull();
     return () => { cancelled = true; };
-  }, [selectedProduct?.handle]);
+  // re-run when handle or any id-like field changes
+  }, [selectedProduct?.handle, selectedProduct?.shopifyId, selectedProduct?.shopify_id, selectedProduct?.id]);
 
   if (!selectedProduct) return null;
 
@@ -485,7 +492,10 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
                     </div>
                   ))
                 ) : (
-                  <div>No variant nodes available locally. Fetched product: {fullProduct ? 'yes' : 'no'}</div>
+                  <div>
+                    <div>No variant nodes available locally. Fetched product: {fullProduct ? 'yes' : 'no'}</div>
+                    {fetchError && <div className="text-red-500 text-xs">Fetch error: {fetchError}</div>}
+                  </div>
                 )}
 
                 <div className="mt-2 font-medium">Computed availability by size:</div>
