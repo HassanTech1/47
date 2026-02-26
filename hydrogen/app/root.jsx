@@ -26,6 +26,10 @@ export function links() {
     {rel: 'stylesheet', href: appStyles},
     {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
     {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap',
+    },
   ];
 }
 
