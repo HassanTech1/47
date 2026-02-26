@@ -56,6 +56,7 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isCareOpen, setIsCareOpen] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
   
   // Zoom State
   const [zoomLevel, setZoomLevel] = useState(1); // 1 = no zoom, >1 zoomed
@@ -404,6 +405,43 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
                 );
               })}
             </div>
+
+            {/* Debug toggle - helps inspect variant data when sizes don't show correctly */}
+            <div className="mt-3">
+              <button
+                type="button"
+                onClick={() => setShowDebug((s) => !s)}
+                className="text-xs text-gray-400 hover:text-gray-600 underline"
+                data-testid="toggle-debug-sizes"
+              >
+                {showDebug ? 'Hide debug' : 'Show debug'}
+              </button>
+            </div>
+
+            {showDebug && (
+              <div className="mt-3 p-3 bg-gray-50 border border-gray-100 text-xs text-gray-700 rounded max-h-48 overflow-auto">
+                <div className="mb-2 font-medium">Variants (debug):</div>
+                {selectedProduct?.variants?.nodes?.length ? (
+                  selectedProduct.variants.nodes.map((v) => (
+                    <div key={v.id} className="mb-2">
+                      <div className="font-semibold">{v.title} — {v.id}</div>
+                      <div>availableForSale: {String(v.availableForSale ?? v.available ?? 'N/A')}</div>
+                      {typeof v.inventoryQuantity !== 'undefined' && (
+                        <div>inventoryQuantity: {v.inventoryQuantity}</div>
+                      )}
+                      <div>selectedOptions: {JSON.stringify(v.selectedOptions ?? v.selected_options ?? [])}</div>
+                    </div>
+                  ))
+                ) : (
+                  <div>No variant nodes available on selectedProduct</div>
+                )}
+
+                <div className="mt-2 font-medium">Computed availability by size:</div>
+                {sizes.map((s) => (
+                  <div key={s}>{s}: {isSizeAvailable(s) ? 'available' : 'unavailable'}</div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Add to Cart Button */}
