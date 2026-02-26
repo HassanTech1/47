@@ -98,7 +98,7 @@ const HeroSection = () => {
                   {t(slide.titleKey)}
                 </h1>
                 <p 
-                  className="text-xl md:text-2xl font-light tracking-[0.5em] uppercase border-t border-white/30 pt-4 inline-block"
+                  className={`text-xl md:text-2xl font-light border-t border-white/30 pt-4 inline-block ${language === 'en' ? 'tracking-[0.5em] uppercase' : ''}`}
                   style={{ fontFamily: '"Dancing Script", "Cairo", cursive' }}
                 >
                   {t(slide.subKey)}
