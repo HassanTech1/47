@@ -242,7 +242,10 @@ export const LanguageProvider = ({ children }) => {
     USD: 0.27
   };
 
-  const t = (key) => translations[language][key] || key;
+  const t = (key) => {
+    const translation = translations[language][key];
+    return translation || key;
+  };
 
   const formatPrice = (amount) => {
     const converted = (amount * rates[currency]).toFixed(2);
