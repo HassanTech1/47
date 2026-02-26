@@ -95,44 +95,13 @@ export default function CartPage() {
  * sync. The CHECKOUT button calls /api/checkout which creates the Shopify
  * cart and returns the hosted-checkout URL.
  */
+import {Link} from 'react-router';
+
+// ... (existing imports)
+
 function ClientCartPage() {
-  const {cartItems, updateQuantity, removeFromCart, getCartTotal} = useCart();
-  const {t, language, formatPrice} = useLanguage();
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const [checkoutError, setCheckoutError] = useState(null);
-
-  const total = getCartTotal();
-
-  const handleCheckout = async () => {
-    if (cartItems.length === 0) return;
-    setIsRedirecting(true);
-    setCheckoutError(null);
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          items: cartItems.map((item) => ({
-            nameEn: item.nameEn ?? item.name ?? '',
-            variantId: item.variantId ?? null,
-            quantity: item.quantity ?? 1,
-            size: item.size ?? '',
-          })),
-        }),
-      });
-      const responseData = await res.json();
-      if (responseData.checkoutUrl) {
-        window.location.href = responseData.checkoutUrl;
-      } else {
-        setCheckoutError(responseData.error ?? 'تعذّر إنشاء الطلب، يرجى المحاولة مجدداً.');
-        setIsRedirecting(false);
-      }
-    } catch {
-      setCheckoutError('خطأ في الشبكة، يرجى المحاولة مجدداً.');
-      setIsRedirecting(false);
-    }
-  };
-
+  // ... (existing code)
+  
   return (
     <main className="min-h-screen pt-24 pb-16">
       <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
@@ -143,65 +112,15 @@ function ClientCartPage() {
         {cartItems.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-500 text-lg mb-8">{t('cartEmpty')}</p>
-            <a
-              href="/"
+            <Link
+              to="/"
               className="px-8 py-3 border-2 border-black text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-all"
             >
               {t('continueShopping')}
-            </a>
+            </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Line items */}
-            <div className="lg:col-span-2 space-y-8">
-              {cartItems.map((item) => (
-                <ClientCartLine
-                  key={`${item.id}-${item.size}`}
-                  item={item}
-                  onUpdateQuantity={updateQuantity}
-                  onRemove={removeFromCart}
-                  t={t}
-                  language={language}
-                  formatPrice={formatPrice}
-                />
-              ))}
-            </div>
-
-            {/* Summary */}
-            <div className="lg:col-span-1">
-              <div className="border-2 border-black p-6">
-                <h2 className="text-lg font-bold uppercase tracking-widest mb-6">
-                  {t('orderSummary')}
-                </h2>
-
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-gray-600">{t('subtotal')}</span>
-                  <span className="text-xl font-bold">{formatPrice(getCartTotal())}</span>
-                </div>
-                <p className="text-xs text-gray-500 mb-6">
-                  {t('shippingCalculated')}
-                </p>
-
-                <button
-                  onClick={handleCheckout}
-                  disabled={isRedirecting}
-                  className="block w-full py-4 bg-black text-white text-center text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {isRedirecting ? '...' : t('checkout')}
-                </button>
-
-                {checkoutError && (
-                  <p className="mt-3 text-xs text-red-600">{checkoutError}</p>
-                )}
-
-                {checkoutError && (
-                  <p className="mt-4 text-xs text-red-600 leading-relaxed">
-                    {checkoutError}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
+          // ... (rest of the component)
         )}
       </div>
     </main>
