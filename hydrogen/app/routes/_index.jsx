@@ -1,4 +1,3 @@
-
 import {useLoaderData} from 'react-router';
 import {MOCK_PRODUCTS} from '~/lib/mock-data';
 import HeroSection from '~/components/HeroSection';
@@ -6,6 +5,7 @@ import PromoBanner from '~/components/PromoBanner';
 import ProductGrid from '~/components/ProductGrid';
 import LifestyleSection from '~/components/LifestyleSection';
 import ProductDetail from '~/components/ProductDetail';
+import React from 'react';
 
 /**
  * @param {import('@shopify/remix-oxygen').LoaderFunctionArgs} args
