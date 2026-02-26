@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { X, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 
 const CartSidebar = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const navigate = useNavigate();
   const { t, language, formatPrice } = useLanguage();
   const {
     cartItems,
@@ -21,7 +23,7 @@ const CartSidebar = () => {
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
     setIsCartOpen(false);
-    window.location.href = '/checkout';
+    navigate('/checkout');
   };
 
   return (
