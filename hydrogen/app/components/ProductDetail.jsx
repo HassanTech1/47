@@ -362,18 +362,21 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
             <div className="flex gap-2">
               {sizes.map((size) => {
                 const available = isSizeAvailable(size);
+                const isSelected = selectedSize === size;
+                const baseClasses = 'h-12 px-4 w-auto border-2 flex items-center justify-center text-sm font-medium transition-all';
+                const availableClasses = isSelected
+                  ? 'border-black bg-white'
+                  : 'border-gray-200 hover:border-gray-400';
+                const unavailableClasses = 'border-red-500 bg-red-50 text-red-600 cursor-not-allowed';
+
                 return (
                   <button
                     key={size}
                     onClick={() => available && setSelectedSize(size)}
                     disabled={!available}
-                    className={`h-12 px-4 w-auto border-2 flex items-center justify-center text-sm font-medium transition-all ${
-                      selectedSize === size
-                        ? 'border-black bg-white'
-                        : available
-                          ? 'border-gray-200 hover:border-gray-400'
-                          : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-                    }`}
+                    title={!available ? 'غير متوفر' : `اختر المقاس ${size}`}
+                    aria-pressed={isSelected}
+                    className={`${baseClasses} ${available ? availableClasses : unavailableClasses}`}
                     data-testid={`size-${size}`}
                   >
                     {size}
