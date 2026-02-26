@@ -68,8 +68,8 @@ const Header = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
       </div>
 
       {/* Compact Header - Shows in Hero */}
-      <header 
-        className={`fixed left-0 right-0 z-50 transition-all duration-500 ${
+      <header
+        className={`fixed left-0 right-0 z-50 transition-all duration-500 text-white ${
           showExpandedMenu ? 'opacity-0 pointer-events-none' : 'opacity-100'
         } ${scrolled ? 'bg-black/80 backdrop-blur-xl shadow-lg top-0' : 'bg-transparent top-10'}`}
       >
@@ -128,8 +128,8 @@ const Header = ({ onOpenAuth, onOpenSearch, onOpenAccount }) => {
       </header>
 
       {/* Expanded Menu - Shows when scrolled or clicked */}
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white ${
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white text-black ${
           showExpandedMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
