@@ -115,9 +115,16 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
       try {
         const nodes = selectedProduct?.variants?.nodes ?? [];
         if (nodes && nodes.length > 0) return; // already have variants
-        if (!selectedProduct?.handle) return;
+        // try handle first, otherwise try shopifyId/shopify product id
+        const handle = selectedProduct?.handle;
+        const id = selectedProduct?.shopifyId ?? selectedProduct?.shopify_id ?? selectedProduct?.id;
+        if (!handle && !id) return;
 
-        const res = await fetch(`/api.product.json?handle=${encodeURIComponent(selectedProduct.handle)}`);
+        const url = handle
+          ? `/api.product.json?handle=${encodeURIComponent(handle)}`
+          : `/api.product.json?id=${encodeURIComponent(id)}`;
+
+        const res = await fetch(url);
         if (!res.ok) return;
         const body = await res.json();
         if (cancelled) return;
@@ -230,7 +237,14 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
     // attempt to fetch full product data (handled in effect below). For safety,
     // while we are waiting treat as "unknown" (return false) so UI doesn't
     // incorrectly show everything as available.
-    if (!nodes || nodes.length === 0) return false;
+    if (!nodes || nodes.length === 0) {
+      // If we have a way to fetch the full product (handle or shopify id),
+      // treat unknown as unavailable until fetch completes. If we have no
+      // identifier to fetch with, fall back to assuming available (legacy
+      // behavior for mock/local products).
+      if (selectedProduct?.handle || selectedProduct?.shopifyId || selectedProduct?.shopify_id || selectedProduct?.id) return false;
+      return true;
+    }
 
     const target = String(size).toUpperCase();
 
@@ -455,11 +469,15 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
             {showDebug && (
               <div className="mt-3 p-3 bg-gray-50 border border-gray-100 text-xs text-gray-700 rounded max-h-48 overflow-auto">
                 <div className="mb-2 font-medium">Variants (debug):</div>
+                <div className="mb-1 text-[11px] text-gray-500">handle: {selectedProduct?.handle ?? '—'} | shopifyId: {selectedProduct?.shopifyId ?? selectedProduct?.shopify_id ?? selectedProduct?.id ?? '—'}</div>
                 {productForChecks?.variants?.nodes?.length ? (
                   productForChecks.variants.nodes.map((v) => (
                     <div key={v.id} className="mb-2">
                       <div className="font-semibold">{v.title} — {v.id}</div>
                       <div>availableForSale: {String(v.availableForSale ?? v.available ?? 'N/A')}</div>
+                      {typeof v.quantityAvailable !== 'undefined' && (
+                        <div>quantityAvailable: {v.quantityAvailable}</div>
+                      )}
                       {typeof v.inventoryQuantity !== 'undefined' && (
                         <div>inventoryQuantity: {v.inventoryQuantity}</div>
                       )}

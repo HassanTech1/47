@@ -1,17 +1,18 @@
 export async function loader({request, context}) {
   const url = new URL(request.url);
   const handle = url.searchParams.get('handle');
+  const id = url.searchParams.get('id');
 
-  if (!handle) {
-    return new Response(JSON.stringify({error: 'missing handle'}), {
+  if (!handle && !id) {
+    return new Response(JSON.stringify({error: 'missing handle or id'}), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
   }
 
   const PRODUCT_QUERY = `#graphql
-    query ProductForModal($handle: String!) {
-      product(handle: $handle) {
+    query ProductForModal($handle: String, $id: ID) {
+      product(handle: $handle, id: $id) {
         id
         handle
         title
@@ -33,8 +34,12 @@ export async function loader({request, context}) {
   `;
 
   try {
+    const variables = {};
+    if (handle) variables.handle = handle;
+    if (id) variables.id = id;
+
     const {product} = await context.storefront.query(PRODUCT_QUERY, {
-      variables: {handle},
+      variables,
       cache: context.storefront.CacheShort(),
     });
 
