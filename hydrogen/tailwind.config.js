@@ -1,4 +1,9 @@
 /** @type {import('tailwindcss').Config} */
+
+// resolve tailwindcss-animate from project root at runtime (helps Shopify CLI builds)
+const animatePath = require.resolve('tailwindcss-animate', { paths: [process.cwd()] });
+const animatePlugin = require(animatePath);
+
 export default {
   darkMode: ["class"],
   content: [
@@ -80,5 +85,7 @@ export default {
       }
     }
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    animatePlugin
+  ],
 };
