@@ -28,8 +28,8 @@ import img6_2 from '../assest/product/6-2.png';
 const PRODUCT_IMAGES = {
   1: [img1, img1_1, img1_2],
   2: [img2, img2_1, img2_2, img2_3],
-  3: [img3, img3_1, img3_2],
-  4: [img4, img4_1, img4_2],
+  3: [img4, img4_1, img4_2],
+  4: [img3, img3_1, img3_2],
   5: [img5, img5_1, img5_2, img5_3],
   6: [img6, img6_1, img6_2],
 };
@@ -37,8 +37,8 @@ const PRODUCT_IMAGES = {
 const RECOMMENDED_PRODUCTS = [
   { id: 1, nameEn: 'VVVV PANTS', name: 'بنطال VVVV', price: 179.00, image: img1 },
   { id: 2, nameEn: 'CAN BE HOODY', name: 'هودي CAN BE', price: 249.00, image: img2 },
-  { id: 3, nameEn: 'T-SHIRT', name: 'تي شيرت', price: 149.00, image: img3 },
-  { id: 4, nameEn: 'VVVV ZIP-UP', name: 'سحاب VVVV', price: 269.00, image: img4 },
+  { id: 3, nameEn: 'VVVV ZIP-UP', name: 'سحاب VVVV', price: 269.00, image: img4 },
+  { id: 4, nameEn: 'T-SHIRT', name: 'تي شيرت', price: 149.00, image: img3 },
   { id: 5, nameEn: 'MY FUTURE IS CALLING', name: 'المستقبل ينادي', price: 269.00, image: img5 },
   { id: 6, nameEn: "4SEVEN'S PANTS", name: "بنطال 4SEVEN'S", price: 179.00, image: img6 },
 ];

@@ -24,15 +24,15 @@ export const ProductGrid = ({products: shopifyProducts = [], onProductClick}) =>
   const { openProductDetail } = useCart();
   const { t, language, formatPrice } = useLanguage();
 
-  const productImages = [pro1, pro2, pro3, pro4, pro5, pro6];
-  const previewImages = [prev1, prev2, prev3, prev4, prev5, pro6back];
-  const backImages = [prev11, null, null, back4, pro5back, pro6back];
+  const productImages = [pro1, pro2, pro4, pro3, pro5, pro6];
+  const previewImages = [prev1, prev2, prev4, prev3, prev5, pro6back];
+  const backImages = [prev11, null, back4, null, pro5back, pro6back];
 
   const productNames = [
     "VVVV PANTS",
     "CAN BE HOODY",
-    "T-SHIRT",
     "VVVV ZIP-UP",
+    "T-SHIRT",
     "MY FUTURE IS CALLING",
     "4SEVEN'S PANTS"
   ];
@@ -40,13 +40,13 @@ export const ProductGrid = ({products: shopifyProducts = [], onProductClick}) =>
   const productNamesAr = [
     "بنطال VVVV",
     "هودي CAN BE",
-    "تي شيرت",
     "سحاب VVVV",
+    "تي شيرت",
     "المستقبل ينادي",
     "بنطال 4SEVEN'S"
   ];
 
-  const productPrices = [179, 249, 149, 269, 269, 179];
+  const productPrices = [179, 249, 269, 149, 269, 179];
 
   // Merge Shopify product data (for real variant IDs) with local display assets.
   // When Shopify products are loaded they carry real variant GIDs needed for checkout.
