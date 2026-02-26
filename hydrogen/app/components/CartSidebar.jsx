@@ -169,6 +169,18 @@ const CartSidebar = () => {
                     <span className="text-lg font-medium">{formatPrice(getCartTotal())}</span>
                   </div>
 
+                  <div className="text-center my-4">
+                    {getCartTotal() >= 475 ? (
+                      <p className="text-green-600 font-semibold text-sm">
+                        {t('freeDeliveryCongrats')}
+                      </p>
+                    ) : (
+                      <p className="text-gray-500 text-sm">
+                        {t('freeDeliveryMsg')} {formatPrice(475)}
+                      </p>
+                    )}
+                  </div>
+
                   <button className="text-xs text-gray-500 underline mb-6">
                     {t('orderNote')}
                   </button>
