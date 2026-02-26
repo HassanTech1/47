@@ -57,6 +57,7 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
   const [isCareOpen, setIsCareOpen] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
+  const [fullProduct, setFullProduct] = useState(null);
   
   // Zoom State
   const [zoomLevel, setZoomLevel] = useState(1); // 1 = no zoom, >1 zoomed
@@ -103,6 +104,31 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
       document.body.style.overflow = 'unset';
     };
   }, [selectedProduct]);
+
+  // If the selected product doesn't include variant nodes (common when opening
+  // the product modal from a collection or search where a simplified product
+  // object is used), fetch the full product data from a lightweight API route
+  // so we can read `quantityAvailable` / `availableForSale` properly.
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchFull() {
+      try {
+        const nodes = selectedProduct?.variants?.nodes ?? [];
+        if (nodes && nodes.length > 0) return; // already have variants
+        if (!selectedProduct?.handle) return;
+
+        const res = await fetch(`/api.product.json?handle=${encodeURIComponent(selectedProduct.handle)}`);
+        if (!res.ok) return;
+        const body = await res.json();
+        if (cancelled) return;
+        if (body?.product) setFullProduct(body.product);
+      } catch (err) {
+        // ignore fetch errors silently
+      }
+    }
+    fetchFull();
+    return () => { cancelled = true; };
+  }, [selectedProduct?.handle]);
 
   if (!selectedProduct) return null;
 
@@ -175,11 +201,14 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
     setZoomLevel((prev) => Math.max(1, +(prev - 0.5).toFixed(2)));
   };
 
+  // Use the full fetched product (if available) otherwise the selectedProduct from context/props
+  const productForChecks = fullProduct ?? selectedProduct;
+
   // Helper: resolve the Shopify variant GID for the currently selected size.
   // Falls back to the product-level variantId (first variant) if no match found.
   const resolveVariantId = (size) => {
-    const nodes = selectedProduct?.variants?.nodes ?? [];
-    if (nodes.length === 0) return selectedProduct?.variantId ?? null;
+    const nodes = productForChecks?.variants?.nodes ?? [];
+    if (nodes.length === 0) return productForChecks?.variantId ?? selectedProduct?.variantId ?? null;
     // Try exact title match first, then case-insensitive, then first available
     const exact = nodes.find((v) => v.title === size);
     if (exact) return exact.id;
@@ -196,8 +225,12 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
 
   // Check if a given size is available based on product variants
   const isSizeAvailable = (size) => {
-    const nodes = selectedProduct?.variants?.nodes ?? [];
-    if (!nodes || nodes.length === 0) return true; // no variant info -> assume available
+    const nodes = productForChecks?.variants?.nodes ?? [];
+    // If there are no variant nodes available locally, treat as unknown and
+    // attempt to fetch full product data (handled in effect below). For safety,
+    // while we are waiting treat as "unknown" (return false) so UI doesn't
+    // incorrectly show everything as available.
+    if (!nodes || nodes.length === 0) return false;
 
     const target = String(size).toUpperCase();
 
@@ -215,13 +248,14 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
       return false;
     });
 
-    if (!match) return true; // if we can't find a matching variant, default to available
+    if (!match) return false; // if we can't find a matching variant, treat as unavailable
 
     if (typeof match.availableForSale !== 'undefined') return !!match.availableForSale;
     if (typeof match.available !== 'undefined') return !!match.available;
-    // some APIs expose inventoryQuantity or similar
+    // some APIs expose quantityAvailable / inventoryQuantity
+    if (typeof match.quantityAvailable !== 'undefined') return match.quantityAvailable > 0;
     if (typeof match.inventoryQuantity !== 'undefined') return match.inventoryQuantity > 0;
-    return true;
+    return !!match.availableForSale;
   };
 
   const handleBuyNow = () => {
@@ -421,8 +455,8 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
             {showDebug && (
               <div className="mt-3 p-3 bg-gray-50 border border-gray-100 text-xs text-gray-700 rounded max-h-48 overflow-auto">
                 <div className="mb-2 font-medium">Variants (debug):</div>
-                {selectedProduct?.variants?.nodes?.length ? (
-                  selectedProduct.variants.nodes.map((v) => (
+                {productForChecks?.variants?.nodes?.length ? (
+                  productForChecks.variants.nodes.map((v) => (
                     <div key={v.id} className="mb-2">
                       <div className="font-semibold">{v.title} — {v.id}</div>
                       <div>availableForSale: {String(v.availableForSale ?? v.available ?? 'N/A')}</div>
@@ -433,7 +467,7 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
                     </div>
                   ))
                 ) : (
-                  <div>No variant nodes available on selectedProduct</div>
+                  <div>No variant nodes available locally. Fetched product: {fullProduct ? 'yes' : 'no'}</div>
                 )}
 
                 <div className="mt-2 font-medium">Computed availability by size:</div>
