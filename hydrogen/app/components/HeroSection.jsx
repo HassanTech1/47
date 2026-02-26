@@ -92,14 +92,14 @@ const HeroSection = () => {
                 </div>
 
                 <h1
-                  className="text-7xl md:text-9xl font-serif font-bold leading-none tracking-tighter mix-blend-overlay mb-4"
-                  style={{ fontFamily: '"Dancing Script", cursive' }}
+                  className="text-7xl md:text-9xl font-bold leading-none tracking-tighter mix-blend-overlay mb-4"
+                  style={{ fontFamily: '"Dancing Script", "Cairo", cursive' }}
                 >
                   {t(slide.titleKey)}
                 </h1>
                 <p 
                   className="text-xl md:text-2xl font-light tracking-[0.5em] uppercase border-t border-white/30 pt-4 inline-block"
-                  style={{ fontFamily: '"Dancing Script", cursive' }}
+                  style={{ fontFamily: '"Dancing Script", "Cairo", cursive' }}
                 >
                   {t(slide.subKey)}
                 </p>

@@ -1,3 +1,13 @@
+/* Cairo - Arabic & Latin Fallback */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url('./fonts/cairo-arabic-variable.woff2') format('woff2');
+}
+
+/* Dancing Script - For stylized titles */
 @font-face {
   font-family: 'Dancing Script';
   font-style: normal;
@@ -6,9 +16,8 @@
   src: url('./fonts/DancingScript-VariableFont_wght.woff2') format('woff2');
 }
 
-body {
+html, body {
+  font-family: 'Cairo', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-/* Add any other global styles here */
