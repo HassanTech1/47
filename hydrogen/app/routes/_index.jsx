@@ -6,6 +6,7 @@ import ProductGrid from '~/components/ProductGrid';
 import LifestyleSection from '~/components/LifestyleSection';
 import ProductDetail from '~/components/ProductDetail';
 import React from 'react';
+import {useCart} from '~/context/CartContext';
 
 /**
  * @param {import('@shopify/remix-oxygen').LoaderFunctionArgs} args
@@ -50,29 +51,14 @@ export async function loader({context}) {
 
 export default function Homepage() {
   const {products} = useLoaderData();
-  const [selectedProduct, setSelectedProduct] = React.useState(null);
-
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleCloseDetail = () => {
-    setSelectedProduct(null);
-  };
+  const {openProductDetail} = useCart();
 
   return (
     <main>
       <HeroSection />
       <PromoBanner />
-      <ProductGrid products={products} onProductClick={handleProductClick} />
+      <ProductGrid products={products} onProductClick={openProductDetail} />
       <LifestyleSection />
-      {selectedProduct && (
-        <div style={{position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.5)'}}>
-          <div style={{position: 'relative', margin: '40px auto', maxWidth: 900}}>
-            <ProductDetail product={selectedProduct} onClose={handleCloseDetail} />
-          </div>
-        </div>
-      )}
     </main>
   );
 }

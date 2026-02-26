@@ -70,6 +70,7 @@ export function App() {
               <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
               <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
               <AppAccountPage isOpen={accountPageOpen} onClose={() => setAccountPageOpen(false)} />
+              <ProductDetail />
             </LanguageProvider>
           </AuthProvider>
         </CartProvider>

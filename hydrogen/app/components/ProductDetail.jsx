@@ -43,8 +43,12 @@ const RECOMMENDED_PRODUCTS = [
   { id: 6, nameEn: "4SEVEN'S PANTS", name: "بنطال 4SEVEN'S", price: 179.00, image: img6 },
 ];
 
-const ProductDetail = () => {
-  const { selectedProduct, closeProductDetail, addToCart, setIsCartOpen, openProductDetail } = useCart();
+const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
+  const { selectedProduct: contextProduct, closeProductDetail: contextClose, addToCart, setIsCartOpen, openProductDetail } = useCart();
+  
+  // Prefer props if passed, otherwise use context. This makes the component more flexible.
+  const selectedProduct = propProduct ?? contextProduct;
+  const closeProductDetail = propOnClose ?? contextClose;
   const { t, language, formatPrice } = useLanguage();
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Black');
