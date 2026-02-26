@@ -193,10 +193,34 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
     closeProductDetail();
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     const variantId = resolveVariantId(selectedSize);
-    addToCart({ ...selectedProduct, color: selectedColor, variantId }, selectedSize, 1);
-    // Shopify checkout redirect handled by CartSidebar → /api/checkout
+    const item = { ...selectedProduct, color: selectedColor, variantId };
+    addToCart(item, selectedSize, 1);
+    
+    // Direct redirect to checkout for "Buy It Now"
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          items: [{
+            nameEn: item.nameEn ?? item.name ?? '',
+            variantId: variantId,
+            quantity: 1,
+            size: selectedSize,
+          }]
+        }),
+      });
+      const data = await res.json();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        setIsCartOpen(true);
+      }
+    } catch {
+      setIsCartOpen(true);
+    }
   };
 
   const openLightbox = () => {
