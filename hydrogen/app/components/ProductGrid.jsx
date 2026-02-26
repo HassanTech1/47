@@ -110,11 +110,11 @@ export const ProductGrid = ({products: shopifyProducts = [], onProductClick}) =>
                 </span>
               </div>
 
-              <div className="relative h-44 sm:h-56 lg:h-96 lg:bg-transparent bg-gray-50 mb-6 overflow-hidden flex items-center justify-center">
+              <div className="relative aspect-[3/4] bg-gray-50 mb-6 overflow-hidden">
                 <img
                   src={product.images[0]}
                   alt={language === 'ar' ? product.name : product.nameEn}
-                  className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
 
@@ -148,11 +148,11 @@ export const ProductGrid = ({products: shopifyProducts = [], onProductClick}) =>
                 </span>
               </div>
 
-              <div className="relative h-44 sm:h-56 lg:h-96 lg:bg-transparent bg-gray-50 mb-6 overflow-hidden flex items-center justify-center">
+              <div className="relative aspect-[4/3] md:aspect-square lg:aspect-[3/4] bg-gray-50 mb-6 overflow-hidden">
                 <img
                   src={product.images[0]}
                   alt={language === 'ar' ? product.name : product.nameEn}
-                  className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
 
