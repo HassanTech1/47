@@ -18,34 +18,10 @@ const CartSidebar = () => {
 
   if (!isCartOpen) return null;
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (cartItems.length === 0) return;
-    setIsRedirecting(true);
     setIsCartOpen(false);
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          items: cartItems.map((item) => ({
-            nameEn: item.nameEn ?? item.name ?? '',
-            variantId: item.variantId ?? null,
-            quantity: item.quantity ?? 1,
-            size: item.size ?? '',
-          })),
-        }),
-      });
-      const data = await res.json();
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      } else {
-        window.location.href = '/cart';
-      }
-    } catch {
-      window.location.href = '/cart';
-    } finally {
-      setIsRedirecting(false);
-    }
+    window.location.href = '/checkout';
   };
 
   return (
