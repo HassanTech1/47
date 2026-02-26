@@ -193,6 +193,16 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
     closeProductDetail();
   };
 
+  // Check if a given size is available based on product variants
+  const isSizeAvailable = (size) => {
+    const nodes = selectedProduct?.variants?.nodes ?? [];
+    const match = nodes.find((v) => v.title?.toUpperCase() === size?.toUpperCase());
+    if (!match) return true; // assume available when no variant info
+    if (typeof match.availableForSale !== 'undefined') return !!match.availableForSale;
+    if (typeof match.available !== 'undefined') return !!match.available;
+    return true;
+  };
+
   const handleBuyNow = () => {
     const variantId = resolveVariantId(selectedSize);
     const item = { ...selectedProduct, color: selectedColor, variantId };
@@ -350,20 +360,26 @@ const ProductDetail = ({product: propProduct, onClose: propOnClose}) => {
               </button>
             </div>
             <div className="flex gap-2">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`h-12 px-4 w-auto border-2 flex items-center justify-center text-sm font-medium transition-all ${
-                    selectedSize === size
-                      ? 'border-black bg-white'
-                      : 'border-gray-200 hover:border-gray-400'
-                  }`}
-                  data-testid={`size-${size}`}
-                >
-                  {size}
-                </button>
-              ))}
+              {sizes.map((size) => {
+                const available = isSizeAvailable(size);
+                return (
+                  <button
+                    key={size}
+                    onClick={() => available && setSelectedSize(size)}
+                    disabled={!available}
+                    className={`h-12 px-4 w-auto border-2 flex items-center justify-center text-sm font-medium transition-all ${
+                      selectedSize === size
+                        ? 'border-black bg-white'
+                        : available
+                          ? 'border-gray-200 hover:border-gray-400'
+                          : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
+                    }`}
+                    data-testid={`size-${size}`}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
