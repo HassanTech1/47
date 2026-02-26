@@ -1,10 +1,11 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectFade } from 'swiper/modules';
+import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { useLanguage } from '../context/LanguageContext';
 
 import 'swiper/css';
 import 'swiper/css/effect-fade';
+import 'swiper/css/pagination';
 import hero1 from '../assest/head/4.jpeg';
 import img1 from '../assest/head/1.png';
 import img2 from '../assest/head/2.jpg';
@@ -27,9 +28,31 @@ const HeroSection = () => {
 
   return (
   <div id="hero" className="hero-section relative w-full h-[100vh] bg-black">
+    {/* Custom styles for Swiper pagination */}
+    <style>{`
+      .hero-section .swiper-pagination {
+        position: static;
+        display: flex;
+        gap: 8px;
+        width: auto;
+      }
+      .hero-section .swiper-pagination-bullet {
+        width: 8px;
+        height: 8px;
+        background-color: rgba(255, 255, 255, 0.5);
+        opacity: 1;
+        transition: all 0.3s ease;
+      }
+      .hero-section .swiper-pagination-bullet-active {
+        width: 24px;
+        border-radius: 4px;
+        background-color: white;
+      }
+    `}</style>
+
     <Swiper
       key={language}
-      modules={[Autoplay, EffectFade]}
+      modules={[Autoplay, EffectFade, Pagination]}
       spaceBetween={0}
       slidesPerView={1}
       effect="fade"
@@ -40,6 +63,10 @@ const HeroSection = () => {
       autoplay={{
         delay: 6000,
         disableOnInteraction: false,
+      }}
+      pagination={{
+        el: '.swiper-pagination-custom',
+        clickable: true,
       }}
       className="w-full h-full"
     >
@@ -82,8 +109,13 @@ const HeroSection = () => {
         </SwiperSlide>
       ))}
     </Swiper>
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/70 text-sm tracking-widest uppercase animate-bounce z-20 pointer-events-none">
-      {t('scrollToExplore')}
+    
+    {/* Container for bottom controls */}
+    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-center gap-6">
+      <div className="text-white/70 text-sm tracking-widest uppercase animate-bounce">
+        {t('scrollToExplore')}
+      </div>
+      <div className="swiper-pagination-custom" />
     </div>
   </div>
 );
